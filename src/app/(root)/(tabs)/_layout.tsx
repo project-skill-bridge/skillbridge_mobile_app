@@ -1,45 +1,125 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-import { Platform } from 'react-native';
+import { Image, StyleSheet, View } from "react-native";
+import { Tabs } from "expo-router";
+import { theme } from "@/src/constants/Theme";
+import { icons } from "@/src/constants/Icons";
 
-import { HapticTab } from '@/src/components/HapticTab';
-import { IconSymbol } from '@/src/components/ui/IconSymbol';
-import TabBarBackground from '@/src/components/ui/TabBarBackground';
-import { Colors } from '@/src/constants/Colors';
-import { useColorScheme } from '@/src/hooks/useColorScheme';
+interface TabIconProps {
+  focused: boolean;
+  icon: any;
+}
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
+const TansLayout = () => {
   return (
     <Tabs
+      initialRouteName="index"
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
-        }),
-      }}>
+        tabBarActiveTintColor: "white",
+        tabBarInactiveTintColor: "white",
+        tabBarShowLabel: false,
+        tabBarStyle: {
+          backgroundColor: "#333333",
+          borderRadius: 50,
+          marginHorizontal: 20,
+          marginBottom: 20,
+          height: 78,
+          paddingBottom: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          flexDirection: "row",
+          overflow: "hidden",
+          position: "absolute",
+        },
+      }}
+    >
       <Tabs.Screen
-        name="index"
+        name="home"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: "Home",
+          headerShown: false,
+          tabBarIcon: ({ focused }) => (
+            <TabIcon focused={focused} icon={icons.home} />
+          ),
         }}
       />
+
       <Tabs.Screen
-        name="explore"
+        name="progress"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: "Progress",
+          headerShown: false,
+          tabBarIcon: ({ focused }) => (
+            <TabIcon focused={focused} icon={icons.chart} />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: "Profile",
+          headerShown: false,
+          tabBarIcon: ({ focused }) => (
+            <TabIcon focused={focused} icon={icons.profile} />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: "Settings",
+          headerShown: false,
+          tabBarIcon: ({ focused }) => (
+            <TabIcon focused={focused} icon={icons.settings} />
+          ),
         }}
       />
     </Tabs>
   );
-}
+};
+
+const TabIcon = ({ focused, icon }: TabIconProps) => (
+  <View
+    style={[
+      styles.tabIconContainer,
+      focused && { backgroundColor: theme.colors.secondary },
+    ]}
+  >
+    <View
+      style={[
+        styles.tabIconImageContainer,
+        focused && { backgroundColor: theme.colors.secondary },
+      ]}
+    >
+      <Image
+        source={icon}
+        tintColor="white"
+        resizeMode="contain"
+        style={styles.icon}
+      />
+    </View>
+  </View>
+);
+
+export default TansLayout;
+
+const styles = StyleSheet.create({
+  tabIconContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: "50%",
+  },
+  tabIconImageContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: "50%",
+    width: 12,
+    height: 12,
+  },
+  icon: {
+    width: 24,
+    height: 24,
+  },
+});
