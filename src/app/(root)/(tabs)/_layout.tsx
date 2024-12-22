@@ -11,7 +11,7 @@ interface TabIconProps {
 const TansLayout = () => {
   return (
     <Tabs
-      initialRouteName="index"
+      // initialRouteName="home"
       screenOptions={{
         tabBarActiveTintColor: "white",
         tabBarInactiveTintColor: "white",
