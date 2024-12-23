@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "751692701677",
+    "project_id": "skill-bridge-37dd8",
+    "storage_bucket": "skill-bridge-37dd8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:751692701677:android:19248b941f66d2458d11e4",
+        "android_client_info": {
+          "package_name": "com.skillbridge.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "751692701677-7h9gt85tmjrga0utdnnfimppml2q2lrf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.skillbridge.app",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "751692701677-82jgdl3r1bnhorb20462k0vi7ocud45g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtOLPI5IX7GmxazVgnn1haBUvZl2sxgN4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "751692701677-82jgdl3r1bnhorb20462k0vi7ocud45g.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "751692701677-tc9ni096dtkbgcbddqjsjoi4ufhjd75q.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.skillbridge.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

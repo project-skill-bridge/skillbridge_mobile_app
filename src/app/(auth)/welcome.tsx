@@ -35,7 +35,7 @@ const OnboardingScreen = () => {
     if (currentIndex < onboardingData.length - 1) {
       onboardingRef.current?.scrollToIndex({ index: currentIndex + 1 });
     } else {
-      console.log("Last item reached");
+      router.replace("/(auth)/sign-up");
     }
   };
 
