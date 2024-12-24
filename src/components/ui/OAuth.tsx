@@ -1,11 +1,35 @@
-import { View, Text, Image, StyleSheet } from "react-native";
-import React from "react";
+import { View, Text, StyleSheet } from "react-native";
+import auth from "@react-native-firebase/auth";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
+
 import Button from "./Button";
 import { theme } from "@/src/constants/Theme";
 import { icons } from "@/src/constants/Icons";
+import { useState } from "react";
+import Loader from "./Loader";
 
 const OAuth = () => {
-  const googleSignInHandler = async () => {};
+  const [isLoading, setIsLoading] = useState(false);
+
+  const googleSignInHandler = async () => {
+    setIsLoading(true);
+    try {
+      await GoogleSignin.hasPlayServices({
+        showPlayServicesUpdateDialog: true,
+      });
+
+      const signInResult = await GoogleSignin.signIn();
+
+      const idToken = signInResult.data?.idToken ?? null;
+      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+      return auth().signInWithCredential(googleCredential);
+    } catch (error: any) {
+      alert(error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <View>
@@ -15,14 +39,18 @@ const OAuth = () => {
         <View style={styles.line} />
       </View>
 
-      <Button
-        title="Continue with Google"
-        bgVariant="outline"
-        textVariant="secondary"
-        showShadow={false}
-        onPress={googleSignInHandler}
-        icon={icons.google}
-      />
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <Button
+          title="Continue with Google"
+          bgVariant="outline"
+          textVariant="secondary"
+          showShadow={false}
+          onPress={googleSignInHandler}
+          icon={icons.google}
+        />
+      )}
     </View>
   );
 };

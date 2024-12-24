@@ -9,10 +9,10 @@ import { Image } from "react-native";
 import { images } from "./Images";
 
 export const icons = {
-  home: <FontAwesome6 name="house" size={24} color="black" />,
-  chart: <FontAwesome6 name="chart-line" size={24} color="black" />,
-  profile: <FontAwesome6 name="circle-user" size={24} color="black" />,
-  settings: <FontAwesome6 name="gear" size={24} color="black" />,
+  home: <FontAwesome6 name="house" size={24} color="white" />,
+  progress: <FontAwesome6 name="chart-line" size={24} color="white" />,
+  profile: <FontAwesome6 name="circle-user" size={24} color="white" />,
+  settings: <FontAwesome6 name="gear" size={24} color="white" />,
   check: <FontAwesome name="check" size={24} color="black" />,
   person: (
     <FontAwesome5 name="user" size={22} color={theme.colors.primaryText} />

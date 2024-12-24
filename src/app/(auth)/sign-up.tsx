@@ -10,7 +10,7 @@ import {
   View,
 } from "react-native";
 import ReactNativeModal from "react-native-modal";
-import auth from '@react-native-firebase/auth';
+import auth from "@react-native-firebase/auth";
 
 import Button from "@/src/components/ui/Button";
 import InputField from "@/src/components/ui/InputField";
@@ -18,6 +18,7 @@ import OAuth from "@/src/components/ui/OAuth";
 import { hp, wp } from "@/src/utils/common";
 import { theme } from "@/src/constants/Theme";
 import { icons } from "@/src/constants/Icons";
+import Loader from "@/src/components/ui/Loader";
 
 const SignUpScreen = () => {
   const [form, setForm] = useState({
@@ -26,16 +27,17 @@ const SignUpScreen = () => {
     mobile: "",
     password: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const signUpHandler = async () => {
-    console.log(form);
+    setIsLoading(true);
     try {
-       await auth().createUserWithEmailAndPassword(form.email, form.password);
-      // console.log(user);
-    } catch (error) {
-      console.log(error);
+      await auth().createUserWithEmailAndPassword(form.email, form.password);
+    } catch (error: any) {
+      alert(error.message);
+    } finally {
+      setIsLoading(false);
     }
-
   };
 
   return (
@@ -82,7 +84,11 @@ const SignUpScreen = () => {
             </View>
           </KeyboardAvoidingView>
 
-          <Button title="Sign Up" onPress={signUpHandler} />
+          {isLoading ? (
+            <Loader />
+          ) : (
+            <Button title="Sign Up" onPress={signUpHandler} />
+          )}
 
           <OAuth />
 
@@ -151,7 +157,7 @@ const SignUpScreen = () => {
 
             <Button
               title="Browse Home"
-              onPress={() => router.replace("/(root)/(tabs)/home")}
+              onPress={() => router.replace("/(tabs)/home")}
               // className="mt-5"
             />
           </View>

@@ -15,4 +15,15 @@ export const theme = {
     bold: 700,
     extraBold: 800,
   },
+
+  shadowStyle: {
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 10,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 5,
+  },
 } as const;

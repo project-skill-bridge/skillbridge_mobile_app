@@ -1,9 +1,3 @@
-import Button from "@/src/components/ui/Button";
-import InputField from "@/src/components/ui/InputField";
-import OAuth from "@/src/components/ui/OAuth";
-import { icons } from "@/src/constants/Icons";
-import { theme } from "@/src/constants/Theme";
-import { hp, wp } from "@/src/utils/common";
 import { Link, router } from "expo-router";
 import { useState } from "react";
 import {
@@ -15,6 +9,15 @@ import {
   View,
 } from "react-native";
 import ReactNativeModal from "react-native-modal";
+import auth from "@react-native-firebase/auth";
+
+import Button from "@/src/components/ui/Button";
+import InputField from "@/src/components/ui/InputField";
+import OAuth from "@/src/components/ui/OAuth";
+import { icons } from "@/src/constants/Icons";
+import { theme } from "@/src/constants/Theme";
+import { hp, wp } from "@/src/utils/common";
+import Loader from "@/src/components/ui/Loader";
 
 const SignInScreen = () => {
   const [form, setForm] = useState({
@@ -22,8 +25,17 @@ const SignInScreen = () => {
     password: "",
   });
 
-  const signInHandler = () => {
-    console.log(form);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const signInHandler = async () => {
+    setIsLoading(true);
+    try {
+      await auth().signInWithEmailAndPassword(form.email, form.password);
+    } catch (error: any) {
+      alert(error.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -65,7 +77,11 @@ const SignInScreen = () => {
             </Text>
           </Link>
 
-          <Button title="Sign In" onPress={signInHandler} />
+          {isLoading ? (
+            <Loader />
+          ) : (
+            <Button title="Sign In" onPress={signInHandler} />
+          )}
 
           <OAuth />
 
@@ -134,7 +150,7 @@ const SignInScreen = () => {
 
             <Button
               title="Browse Home"
-              onPress={() => router.replace("/(root)/(tabs)/home")}
+              onPress={() => router.replace("/(tabs)/home")}
               // className="mt-5"
             />
           </View>

@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 10,
     backgroundColor: theme.colors.lightGray,
-    paddingVertical: hp(1.2),
+    paddingVertical: hp(2),
     paddingHorizontal: wp(5),
     borderRadius: 100,
     borderWidth: 1,

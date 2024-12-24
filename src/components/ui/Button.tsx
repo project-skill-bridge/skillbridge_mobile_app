@@ -3,17 +3,6 @@ import { theme } from "@/src/constants/Theme";
 import { ButtonProps } from "@/src/types/type";
 import { hp } from "@/src/utils/common";
 
-const shadowStyle = {
-  shadowColor: "#000",
-  shadowOffset: {
-    width: 10,
-    height: 4,
-  },
-  shadowOpacity: 0.3,
-  shadowRadius: 3,
-  elevation: 5,
-};
-
 const outlineStyle = {
   borderWidth: 1,
   borderColor: theme.colors.outline,
@@ -49,7 +38,7 @@ const Button = ({
         styles.button,
         {
           backgroundColor: getBgVariant(bgVariant),
-          ...(showShadow && shadowStyle),
+          ...(showShadow && theme.shadowStyle),
           ...(bgVariant === "outline" && outlineStyle),
         },
       ]}
