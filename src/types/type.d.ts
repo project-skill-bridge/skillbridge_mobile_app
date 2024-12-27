@@ -27,3 +27,8 @@ declare interface TabBarButtonProps {
   onLongPress: () => void;
   routeName: keyof typeof icons;
 }
+
+declare interface BackButtonProps {
+  position?: "left" | "center" | "right";
+  onPress?: () => void;
+}

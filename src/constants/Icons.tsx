@@ -41,4 +41,5 @@ export const icons = {
     <Ionicons name="eye-outline" size={24} color={theme.colors.primaryText} />
   ),
   google: <Image source={images.google} resizeMode="contain" />,
+  backArrow: <Ionicons name="arrow-back" size={24} color="black" />,
 } as const;
