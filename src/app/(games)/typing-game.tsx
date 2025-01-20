@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import * as ScreenOrientation from "expo-screen-orientation";
 import { Audio } from "expo-av";
+import firestore from "@react-native-firebase/firestore";
 
 import BackButton from "@/src/components/ui/BackButton";
 import { hp, wp } from "@/src/utils/common";
@@ -22,11 +23,14 @@ import Animated, {
 import { router } from "expo-router";
 
 const LandscapeKeyboardScreen = () => {
-  const [randomChar, setRandomChar] = useState("");
   const shake = useSharedValue(0);
+  const [score, setScore] = useState(0); // New score state
+  const [randomChar, setRandomChar] = useState("");
   const [successSound, setSuccessSound] = useState<Audio.Sound | null>(null);
   const [failureSound, setFailureSound] = useState<Audio.Sound | null>(null);
-  const [backgroundMusic, setBackgroundMusic] = useState<Audio.Sound | null>(null);
+  const [backgroundMusic, setBackgroundMusic] = useState<Audio.Sound | null>(
+    null
+  );
 
   useEffect(() => {
     const lockOrientation = async () => {
@@ -95,6 +99,22 @@ const LandscapeKeyboardScreen = () => {
     }
   };
 
+  const saveScoreToFirebase = async () => {
+    const storeGameScore = async () => {
+      try {
+        await firestore()
+          .collection('userScores') 
+          .doc() 
+          .collection('gameScores') 
+          .doc() 
+          .set(); 
+        console.log('Score stored successfully');
+      } catch (error) {
+        console.error('Error storing score: ', error);
+      }
+    };
+  };
+
   const triggerShakeAnimation = () => {
     shake.value = withSequence(
       withTiming(-10, { duration: 50 }),
@@ -126,22 +146,23 @@ const LandscapeKeyboardScreen = () => {
         text: "Exit",
         onPress: () => {
           stopBackgroundMusic();
+          saveScoreToFirebase();
           ScreenOrientation.unlockAsync();
           router.back();
         },
       },
     ]);
-  }
+  };
   return (
     <View style={styles.container}>
       <View style={styles.topRaw}>
-        <BackButton onPress={handleBackButtonPress}/>
+        <BackButton onPress={handleBackButtonPress} />
         <Animated.View
           style={[styles.randomCharContainer, theme.shadowStyle, animatedStyle]}
         >
           <Text style={styles.randomCharDisplay}>{randomChar}</Text>
         </Animated.View>
-        <Text>15</Text>
+        <Text>{score}</Text>
       </View>
 
       {/* Custom keyboard */}
