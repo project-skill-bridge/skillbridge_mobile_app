@@ -1,4 +1,6 @@
+import * as React from "react";
 import { Pressable, StyleSheet } from "react-native";
+
 import { TabBarButtonProps } from "@/src/types/type";
 import { icons } from "@/src/constants/Icons";
 

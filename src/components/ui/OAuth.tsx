@@ -1,3 +1,4 @@
+import * as React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
 import auth from "@react-native-firebase/auth";
@@ -24,8 +25,12 @@ const OAuth = () => {
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
 
       return auth().signInWithCredential(googleCredential);
-    } catch (error: any) {
-      alert(error.message);
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(error.message);
+      } else {
+        alert("An unknown error occurred");
+      }
     } finally {
       setIsLoading(false);
     }

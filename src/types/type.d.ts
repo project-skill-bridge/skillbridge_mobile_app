@@ -1,9 +1,11 @@
+import * as React from "react";
+
 import { TextInputProps } from "react-native";
 import { icons } from "../constants/Icons";
 
 declare interface InputFieldProps extends TextInputProps {
   label: string;
-  icon?: any;
+  icon?: React.JSX.Element;
   secureTextEntry?: boolean;
 }
 
@@ -12,14 +14,14 @@ declare interface ButtonProps {
   onPress: () => void;
   bgVariant?: "primary" | "secondary" | "outline";
   textVariant?: "primary" | "secondary";
-  icon?: any;
+  icon?: React.JSX.Element;
   style?: StyleProp<ViewStyle>;
   showShadow?: boolean;
 }
 
 declare interface TabIconProps {
   focused: boolean;
-  icon: any;
+  icon: React.JSX.Element;
 }
 
 declare interface TabBarButtonProps {

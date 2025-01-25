@@ -1,4 +1,6 @@
+import * as React from "react";
 import { Animated, StyleSheet, useWindowDimensions, View } from "react-native";
+
 import { SliderItemProps } from "./SliderItem";
 import { theme } from "../constants/Theme";
 import { hp } from "../utils/common";

@@ -1,5 +1,4 @@
-import { Link, router } from "expo-router";
-import { useState } from "react";
+import * as React from "react";
 import {
   Image,
   KeyboardAvoidingView,
@@ -9,9 +8,10 @@ import {
   Text,
   View,
 } from "react-native";
+
+import { Link, router } from "expo-router";
 import ReactNativeModal from "react-native-modal";
 import auth from "@react-native-firebase/auth";
-
 import Button from "@/src/components/ui/Button";
 import InputField from "@/src/components/ui/InputField";
 import OAuth from "@/src/components/ui/OAuth";
@@ -21,20 +21,24 @@ import { icons } from "@/src/constants/Icons";
 import Loader from "@/src/components/ui/Loader";
 
 const SignUpScreen = () => {
-  const [form, setForm] = useState({
+  const [form, setForm] = React.useState({
     name: "",
     email: "",
     mobile: "",
     password: "",
   });
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const signUpHandler = async () => {
     setIsLoading(true);
     try {
       await auth().createUserWithEmailAndPassword(form.email, form.password);
-    } catch (error: any) {
-      alert(error.message);
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(error.message);
+      } else {
+        alert("An unknown error occurred");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -111,7 +115,7 @@ const SignUpScreen = () => {
             <Text className="text-2xl font-JakartaBold">Verification</Text>
 
             <Text className=" text-gray-400 mb-2 font-JakartaMedium">
-              We've sent a verification code to {form.email}
+              We&apos;ve sent a verification code to {form.email}
             </Text>
 
             <InputField

@@ -1,3 +1,4 @@
+import * as React from "react";
 import {
   View,
   Text,
@@ -7,11 +8,11 @@ import {
   StyleSheet,
   Pressable,
 } from "react-native";
+
 import { InputFieldProps } from "../../types/type";
 import { hp, wp } from "@/src/utils/common";
 import { theme } from "@/src/constants/Theme";
 import { icons } from "@/src/constants/Icons";
-import { useState } from "react";
 
 const InputField = ({
   label,
@@ -21,8 +22,8 @@ const InputField = ({
   onChangeText,
   secureTextEntry = false,
 }: InputFieldProps) => {
-  const [showPassword, setShowPassword] = useState(secureTextEntry);
-  const [isFocused, setIsFocused] = useState(false);
+  const [showPassword, setShowPassword] = React.useState(secureTextEntry);
+  const [isFocused, setIsFocused] = React.useState(false);
 
   const showPasswordHandler = () => {
     setShowPassword((prev) => !prev);

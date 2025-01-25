@@ -1,5 +1,6 @@
+import * as React from "react";
 import { ActivityIndicator, StyleSheet,  View } from "react-native";
-import React from "react";
+
 import { theme } from "@/src/constants/Theme";
 import { hp } from "@/src/utils/common";
 

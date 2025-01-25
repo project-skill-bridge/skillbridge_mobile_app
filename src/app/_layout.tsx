@@ -1,8 +1,8 @@
+import * as React from "react";
+
 import { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import { Stack, useRouter, useSegments } from "expo-router";
-import { useEffect, useState } from "react";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
-
 import auth from "@react-native-firebase/auth";
 import Loader from "../components/ui/Loader";
 
@@ -13,8 +13,8 @@ const RootLayout = () => {
     scopes: ["email", "profile"],
   });
 
-  const [initializing, setInitializing] = useState(true);
-  const [user, setUser] = useState<FirebaseAuthTypes.User | null>();
+  const [initializing, setInitializing] = React.useState(true);
+  const [user, setUser] = React.useState<FirebaseAuthTypes.User | null>();
   const router = useRouter();
   const segments = useSegments();
 
@@ -23,12 +23,12 @@ const RootLayout = () => {
     if (initializing) setInitializing(false);
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
     return subscriber;
   }, []);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (initializing) return;
 
     const isRootGroup = segments[0] === "(tabs)";

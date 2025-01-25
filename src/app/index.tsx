@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import {
   Animated,
   FlatList,
@@ -6,9 +6,10 @@ import {
   StyleSheet,
   Text,
   View,
+  ViewToken,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
+import { SafeAreaView } from "react-native-safe-area-context";
 import { onboardingData } from "@/src/constants/OnboardingData";
 import SliderItem from "@/src/components/SliderItem";
 import SliderIndicator from "@/src/components/SliderIndicator";
@@ -23,9 +24,16 @@ const OnboardingScreen = () => {
   const onboardingRef = React.useRef<FlatList>(null);
   const isFirstPage = currentIndex === 0;
 
-  const viewableItemsChanged = React.useRef(({ viewableItems }: any) => {
-    setCurrentIndex(viewableItems[0].index);
-  }).current;
+  const viewableItemsChanged = React.useRef(
+    ({
+      viewableItems,
+    }: {
+      viewableItems: Array<ViewToken>;
+      changed: Array<ViewToken>;
+    }) => {
+      setCurrentIndex(viewableItems[0].index || 0);
+    }
+  ).current;
 
   const viewConfig = React.useRef({
     viewAreaCoveragePercentThreshold: 50,

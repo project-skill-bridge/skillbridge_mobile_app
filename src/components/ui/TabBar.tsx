@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import * as React from "react";
 import { LayoutChangeEvent, StyleSheet, View } from "react-native";
-import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 
+import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { hp, wp } from "@/src/utils/common";
 import { theme } from "@/src/constants/Theme";
 import TabBarButton from "./TabBarButton";
@@ -13,7 +13,7 @@ import Animated, {
 import { icons } from "@/src/constants/Icons";
 
 const TabBar = ({ state, navigation }: BottomTabBarProps) => {
-  const [dimensions, setDimensions] = useState({ height: 20, width: 10 });
+  const [dimensions, setDimensions] = React.useState({ height: 20, width: 10 });
 
   const buttonWidth = dimensions.width / state.routes.length;
 
@@ -32,7 +32,7 @@ const TabBar = ({ state, navigation }: BottomTabBarProps) => {
     };
   });
 
-  useEffect(() => {
+  React.useEffect(() => {
     tabPositionX.value = withSpring(buttonWidth * state.index, {
       duration: 1500,
     });
