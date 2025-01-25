@@ -57,14 +57,14 @@ const SignUpScreen = () => {
               <InputField
                 label="Name"
                 placeholder="Enter name"
-                icon={icons.person}
+                leftIcon={icons.person}
                 value={form.name}
                 onChangeText={(value) => setForm({ ...form, name: value })}
               />
               <InputField
                 label="Email"
                 placeholder="Enter email"
-                icon={icons.email}
+                leftIcon={icons.email}
                 value={form.email}
                 keyboardType="email-address"
                 onChangeText={(value) => setForm({ ...form, email: value })}
@@ -72,7 +72,7 @@ const SignUpScreen = () => {
               <InputField
                 label="Mobile"
                 placeholder="Enter mobile number"
-                icon={icons.mobile}
+                leftIcon={icons.mobile}
                 value={form.mobile}
                 keyboardType="phone-pad"
                 onChangeText={(value) => setForm({ ...form, mobile: value })}
@@ -81,7 +81,7 @@ const SignUpScreen = () => {
                 label="Password"
                 placeholder="Enter password"
                 secureTextEntry={true}
-                icon={icons.lock}
+                leftIcon={icons.lock}
                 value={form.password}
                 onChangeText={(value) => setForm({ ...form, password: value })}
               />

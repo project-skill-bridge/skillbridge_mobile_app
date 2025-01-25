@@ -5,7 +5,8 @@ import { icons } from "../constants/Icons";
 
 declare interface InputFieldProps extends TextInputProps {
   label: string;
-  icon?: React.JSX.Element;
+  leftIcon?: React.JSX.Element;
+  rightIcon?: React.JSX.Element;
   secureTextEntry?: boolean;
 }
 

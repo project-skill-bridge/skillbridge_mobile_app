@@ -36,7 +36,7 @@ const RootLayout = () => {
     if (user && !isRootGroup) {
       router.replace("/(tabs)/home");
     } else if (!user && isRootGroup) {
-      router.push("/(auth)/sign-in");
+      router.replace("/(auth)/sign-in");
     }
   }, [user, initializing]);
 

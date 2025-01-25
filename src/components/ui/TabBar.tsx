@@ -93,7 +93,7 @@ export default TabBar;
 const styles = StyleSheet.create({
   tabBar: {
     position: "absolute",
-    bottom: hp(4),
+    bottom: hp(2.5),
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: theme.colors.primaryText,

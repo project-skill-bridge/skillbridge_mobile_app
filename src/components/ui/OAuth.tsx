@@ -6,11 +6,10 @@ import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import Button from "./Button";
 import { theme } from "@/src/constants/Theme";
 import { icons } from "@/src/constants/Icons";
-import { useState } from "react";
 import Loader from "./Loader";
 
 const OAuth = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const googleSignInHandler = async () => {
     setIsLoading(true);

@@ -16,7 +16,8 @@ import { icons } from "@/src/constants/Icons";
 
 const InputField = ({
   label,
-  icon,
+  leftIcon,
+  rightIcon,
   value,
   placeholder,
   onChangeText,
@@ -35,7 +36,7 @@ const InputField = ({
         <Text style={styles.label}>{label}</Text>
 
         <View style={[styles.inputContainer, isFocused && styles.focused]}>
-          {icon && icon}
+          {leftIcon && leftIcon}
           <TextInput
             value={value}
             style={styles.input}
@@ -45,7 +46,9 @@ const InputField = ({
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
           />
-          {label === "Password" && (
+
+          {rightIcon && rightIcon}
+          {label === "Password" && !rightIcon && (
             <Pressable onPress={showPasswordHandler}>
               {showPassword ? icons.eyeOff : icons.eye}
             </Pressable>

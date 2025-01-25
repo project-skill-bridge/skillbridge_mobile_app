@@ -55,7 +55,7 @@ const SignInScreen = () => {
               <InputField
                 label="Email"
                 placeholder="Enter email"
-                icon={icons.email}
+                leftIcon={icons.email}
                 value={form.email}
                 onChangeText={(value) => setForm({ ...form, email: value })}
               />
@@ -63,7 +63,7 @@ const SignInScreen = () => {
                 label="Password"
                 placeholder="Enter password"
                 secureTextEntry={true}
-                icon={icons.lock}
+                leftIcon={icons.lock}
                 value={form.password}
                 onChangeText={(value) => setForm({ ...form, password: value })}
               />
@@ -82,7 +82,7 @@ const SignInScreen = () => {
           </Link>
 
           {isLoading ? (
-            <Loader />
+            <Loader outline />
           ) : (
             <Button title="Sign In" onPress={signInHandler} />
           )}
