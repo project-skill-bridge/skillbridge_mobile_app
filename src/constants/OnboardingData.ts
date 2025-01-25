@@ -12,7 +12,7 @@ export const onboardingData = [
     id: 2,
     title: "Why Skill Bridge?",
     description:
-      "Hands-on skill learning with gamified exercises. Real-time progress tracking and feedback.",
+      "Hands-on skill learning with gamified exercises.Real-time progress tracking and feedback.",
     image: images.onboarding2,
   },
   {

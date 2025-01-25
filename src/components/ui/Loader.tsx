@@ -1,10 +1,23 @@
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet,  View } from "react-native";
 import React from "react";
+import { theme } from "@/src/constants/Theme";
+import { hp } from "@/src/utils/common";
 
-const Loader = () => {
+const outlineStyle = {
+  borderWidth: 1,
+  borderColor: theme.colors.outline,
+  padding: hp(1.3),
+  borderRadius: 100,
+};
+
+interface LoaderProps {
+  outline?: boolean;
+}
+
+const Loader = ({ outline }: LoaderProps) => {
   return (
-    <View style={styles.loader}>
-      <ActivityIndicator size="large" color="black" />
+    <View style={[styles.loader, outline && outlineStyle]}>
+      <ActivityIndicator size="large" color={theme.colors.primary} />
     </View>
   );
 };

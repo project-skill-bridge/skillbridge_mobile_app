@@ -4,16 +4,18 @@ import {
   StyleSheet,
   Image,
   useWindowDimensions,
+  ImageSourcePropType,
 } from "react-native";
 
 import { theme } from "../constants/Theme";
 import { hp, wp } from "../utils/common";
+import { icons } from "../constants/Icons";
 
 export interface SliderItemProps {
   id: number;
   title: string;
   description: string;
-  image: any;
+  image?: ImageSourcePropType;
 }
 
 const SliderItem = ({ id, title, description, image }: SliderItemProps) => {
@@ -30,8 +32,48 @@ const SliderItem = ({ id, title, description, image }: SliderItemProps) => {
 
       {/* Title and Description */}
       <View style={styles.textContainer}>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.description}>{description}</Text>
+        <Text style={styles.title}>
+          {title.split(" ").map((word, index) => (
+            <Text
+              key={index + word}
+              style={{
+                color:
+                  (id === 1 && word === "Independence,") ||
+                  (id === 2 && (word === "Skill" || word === "Bridge?"))
+                    ? theme.colors.primary
+                    : theme.colors.primaryText,
+              }}
+            >
+              {word + " "}
+            </Text>
+          ))}
+        </Text>
+
+        <View
+          style={{
+            gap: id === 2 ? 20 : 0,
+            paddingHorizontal: id === 2 ? wp(8) : wp(14),
+          }}
+        >
+          {description.split(".").map(
+            (sentence, index) =>
+              index < 2 && (
+                <View key={index} style={styles.descriptionContainer}>
+                  <Text>{id === 2 && icons.check}</Text>
+                  <Text
+                    style={[
+                      styles.description,
+                      {
+                        textAlign: id === 2 ? "left" : "center",
+                      },
+                    ]}
+                  >
+                    {sentence}
+                  </Text>
+                </View>
+              )
+          )}
+        </View>
       </View>
     </View>
   );
@@ -44,7 +86,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    gap: hp(5),
+    gap: hp(3.5),
   },
   onboardingImage: {
     flex: 0.7,
@@ -56,15 +98,19 @@ const styles = StyleSheet.create({
   },
   title: {
     textAlign: "center",
-    color: theme.colors.primaryText,
     fontWeight: theme.fontWeights.extraBold,
     fontSize: hp(3.5),
     paddingHorizontal: wp(12),
   },
+  descriptionContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
   description: {
     color: theme.colors.secondaryText,
     textAlign: "center",
+    fontSize: hp(2),
     fontWeight: theme.fontWeights.medium,
-    paddingHorizontal: wp(14),
   },
 });

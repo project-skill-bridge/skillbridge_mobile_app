@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet } from "react-native";
+
 import auth from "@react-native-firebase/auth";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
-
 import Button from "./Button";
 import { theme } from "@/src/constants/Theme";
 import { icons } from "@/src/constants/Icons";
@@ -40,7 +40,7 @@ const OAuth = () => {
       </View>
 
       {isLoading ? (
-        <Loader />
+        <Loader outline />
       ) : (
         <Button
           title="Continue with Google"
