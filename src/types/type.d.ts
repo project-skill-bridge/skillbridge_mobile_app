@@ -4,7 +4,8 @@ import { TextInputProps } from "react-native";
 import { icons } from "../constants/Icons";
 
 declare interface InputFieldProps extends TextInputProps {
-  label: string;
+  name: string;
+  control?: Control<FieldValues>;
   leftIcon?: React.JSX.Element;
   rightIcon?: React.JSX.Element;
   secureTextEntry?: boolean;
@@ -29,4 +30,11 @@ declare interface TabBarButtonProps {
   onPress: () => void;
   onLongPress: () => void;
   routeName: keyof typeof icons;
+}
+
+declare interface User {
+  name: string;
+  email: string;
+  mobile: string;
+  image: string;
 }

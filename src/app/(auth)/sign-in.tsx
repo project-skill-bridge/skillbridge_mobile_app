@@ -1,4 +1,5 @@
 import * as React from "react";
+
 import {
   Image,
   KeyboardAvoidingView,
@@ -7,30 +8,43 @@ import {
   Text,
   View,
 } from "react-native";
-
 import { Link, router } from "expo-router";
 import ReactNativeModal from "react-native-modal";
 import auth from "@react-native-firebase/auth";
-import Button from "@/src/components/ui/Button";
-import InputField from "@/src/components/ui/InputField";
-import OAuth from "@/src/components/ui/OAuth";
+import Button from "@/src/components/ui/button";
+import InputField from "@/src/components/input/Input-field";
+import GoogleAuthButton from "@/src/components/ui/google-button";
 import { icons } from "@/src/constants/Icons";
 import { theme } from "@/src/constants/Theme";
 import { hp, wp } from "@/src/utils/common";
-import Loader from "@/src/components/ui/Loader";
+import Loader from "@/src/components/ui/loader";
+import InputGroup from "@/src/components/input/input-group";
+import InputLabel from "@/src/components/input/input-label";
+import ErrorMessage from "@/src/components/input/error-message";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { UserProfileType, LoginSchema } from "@/src/schema";
 
 const SignInScreen = () => {
-  const [form, setForm] = React.useState({
-    email: "",
-    password: "",
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<UserProfileType>({
+    resolver: zodResolver(LoginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+    mode: "all",
   });
-
   const [isLoading, setIsLoading] = React.useState(false);
 
-  const signInHandler = async () => {
+  const signInHandler = async (formData: UserProfileType) => {
     setIsLoading(true);
     try {
-      await auth().signInWithEmailAndPassword(form.email, form.password);
+      const { email, password } = formData;
+      await auth().signInWithEmailAndPassword(email, password);
     } catch (error) {
       if (error instanceof Error) {
         alert(error.message);
@@ -52,21 +66,33 @@ const SignInScreen = () => {
             behavior={Platform.OS === "ios" ? "padding" : "height"}
           >
             <View style={styles.inputContainer}>
-              <InputField
-                label="Email"
-                placeholder="Enter email"
-                leftIcon={icons.email}
-                value={form.email}
-                onChangeText={(value) => setForm({ ...form, email: value })}
-              />
-              <InputField
-                label="Password"
-                placeholder="Enter password"
-                secureTextEntry={true}
-                leftIcon={icons.lock}
-                value={form.password}
-                onChangeText={(value) => setForm({ ...form, password: value })}
-              />
+              <InputGroup>
+                <InputLabel>Email</InputLabel>
+                <InputField
+                  name="email"
+                  control={control}
+                  leftIcon={icons.email}
+                  placeholder="Enter your email"
+                  keyboardType="email-address"
+                />
+                {errors.email?.message && (
+                  <ErrorMessage message={errors.email.message} />
+                )}
+              </InputGroup>
+
+              <InputGroup>
+                <InputLabel>Password</InputLabel>
+                <InputField
+                  name="password"
+                  control={control}
+                  leftIcon={icons.lock}
+                  secureTextEntry={true}
+                  placeholder="Enter your password"
+                />
+                {errors.password?.message && (
+                  <ErrorMessage message={errors.password.message} />
+                )}
+              </InputGroup>
             </View>
           </KeyboardAvoidingView>
 
@@ -84,10 +110,10 @@ const SignInScreen = () => {
           {isLoading ? (
             <Loader outline />
           ) : (
-            <Button title="Sign In" onPress={signInHandler} />
+            <Button title="Sign In" onPress={handleSubmit(signInHandler)} />
           )}
 
-          <OAuth />
+          <GoogleAuthButton />
 
           <Link href="/sign-up" style={styles.bottomText}>
             <Text>Don&apos;t have an account? </Text>
@@ -108,11 +134,11 @@ const SignInScreen = () => {
             <Text className="text-2xl font-JakartaBold">Verification</Text>
 
             <Text className=" text-gray-400 mb-2 font-JakartaMedium">
-              We&apos;ve sent a verification code to {form.email}
+              We&apos;ve sent a verification code to
             </Text>
 
             <InputField
-              label="Code"
+              name="Code"
               // icon={icons.lock}
               placeholder="123456"
               // value={verification.code}

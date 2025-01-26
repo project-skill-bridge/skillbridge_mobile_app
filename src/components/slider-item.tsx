@@ -1,4 +1,5 @@
 import * as React from "react";
+
 import {
   View,
   Text,
@@ -7,7 +8,6 @@ import {
   useWindowDimensions,
   ImageSourcePropType,
 } from "react-native";
-
 import { theme } from "../constants/Theme";
 import { hp, wp } from "../utils/common";
 import { icons } from "../constants/Icons";

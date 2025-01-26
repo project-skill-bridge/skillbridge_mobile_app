@@ -1,14 +1,15 @@
 import * as React from "react";
-import { View, Text, StyleSheet } from "react-native";
 
+import { View, Text, StyleSheet } from "react-native";
 import auth from "@react-native-firebase/auth";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
-import Button from "./Button";
+import Button from "./button";
 import { theme } from "@/src/constants/Theme";
 import { icons } from "@/src/constants/Icons";
-import Loader from "./Loader";
+import Loader from "./loader";
+import firestore from "@react-native-firebase/firestore";
 
-const OAuth = () => {
+const GoogleAuthButton = () => {
   const [isLoading, setIsLoading] = React.useState(false);
 
   const googleSignInHandler = async () => {
@@ -23,7 +24,20 @@ const OAuth = () => {
       const idToken = signInResult.data?.idToken ?? null;
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
 
-      return auth().signInWithCredential(googleCredential);
+      const { user, additionalUserInfo } = await auth().signInWithCredential(
+        googleCredential
+      );
+
+      if (!additionalUserInfo?.isNewUser) {
+        return;
+      }
+
+      await firestore().collection("users").doc(user.uid).set({
+        name: user.displayName,
+        email: user.email,
+        mobile: user.phoneNumber,
+        createdAt: firestore.FieldValue.serverTimestamp(),
+      });
     } catch (error) {
       if (error instanceof Error) {
         alert(error.message);
@@ -59,7 +73,7 @@ const OAuth = () => {
   );
 };
 
-export default OAuth;
+export default GoogleAuthButton;
 
 const styles = StyleSheet.create({
   divider: {

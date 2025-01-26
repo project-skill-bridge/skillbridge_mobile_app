@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { Tabs } from "expo-router";
-import TabBar from "@/src/components/ui/TabBar";
+import TabBar from "@/src/components/ui/tab-bar";
 
 const TabsLayout = () => {
   return (
