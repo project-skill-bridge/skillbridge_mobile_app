@@ -12,7 +12,6 @@ import {
 import { Link, router } from "expo-router";
 import { hp, wp } from "@/src/utils/common";
 import { theme } from "@/src/constants/Theme";
-import { icons } from "@/src/constants/Icons";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import auth from "@react-native-firebase/auth";
@@ -26,6 +25,7 @@ import InputGroup from "@/src/components/input/input-group";
 import InputLabel from "@/src/components/input/input-label";
 import ErrorMessage from "@/src/components/input/error-message";
 import firestore from "@react-native-firebase/firestore";
+import Icon from "@/src/constants/Icons";
 
 const SignUpScreen = () => {
   const {
@@ -85,7 +85,13 @@ const SignUpScreen = () => {
                 <InputField
                   name="name"
                   control={control}
-                  leftIcon={icons.person}
+                  leftIcon={
+                    <Icon
+                      name="person"
+                      size={22}
+                      color={theme.colors.primaryText}
+                    />
+                  }
                   placeholder="Enter your name"
                 />
                 {errors.name?.message && (
@@ -98,7 +104,13 @@ const SignUpScreen = () => {
                 <InputField
                   name="email"
                   control={control}
-                  leftIcon={icons.email}
+                  leftIcon={
+                    <Icon
+                      name="email"
+                      size={22}
+                      color={theme.colors.primaryText}
+                    />
+                  }
                   placeholder="Enter your email"
                   keyboardType="email-address"
                 />
@@ -112,7 +124,13 @@ const SignUpScreen = () => {
                 <InputField
                   name="mobile"
                   control={control}
-                  leftIcon={icons.mobile}
+                  leftIcon={
+                    <Icon
+                      name="mobile"
+                      size={22}
+                      color={theme.colors.primaryText}
+                    />
+                  }
                   keyboardType="phone-pad"
                   placeholder="Enter your mobile number"
                 />
@@ -126,7 +144,13 @@ const SignUpScreen = () => {
                 <InputField
                   name="password"
                   control={control}
-                  leftIcon={icons.lock}
+                  leftIcon={
+                    <Icon
+                      name="lock"
+                      size={24}
+                      color={theme.colors.primaryText}
+                    />
+                  }
                   secureTextEntry={true}
                   placeholder="Enter your password"
                 />

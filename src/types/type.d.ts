@@ -1,11 +1,12 @@
 import * as React from "react";
 
-import { TextInputProps } from "react-native";
-import { icons } from "../constants/Icons";
+import { StyleProp, TextInputProps } from "react-native";
+import { ViewStyle } from "react-native/Libraries/StyleSheet/StyleSheetTypes";
+import { Control } from "react-hook-form";
 
 declare interface InputFieldProps extends TextInputProps {
   name: string;
-  control?: Control<FieldValues>;
+  control?: Control<T>;
   leftIcon?: React.JSX.Element;
   rightIcon?: React.JSX.Element;
   secureTextEntry?: boolean;
@@ -29,12 +30,12 @@ declare interface TabIconProps {
 declare interface TabBarButtonProps {
   onPress: () => void;
   onLongPress: () => void;
-  routeName: keyof typeof icons;
+  routeName: string;
 }
 
 declare interface User {
   name: string;
   email: string;
-  mobile: string;
-  image: string;
+  mobile?: string;
+  image?: string;
 }

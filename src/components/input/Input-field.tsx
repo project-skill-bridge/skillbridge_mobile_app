@@ -11,14 +11,16 @@ import {
 import { InputFieldProps } from "../../types/type";
 import { hp, wp } from "@/src/utils/common";
 import { theme } from "@/src/constants/Theme";
-import { icons } from "@/src/constants/Icons";
 import { Controller } from "react-hook-form";
+import Icon from "@/src/constants/Icons";
 
 const InputField = ({
   name,
   control,
-  leftIcon,
-  rightIcon,
+  value: inputValue,
+  editable = true,
+  leftIcon: LeftIcon,
+  rightIcon: RightIcon,
   placeholder,
   secureTextEntry = false,
 }: InputFieldProps) => {
@@ -26,20 +28,26 @@ const InputField = ({
   const [isFocused, setIsFocused] = React.useState(false);
 
   const showPasswordHandler = () => {
-    setShowPassword((prev) => !prev);
+    setShowPassword((prev: boolean) => !prev);
   };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={[styles.inputContainer, isFocused && styles.focused]}>
-        {leftIcon && leftIcon}
+      <View
+        style={[
+          styles.inputContainer,
+          isFocused && styles.focused,
+          !editable && styles.disabled,
+        ]}
+      >
+        {LeftIcon}
 
         <Controller
           name={name}
           control={control}
           render={({ field: { value, onBlur, onChange } }) => (
             <TextInput
-              value={value}
+              value={inputValue || value}
               style={styles.input}
               placeholder={placeholder}
               secureTextEntry={showPassword}
@@ -49,15 +57,20 @@ const InputField = ({
                 setIsFocused(false);
                 onBlur();
               }}
+              editable={editable}
             />
           )}
         />
 
-        {rightIcon && rightIcon}
+        {RightIcon}
 
         {name === "password" && secureTextEntry && (
           <Pressable onPress={showPasswordHandler}>
-            {showPassword ? icons.eyeOff : icons.eye}
+            {showPassword ? (
+              <Icon name="eyeOff" color={theme.colors.primaryText} />
+            ) : (
+              <Icon name="eye" color={theme.colors.primaryText} />
+            )}
           </Pressable>
         )}
       </View>
@@ -73,7 +86,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 10,
     backgroundColor: theme.colors.lightGray,
-    paddingVertical: hp(2),
+    paddingVertical: hp(1.5),
     paddingHorizontal: wp(5),
     borderRadius: 100,
     borderWidth: 1,
@@ -87,5 +100,9 @@ const styles = StyleSheet.create({
   },
   focused: {
     borderColor: theme.colors.primary,
+  },
+  disabled: {
+    color: "#AAAAAA",
+    backgroundColor: "#EEEEEE",
   },
 });

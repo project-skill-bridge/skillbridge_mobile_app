@@ -24,8 +24,8 @@ export const UpdateProfileSchema = z.object({
   mobile: z
     .string()
     .trim()
-    .min(10, { message: "Mobile number is required" })
-    .regex(/^[0-9]{10}$/, { message: "Invalid mobile number" }),
+    .min(10, { message: "Mobile number is required" }),
+    // .regex(/^[0-9]{10}$/, { message: "Invalid mobile number" }),
   password: z
     .string()
     .trim()

@@ -5,6 +5,8 @@ import { Stack, useRouter, useSegments } from "expo-router";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import auth from "@react-native-firebase/auth";
 import Loader from "../components/ui/loader";
+import { useUserStore } from "../store/user-store";
+import firestore from "@react-native-firebase/firestore";
 
 const RootLayout = () => {
   GoogleSignin.configure({
@@ -14,12 +16,15 @@ const RootLayout = () => {
   });
 
   const [initializing, setInitializing] = React.useState(true);
-  const [user, setUser] = React.useState<FirebaseAuthTypes.User | null>();
+  const [userSession, setUserSession] =
+    React.useState<FirebaseAuthTypes.User | null>();
   const router = useRouter();
   const segments = useSegments();
 
+  const { setUser } = useUserStore();
+
   const onAuthStateChanged = (user: FirebaseAuthTypes.User | null) => {
-    setUser(user);
+    setUserSession(user);
     if (initializing) setInitializing(false);
   };
 
@@ -33,12 +38,28 @@ const RootLayout = () => {
 
     const isRootGroup = segments[0] === "(tabs)";
 
-    if (user && !isRootGroup) {
-      router.replace("/(tabs)/home");
-    } else if (!user && isRootGroup) {
+    if (userSession && !isRootGroup) {
+      firestore()
+        .collection("users")
+        .doc(userSession?.uid)
+        .get()
+        .then((doc) => {
+          const user = doc.data();
+          if (user) {
+            setUser({
+              name: user.name,
+              email: user.email,
+              mobile: user.mobile,
+              image: user.image,
+            });
+            router.replace("/(tabs)/home");
+          }
+        });
+    } else if (!userSession && isRootGroup) {
+      setUser(null);
       router.replace("/(auth)/sign-in");
     }
-  }, [user, initializing]);
+  }, [userSession, initializing]);
 
   if (initializing) {
     return <Loader />;

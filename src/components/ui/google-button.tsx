@@ -5,9 +5,9 @@ import auth from "@react-native-firebase/auth";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import Button from "./button";
 import { theme } from "@/src/constants/Theme";
-import { icons } from "@/src/constants/Icons";
 import Loader from "./loader";
 import firestore from "@react-native-firebase/firestore";
+import Icon from "@/src/constants/Icons";
 
 const GoogleAuthButton = () => {
   const [isLoading, setIsLoading] = React.useState(false);
@@ -66,7 +66,7 @@ const GoogleAuthButton = () => {
           textVariant="secondary"
           showShadow={false}
           onPress={googleSignInHandler}
-          icon={icons.google}
+          icon={<Icon name="google" />}
         />
       )}
     </View>

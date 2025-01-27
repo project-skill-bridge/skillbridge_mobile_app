@@ -11,7 +11,6 @@ import {
   View,
 } from "react-native";
 import auth from "@react-native-firebase/auth";
-import { icons } from "@/src/constants/Icons";
 import { theme } from "@/src/constants/Theme";
 import { hp, wp } from "@/src/utils/common";
 import { images } from "@/src/constants/Images";
@@ -24,8 +23,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { UpdateProfileSchema, UpdateProfileType } from "@/src/schema";
 import Loader from "@/src/components/ui/loader";
 import Button from "@/src/components/ui/button";
+import { useUserStore } from "@/src/store/user-store";
+import Icon from "@/src/constants/Icons";
 
 const ProfileScreen = () => {
+  const { user } = useUserStore();
+
   const {
     control,
     handleSubmit,
@@ -33,16 +36,24 @@ const ProfileScreen = () => {
   } = useForm<UpdateProfileType>({
     resolver: zodResolver(UpdateProfileSchema),
     defaultValues: {
-      name: "",
-      mobile: "",
-      password: "",
+      name: user?.name || "",
+      mobile: user?.mobile || "Not Provided",
+      password: "******",
     },
     mode: "all",
   });
   const [isLoading, setIsLoading] = React.useState(false);
+  const [isNameEditable, setIsNameEditable] = React.useState(false);
+  const [isMobileEditable, setIsMobileEditable] = React.useState(false);
+  const [isPasswordEditable, setIsPasswordEditable] = React.useState(false);
 
   const logOutHandler = async () => {
     await auth().signOut();
+  };
+
+  const updateProfileHandler = async (data: UpdateProfileType) => {
+    setIsLoading(true);
+    console.log(data);
   };
 
   return (
@@ -51,13 +62,13 @@ const ProfileScreen = () => {
       <View style={styles.header}>
         <Text style={styles.headerText}>Your Profile</Text>
         <Pressable onPress={logOutHandler} style={styles.logout}>
-          {icons.logout}
+          <Icon name="logout" size={20} />
         </Pressable>
       </View>
 
       {/* Profile Image */}
       <View style={styles.imageContainer}>
-        <Image source={images.avatar} resizeMode="contain" />
+        <Image source={user?.image || images.avatar} resizeMode="contain" />
         <View style={styles.editImageIcon}>
           <Image source={images.editImage} resizeMode="contain" />
         </View>
@@ -68,49 +79,52 @@ const ProfileScreen = () => {
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
-          <View style={{}}>
-            <InputGroup>
+          <View style={styles.inputGroupContainer}>
+            <InputGroup style={styles.inputGroup}>
               <InputLabel>Name</InputLabel>
               <InputField
                 name="name"
                 control={control}
-                placeholder="Enter your name"
+                rightIcon={<Icon name="edit" />}
+                editable={isNameEditable}
               />
               {errors.name?.message && (
                 <ErrorMessage message={errors.name.message} />
               )}
             </InputGroup>
 
-            <InputGroup>
+            <InputGroup style={styles.inputGroup}>
               <InputLabel>Email</InputLabel>
               <InputField
                 name="email"
+                editable={false}
                 control={control}
-                placeholder="Enter your email"
+                value={user?.email}
                 keyboardType="email-address"
               />
             </InputGroup>
 
-            <InputGroup>
+            <InputGroup style={styles.inputGroup}>
               <InputLabel>Mobile</InputLabel>
               <InputField
                 name="mobile"
                 control={control}
+                rightIcon={<Icon name="edit" />}
                 keyboardType="phone-pad"
-                placeholder="Enter your mobile number"
+                editable={isMobileEditable}
               />
               {errors.mobile?.message && (
                 <ErrorMessage message={errors.mobile.message} />
               )}
             </InputGroup>
 
-            <InputGroup>
+            <InputGroup style={styles.inputGroup}>
               <InputLabel>Password</InputLabel>
               <InputField
                 name="password"
                 control={control}
-                // secureTextEntry={true}
-                placeholder="Enter your password"
+                rightIcon={<Icon name="edit" />}
+                editable={isPasswordEditable}
               />
               {errors.password?.message && (
                 <ErrorMessage message={errors.password.message} />
@@ -122,7 +136,16 @@ const ProfileScreen = () => {
         {isLoading ? (
           <Loader />
         ) : (
-          <Button title="Save Changes" onPress={handleSubmit(() => {})} />
+          <Button
+            style={{
+              width: "30%",
+              borderRadius: 8,
+              alignSelf: "flex-end",
+              paddingVertical: hp(1.5),
+            }}
+            title="Save"
+            onPress={handleSubmit(updateProfileHandler)}
+          />
         )}
       </View>
     </ScrollView>
@@ -135,13 +158,13 @@ const styles = StyleSheet.create({
   container: {
     height: "100%",
     paddingHorizontal: wp(5),
-    paddingVertical: hp(5),
-    gap: hp(2),
+    paddingVertical: hp(2),
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    marginBottom: hp(2),
   },
   headerText: {
     fontSize: hp(3),
@@ -158,6 +181,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     position: "relative",
+    marginBottom: hp(2),
   },
   editImageIcon: {
     position: "absolute",
@@ -171,7 +195,13 @@ const styles = StyleSheet.create({
     gap: hp(2),
     backgroundColor: "white",
     paddingHorizontal: wp(5),
-    paddingVertical: hp(4),
+    paddingVertical: hp(2),
     borderRadius: 16,
+  },
+  inputGroupContainer: {
+    gap: hp(1.5),
+  },
+  inputGroup: {
+    gap: hp(0.2),
   },
 });

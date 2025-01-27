@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { theme } from "../constants/Theme";
 import { hp, wp } from "../utils/common";
-import { icons } from "../constants/Icons";
+import Icon from "../constants/Icons";
 
 export interface SliderItemProps {
   id: number;
@@ -60,7 +60,7 @@ const SliderItem = ({ id, title, description, image }: SliderItemProps) => {
             (sentence, index) =>
               index < 2 && (
                 <View key={index} style={styles.descriptionContainer}>
-                  <Text>{id === 2 && icons.check}</Text>
+                  <Text>{id === 2 && <Icon name="check" color="grenn" />}</Text>
                   <Text
                     style={[
                       styles.description,

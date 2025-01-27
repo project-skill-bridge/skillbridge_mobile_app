@@ -1,15 +1,14 @@
-// import { create } from 'zustand'
+import { create } from "zustand";
+import { User } from "../types/type";
 
+type UserStore = {
+  user: User | null;
+  setUser: (user: User | null) => void;
+  removeUser: () => void;
+};
 
-
-// type UserStore = {
-//   name: string
-//   email: string
-//   mobile: string
-//   image: string
-// }
-
-// // const useStore = create<UserStore>()((set) => ({
-// //   count: 1,
-// //   inc: () => set((state) => ({ count: state.count + 1 })),
-// // }))
+export const useUserStore = create<UserStore>()((set) => ({
+  user: null,
+  setUser: (user) => set({ user }),
+  removeUser: () => set({ user: null }),
+}));

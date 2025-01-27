@@ -14,7 +14,7 @@ import auth from "@react-native-firebase/auth";
 import Button from "@/src/components/ui/button";
 import InputField from "@/src/components/input/Input-field";
 import GoogleAuthButton from "@/src/components/ui/google-button";
-import { icons } from "@/src/constants/Icons";
+import Icon from "@/src/constants/Icons";
 import { theme } from "@/src/constants/Theme";
 import { hp, wp } from "@/src/utils/common";
 import Loader from "@/src/components/ui/loader";
@@ -23,14 +23,14 @@ import InputLabel from "@/src/components/input/input-label";
 import ErrorMessage from "@/src/components/input/error-message";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { UserProfileType, LoginSchema } from "@/src/schema";
+import { LoginFormType, LoginSchema } from "@/src/schema";
 
 const SignInScreen = () => {
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<UserProfileType>({
+  } = useForm<LoginFormType>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
       email: "",
@@ -40,7 +40,7 @@ const SignInScreen = () => {
   });
   const [isLoading, setIsLoading] = React.useState(false);
 
-  const signInHandler = async (formData: UserProfileType) => {
+  const signInHandler = async (formData: LoginFormType) => {
     setIsLoading(true);
     try {
       const { email, password } = formData;
@@ -71,7 +71,13 @@ const SignInScreen = () => {
                 <InputField
                   name="email"
                   control={control}
-                  leftIcon={icons.email}
+                  leftIcon={
+                    <Icon
+                      name="email"
+                      size={22}
+                      color={theme.colors.primaryText}
+                    />
+                  }
                   placeholder="Enter your email"
                   keyboardType="email-address"
                 />
@@ -85,7 +91,13 @@ const SignInScreen = () => {
                 <InputField
                   name="password"
                   control={control}
-                  leftIcon={icons.lock}
+                  leftIcon={
+                    <Icon
+                      name="lock"
+                      size={24}
+                      color={theme.colors.primaryText}
+                    />
+                  }
                   secureTextEntry={true}
                   placeholder="Enter your password"
                 />
