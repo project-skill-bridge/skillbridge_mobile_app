@@ -17,11 +17,12 @@ import Icon from "@/src/constants/Icons";
 const InputField = ({
   name,
   control,
-  value: inputValue,
+  placeholder,
   editable = true,
+  onRightIconPress,
+  value: inputValue,
   leftIcon: LeftIcon,
   rightIcon: RightIcon,
-  placeholder,
   secureTextEntry = false,
 }: InputFieldProps) => {
   const [showPassword, setShowPassword] = React.useState(secureTextEntry);
@@ -62,7 +63,9 @@ const InputField = ({
           )}
         />
 
-        {RightIcon}
+        {RightIcon && (
+          <Pressable onPress={onRightIconPress}>{RightIcon}</Pressable>
+        )}
 
         {name === "password" && secureTextEntry && (
           <Pressable onPress={showPasswordHandler}>

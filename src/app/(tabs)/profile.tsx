@@ -85,8 +85,11 @@ const ProfileScreen = () => {
               <InputField
                 name="name"
                 control={control}
-                rightIcon={<Icon name="edit" />}
                 editable={isNameEditable}
+                rightIcon={<Icon name="edit" />}
+                onRightIconPress={() =>
+                  setIsNameEditable((prev: boolean) => !prev)
+                }
               />
               {errors.name?.message && (
                 <ErrorMessage message={errors.name.message} />
@@ -109,9 +112,12 @@ const ProfileScreen = () => {
               <InputField
                 name="mobile"
                 control={control}
-                rightIcon={<Icon name="edit" />}
                 keyboardType="phone-pad"
                 editable={isMobileEditable}
+                rightIcon={<Icon name="edit" />}
+                onRightIconPress={() =>
+                  setIsMobileEditable((prev: boolean) => !prev)
+                }
               />
               {errors.mobile?.message && (
                 <ErrorMessage message={errors.mobile.message} />
@@ -123,8 +129,11 @@ const ProfileScreen = () => {
               <InputField
                 name="password"
                 control={control}
-                rightIcon={<Icon name="edit" />}
                 editable={isPasswordEditable}
+                rightIcon={<Icon name="edit" />}
+                onRightIconPress={() =>
+                  setIsPasswordEditable((prev: boolean) => !prev)
+                }
               />
               {errors.password?.message && (
                 <ErrorMessage message={errors.password.message} />

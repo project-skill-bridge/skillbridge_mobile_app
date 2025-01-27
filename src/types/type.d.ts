@@ -10,6 +10,7 @@ declare interface InputFieldProps extends TextInputProps {
   leftIcon?: React.JSX.Element;
   rightIcon?: React.JSX.Element;
   secureTextEntry?: boolean;
+  onRightIconPress?: () => void;
 }
 
 declare interface ButtonProps {

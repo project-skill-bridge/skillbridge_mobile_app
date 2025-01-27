@@ -60,7 +60,7 @@ const SliderItem = ({ id, title, description, image }: SliderItemProps) => {
             (sentence, index) =>
               index < 2 && (
                 <View key={index} style={styles.descriptionContainer}>
-                  <Text>{id === 2 && <Icon name="check" color="grenn" />}</Text>
+                  <Text>{id === 2 && <Icon name="check" color="green" />}</Text>
                   <Text
                     style={[
                       styles.description,

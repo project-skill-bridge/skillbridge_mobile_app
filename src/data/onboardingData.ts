@@ -1,4 +1,4 @@
-import { images } from "./Images";
+import { images } from "../constants/Images";
 
 export const onboardingData = [
   {

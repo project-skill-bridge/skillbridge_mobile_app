@@ -52,6 +52,7 @@ const SignUpScreen = () => {
         email,
         password
       );
+      // await user.sendEmailVerification();
 
       await firestore().collection("users").doc(user.uid).set({
         name: formData.name,

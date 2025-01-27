@@ -52,9 +52,9 @@ const RootLayout = () => {
               mobile: user.mobile,
               image: user.image,
             });
-            router.replace("/(tabs)/home");
           }
         });
+      router.replace("/(tabs)/home");
     } else if (!userSession && isRootGroup) {
       setUser(null);
       router.replace("/(auth)/sign-in");

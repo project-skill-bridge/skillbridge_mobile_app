@@ -10,7 +10,7 @@ import {
   ViewToken,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { onboardingData } from "@/src/constants/OnboardingData";
+import { onboardingData } from "@/src/data/onboardingData";
 import SliderItem from "@/src/components/slider-item";
 import SliderIndicator from "@/src/components/slider-indicator";
 import Button from "@/src/components/ui/button";
