@@ -2,17 +2,20 @@ import * as React from "react";
 
 import { hp, wp } from "@/src/utils/common";
 import { Image, ImageSourcePropType, StyleSheet, View } from "react-native";
+import { Href, Link } from "expo-router";
 
 export interface GameCardProps {
   id: number;
-  path: string;
+  path: Href;
   image: ImageSourcePropType;
 }
 
-const GameCard = ({ image }: GameCardProps) => {
+const GameCard = ({ image, path }: GameCardProps) => {
   return (
     <View style={styles.gameCover}>
-      <Image source={image} resizeMode="contain" style={styles.image} />
+      <Link href={path}>
+        <Image source={image} resizeMode="contain" style={styles.image} />
+      </Link>
     </View>
   );
 };

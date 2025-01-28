@@ -4,7 +4,7 @@ import { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import { Stack, useRouter, useSegments } from "expo-router";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import auth from "@react-native-firebase/auth";
-import Loader from "../components/ui/loader";
+import Loader from "@/src/components/ui/loader";
 import { useUserStore } from "../store/user-store";
 import firestore from "@react-native-firebase/firestore";
 

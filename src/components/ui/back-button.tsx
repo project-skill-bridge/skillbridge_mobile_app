@@ -1,9 +1,11 @@
-import { Pressable, StyleSheet, Text } from "react-native";
+import * as React from "react";
+
+import { Pressable, StyleSheet } from "react-native";
 import { router } from "expo-router";
 
 import { theme } from "@/src/constants/Theme";
 import { hp } from "@/src/utils/common";
-import { icons } from "@/src/constants/Icons";
+import Icon from "@/src/constants/Icons";
 import { BackButtonProps } from "@/src/types/type";
 
 const setPosition = (position: string) => {
@@ -32,7 +34,7 @@ const BackButton = ({ position = "left", onPress }: BackButtonProps) => {
       onPress={handlePress}
       style={[styles.button, { alignSelf: setPosition(position) }]}
     >
-      {icons.backArrow}
+      <Icon name="left-arrow" />
     </Pressable>
   );
 };
@@ -42,7 +44,8 @@ export default BackButton;
 const styles = StyleSheet.create({
   button: {
     alignItems: "center",
-    padding: hp(1.5),
+    paddingHorizontal: hp(1.8),
+    paddingVertical: hp(1),
     justifyContent: "center",
     width: "auto",
     borderRadius: "50%",

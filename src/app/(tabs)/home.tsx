@@ -17,6 +17,7 @@ const HomeScreen = () => {
       <AnimatedAvatar />
       <GameSliderContainer />
     </View>
+  );
 };
 
 export default HomeScreen;
@@ -28,15 +29,6 @@ const styles = StyleSheet.create({
     gap: hp(2),
     backgroundColor: "#FFF",
     height: "100%",
-  },
-  welcomeText: {
-    fontSize: hp(2.5),
-    fontWeight: "bold",
-    flex: 1,
-    backgroundColor: "#fff",
-    // alignItems: "center",
-    // justifyContent: "space-between",
-    padding: wp(5),
   },
   welcomeText: {
     fontSize: hp(3),

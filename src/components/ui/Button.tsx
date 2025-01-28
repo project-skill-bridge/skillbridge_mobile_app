@@ -45,7 +45,7 @@ const Button = ({
         },
       ]}
     >
-      {icon && <React.Fragment>{icon}</React.Fragment>}
+      {Icon && <React.Fragment>{Icon}</React.Fragment>}
       <Text
         style={[
           styles.text,

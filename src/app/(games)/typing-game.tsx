@@ -11,7 +11,7 @@ import * as ScreenOrientation from "expo-screen-orientation";
 import { Audio } from "expo-av";
 import firestore from "@react-native-firebase/firestore";
 
-import BackButton from "@/src/components/ui/BackButton";
+import BackButton from "@/src/components/ui/back-button";
 import { hp, wp } from "@/src/utils/common";
 import { theme } from "@/src/constants/Theme";
 import Animated, {
@@ -100,19 +100,19 @@ const LandscapeKeyboardScreen = () => {
   };
 
   const saveScoreToFirebase = async () => {
-    const storeGameScore = async () => {
-      try {
-        await firestore()
-          .collection('userScores') 
-          .doc() 
-          .collection('gameScores') 
-          .doc() 
-          .set(); 
-        console.log('Score stored successfully');
-      } catch (error) {
-        console.error('Error storing score: ', error);
-      }
-    };
+    // const storeGameScore = async () => {
+    //   try {
+    //     await firestore()
+    //       .collection('userScores') 
+    //       .doc() 
+    //       .collection('gameScores') 
+    //       .doc() 
+    //       .set(); 
+    //     console.log('Score stored successfully');
+    //   } catch (error) {
+    //     console.error('Error storing score: ', error);
+    //   }
+    // };
   };
 
   const triggerShakeAnimation = () => {
