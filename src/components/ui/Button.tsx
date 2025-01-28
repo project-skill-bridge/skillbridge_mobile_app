@@ -27,7 +27,7 @@ const Button = ({
   title,
   onPress,
   bgVariant = "primary",
-  icon,
+  icon: Icon,
   style,
   showShadow = true,
   textVariant = "primary",

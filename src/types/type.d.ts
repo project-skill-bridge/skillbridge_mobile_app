@@ -40,3 +40,8 @@ declare interface User {
   mobile?: string;
   image?: string;
 }
+
+declare interface BackButtonProps {
+  position?: "left" | "center" | "right";
+  onPress?: () => void;
+}
