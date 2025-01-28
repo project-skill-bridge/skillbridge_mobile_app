@@ -1,6 +1,8 @@
+import * as React from "react";
+
 import { Pressable, StyleSheet } from "react-native";
 import { TabBarButtonProps } from "@/src/types/type";
-import { icons } from "@/src/constants/Icons";
+import Icon from "@/src/constants/Icons";
 
 const TabBarButton = ({
   onPress,
@@ -13,7 +15,7 @@ const TabBarButton = ({
       onLongPress={onLongPress}
       style={styles.tabBarItem}
     >
-      {icons[routeName]}
+      <Icon name={routeName} color="white" />
     </Pressable>
   );
 };
