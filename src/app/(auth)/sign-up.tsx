@@ -1,5 +1,5 @@
-import { Link, router } from "expo-router";
-import { useState } from "react";
+import * as React from "react";
+
 import {
   Image,
   KeyboardAvoidingView,
@@ -9,32 +9,63 @@ import {
   Text,
   View,
 } from "react-native";
-import ReactNativeModal from "react-native-modal";
-import auth from "@react-native-firebase/auth";
-
-import Button from "@/src/components/ui/Button";
-import InputField from "@/src/components/ui/InputField";
-import OAuth from "@/src/components/ui/OAuth";
+import { Link, router } from "expo-router";
 import { hp, wp } from "@/src/utils/common";
 import { theme } from "@/src/constants/Theme";
-import { icons } from "@/src/constants/Icons";
-import Loader from "@/src/components/ui/Loader";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import auth from "@react-native-firebase/auth";
+import Button from "@/src/components/ui/button";
+import InputField from "@/src/components/input/Input-field";
+import GoogleAuthButton from "@/src/components/ui/google-button";
+import Loader from "@/src/components/ui/loader";
+import ReactNativeModal from "react-native-modal";
+import { RegisterFormType, RegisterSchema } from "@/src/schema";
+import InputGroup from "@/src/components/input/input-group";
+import InputLabel from "@/src/components/input/input-label";
+import ErrorMessage from "@/src/components/input/error-message";
+import firestore from "@react-native-firebase/firestore";
+import Icon from "@/src/constants/Icons";
 
 const SignUpScreen = () => {
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    mobile: "",
-    password: "",
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<RegisterFormType>({
+    resolver: zodResolver(RegisterSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      mobile: "",
+      password: "",
+    },
+    mode: "all",
   });
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
 
-  const signUpHandler = async () => {
+  const signUpHandler = async (formData: RegisterFormType) => {
     setIsLoading(true);
     try {
-      await auth().createUserWithEmailAndPassword(form.email, form.password);
-    } catch (error: any) {
-      alert(error.message);
+      const { email, password } = formData;
+      const { user } = await auth().createUserWithEmailAndPassword(
+        email,
+        password
+      );
+      // await user.sendEmailVerification();
+
+      await firestore().collection("users").doc(user.uid).set({
+        name: formData.name,
+        email: formData.email,
+        mobile: formData.mobile,
+        createdAt: firestore.FieldValue.serverTimestamp(),
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(error.message);
+      } else {
+        alert("An unknown error occurred");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -50,47 +81,94 @@ const SignUpScreen = () => {
             behavior={Platform.OS === "ios" ? "padding" : "height"}
           >
             <View style={styles.inputContainer}>
-              <InputField
-                label="Name"
-                placeholder="Enter name"
-                icon={icons.person}
-                value={form.name}
-                onChangeText={(value) => setForm({ ...form, name: value })}
-              />
-              <InputField
-                label="Email"
-                placeholder="Enter email"
-                icon={icons.email}
-                value={form.email}
-                keyboardType="email-address"
-                onChangeText={(value) => setForm({ ...form, email: value })}
-              />
-              <InputField
-                label="Mobile"
-                placeholder="Enter mobile number"
-                icon={icons.mobile}
-                value={form.mobile}
-                keyboardType="phone-pad"
-                onChangeText={(value) => setForm({ ...form, mobile: value })}
-              />
-              <InputField
-                label="Password"
-                placeholder="Enter password"
-                secureTextEntry={true}
-                icon={icons.lock}
-                value={form.password}
-                onChangeText={(value) => setForm({ ...form, password: value })}
-              />
+              <InputGroup>
+                <InputLabel>Name</InputLabel>
+                <InputField
+                  name="name"
+                  control={control}
+                  leftIcon={
+                    <Icon
+                      name="person"
+                      size={22}
+                      color={theme.colors.primaryText}
+                    />
+                  }
+                  placeholder="Enter your name"
+                />
+                {errors.name?.message && (
+                  <ErrorMessage message={errors.name.message} />
+                )}
+              </InputGroup>
+
+              <InputGroup>
+                <InputLabel>Email</InputLabel>
+                <InputField
+                  name="email"
+                  control={control}
+                  leftIcon={
+                    <Icon
+                      name="email"
+                      size={22}
+                      color={theme.colors.primaryText}
+                    />
+                  }
+                  placeholder="Enter your email"
+                  keyboardType="email-address"
+                />
+                {errors.email?.message && (
+                  <ErrorMessage message={errors.email.message} />
+                )}
+              </InputGroup>
+
+              <InputGroup>
+                <InputLabel>Mobile</InputLabel>
+                <InputField
+                  name="mobile"
+                  control={control}
+                  leftIcon={
+                    <Icon
+                      name="mobile"
+                      size={22}
+                      color={theme.colors.primaryText}
+                    />
+                  }
+                  keyboardType="phone-pad"
+                  placeholder="Enter your mobile number"
+                />
+                {errors.mobile?.message && (
+                  <ErrorMessage message={errors.mobile.message} />
+                )}
+              </InputGroup>
+
+              <InputGroup>
+                <InputLabel>Password</InputLabel>
+                <InputField
+                  name="password"
+                  control={control}
+                  leftIcon={
+                    <Icon
+                      name="lock"
+                      size={24}
+                      color={theme.colors.primaryText}
+                    />
+                  }
+                  secureTextEntry={true}
+                  placeholder="Enter your password"
+                />
+                {errors.password?.message && (
+                  <ErrorMessage message={errors.password.message} />
+                )}
+              </InputGroup>
             </View>
           </KeyboardAvoidingView>
 
           {isLoading ? (
             <Loader />
           ) : (
-            <Button title="Sign Up" onPress={signUpHandler} />
+            <Button title="Sign Up" onPress={handleSubmit(signUpHandler)} />
           )}
 
-          <OAuth />
+          <GoogleAuthButton />
 
           <Link href="/sign-in" style={styles.bottomText}>
             <Text>Already have an account? </Text>
@@ -111,11 +189,11 @@ const SignUpScreen = () => {
             <Text className="text-2xl font-JakartaBold">Verification</Text>
 
             <Text className=" text-gray-400 mb-2 font-JakartaMedium">
-              We've sent a verification code to {form.email}
+              {/* We&apos;ve sent a verification code to {email} */}
             </Text>
 
             <InputField
-              label="Code"
+              name="Code"
               // icon={icons.lock}
               placeholder="123456"
               // value={verification.code}
