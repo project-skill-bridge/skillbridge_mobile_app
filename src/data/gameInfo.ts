@@ -3,7 +3,7 @@ import { images } from "../constants/Images";
 export const gameInfo = [
   {
     id: 1,
-    path: "/typing-game",
+    path: "/typing-game/main-screen",
     image: images.game1,
   },
   {

@@ -2,13 +2,13 @@ import * as React from "react";
 
 import { Stack } from "expo-router";
 
-const GameLayout = () => {
+const GamesLayout = () => {
   return (
     <Stack>
       <Stack.Screen name="typing-game" options={{ headerShown: false }} />
-      {/* <Stack.Screen name="baloon-pop" options={{ headerShown: false }} /> */}
+      {/* <Stack.Screen name="baloon-pop-game" options={{ headerShown: false }} /> */}
     </Stack>
   );
 };
 
-export default GameLayout;
+export default GamesLayout;

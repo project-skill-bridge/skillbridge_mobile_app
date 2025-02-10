@@ -22,11 +22,11 @@ const GameSliderContainer = () => {
   ).current;
 
   const viewConfig = React.useRef({
-    viewAreaCoveragePercentThreshold: 50,
+    viewAreaCoveragePercentThreshold: 0,
   }).current;
 
   const sliderRef = React.useRef<FlatList>(null);
-
+  
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>Games to Play</Text>

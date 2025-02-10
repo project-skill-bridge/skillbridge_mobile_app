@@ -1,15 +1,16 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
   StyleSheet,
   Alert,
-  Pressable,
   TouchableOpacity,
+  ImageBackground, // Added for background image
 } from "react-native";
 import * as ScreenOrientation from "expo-screen-orientation";
 import { Audio } from "expo-av";
-import firestore from "@react-native-firebase/firestore";
+// import firestore from "@react-native-firebase/firestore";
 
 import BackButton from "@/src/components/ui/back-button";
 import { hp, wp } from "@/src/utils/common";
@@ -21,6 +22,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { router } from "expo-router";
+import HexagonSVG from "@/src/components/hexagon-svg";
 
 const LandscapeKeyboardScreen = () => {
   const shake = useSharedValue(0);
@@ -41,47 +43,47 @@ const LandscapeKeyboardScreen = () => {
     lockOrientation();
 
     generateRandomChar();
-    startBackgroundMusic();
+    // startBackgroundMusic();
 
     return () => {
       ScreenOrientation.unlockAsync();
-      successSound?.unloadAsync();
-      failureSound?.unloadAsync();
-      stopBackgroundMusic();
+      // successSound?.unloadAsync();
+      // failureSound?.unloadAsync();
+      // stopBackgroundMusic();
     };
   }, []);
 
-  useEffect(() => {
-    const loadSound = async () => {
-      const { sound: loadedSuccessSound } = await Audio.Sound.createAsync(
-        require("@/assets/sounds/game_success.mp3")
-      );
-      const { sound: loadedFailureSound } = await Audio.Sound.createAsync(
-        require("@/assets/sounds/game_failure.mp3")
-      );
-      setSuccessSound(loadedSuccessSound);
-      setFailureSound(loadedFailureSound);
-    };
-    loadSound();
-  }, []);
+  // useEffect(() => {
+  //   const loadSound = async () => {
+  //     const { sound: loadedSuccessSound } = await Audio.Sound.createAsync(
+  //       require("@/assets/sounds/game_success.mp3")
+  //     );
+  //     const { sound: loadedFailureSound } = await Audio.Sound.createAsync(
+  //       require("@/assets/sounds/game_failure.mp3")
+  //     );
+  //     setSuccessSound(loadedSuccessSound);
+  //     setFailureSound(loadedFailureSound);
+  //   };
+  //   loadSound();
+  // }, []);
 
-  const startBackgroundMusic = async () => {
-    const { sound: loadedBackgroundMusic } = await Audio.Sound.createAsync(
-      require("@/assets/sounds/background.mp3"), // Replace with your background music file
-      { isLooping: true } // Enable looping
-    );
-    await loadedBackgroundMusic.setVolumeAsync(0.2);
-    await loadedBackgroundMusic.playAsync();
-    setBackgroundMusic(loadedBackgroundMusic);
-  };
+  // const startBackgroundMusic = async () => {
+  //   const { sound: loadedBackgroundMusic } = await Audio.Sound.createAsync(
+  //     require("@/assets/sounds/background.mp3"), // Replace with your background music file
+  //     { isLooping: true } // Enable looping
+  //   );
+  //   await loadedBackgroundMusic.setVolumeAsync(0.2);
+  //   await loadedBackgroundMusic.playAsync();
+  //   setBackgroundMusic(loadedBackgroundMusic);
+  // };
 
-  const stopBackgroundMusic = async () => {
-    if (backgroundMusic) {
-      await backgroundMusic.stopAsync(); // Stop playback
-      await backgroundMusic.unloadAsync(); // Release resources
-      setBackgroundMusic(null); // Reset the state
-    }
-  };
+  // const stopBackgroundMusic = async () => {
+  //   if (backgroundMusic) {
+  //     await backgroundMusic.stopAsync(); // Stop playback
+  //     await backgroundMusic.unloadAsync(); // Release resources
+  //     setBackgroundMusic(null); // Reset the state
+  //   }
+  // };
 
   const generateRandomChar = () => {
     const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -103,11 +105,11 @@ const LandscapeKeyboardScreen = () => {
     // const storeGameScore = async () => {
     //   try {
     //     await firestore()
-    //       .collection('userScores') 
-    //       .doc() 
-    //       .collection('gameScores') 
-    //       .doc() 
-    //       .set(); 
+    //       .collection('userScores')
+    //       .doc()
+    //       .collection('gameScores')
+    //       .doc()
+    //       .set();
     //     console.log('Score stored successfully');
     //   } catch (error) {
     //     console.error('Error storing score: ', error);
@@ -145,7 +147,7 @@ const LandscapeKeyboardScreen = () => {
       {
         text: "Exit",
         onPress: () => {
-          stopBackgroundMusic();
+          // stopBackgroundMusic();
           saveScoreToFirebase();
           ScreenOrientation.unlockAsync();
           router.back();
@@ -153,35 +155,40 @@ const LandscapeKeyboardScreen = () => {
       },
     ]);
   };
-  return (
-    <View style={styles.container}>
-      <View style={styles.topRaw}>
-        <BackButton onPress={handleBackButtonPress} />
-        <Animated.View
-          style={[styles.randomCharContainer, theme.shadowStyle, animatedStyle]}
-        >
-          <Text style={styles.randomCharDisplay}>{randomChar}</Text>
-        </Animated.View>
-        <Text>{score}</Text>
-      </View>
 
-      {/* Custom keyboard */}
-      <View style={styles.keyboardContainer}>
-        {keyboardRows.map((row, rowIndex) => (
-          <View key={rowIndex} style={styles.keyboardRow}>
-            {row.map((key) => (
-              <TouchableOpacity
-                key={key}
-                style={styles.key}
-                onPress={() => handleKeyPress(key)}
-              >
-                <Text style={styles.keyText}>{key}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        ))}
+  return (
+    <ImageBackground
+      source={require("@/assets/images/typing-game-bg.png")}
+      style={styles.container}
+      resizeMode="cover"
+    >
+      <View style={styles.overlay}>
+        <View style={styles.topRaw}>
+          <BackButton onPress={handleBackButtonPress} />
+          <Animated.View style={animatedStyle}>
+            <HexagonSVG character={randomChar} fill="pink" />
+          </Animated.View>
+          <Text>{score}</Text>
+        </View>
+
+        {/* Custom keyboard */}
+        <View style={styles.keyboardContainer}>
+          {keyboardRows.map((row, rowIndex) => (
+            <View key={rowIndex} style={styles.keyboardRow}>
+              {row.map((key) => (
+                <TouchableOpacity
+                  key={key}
+                  style={styles.key}
+                  onPress={() => handleKeyPress(key)}
+                >
+                  <Text style={styles.keyText}>{key}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          ))}
+        </View>
       </View>
-    </View>
+    </ImageBackground>
   );
 };
 
@@ -190,13 +197,26 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: theme.colors.primary,
-    padding: wp(5),
+    paddingInline: wp(5),
+    paddingBlockEnd: hp(1),
+    paddingBlockStart: hp(2),
+  },
+  overlay: {
+    flex: 1,
+    width: "100%",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   keyboardContainer: {
-    backgroundColor: "#d3d3d3",
+    backgroundColor: "#fdeed8",
+    opacity: 0.8,
     padding: 10,
-    borderRadius: 10,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 5,
+    borderColor: "#e78cba",
+    alignSelf: "center",
   },
   keyboardRow: {
     flexDirection: "row",
@@ -217,6 +237,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 1.41,
     elevation: 2,
+    borderWidth: 1,
   },
   keyText: {
     fontSize: hp(3),
@@ -232,12 +253,6 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: "bold",
     color: "#333",
-  },
-  randomCharContainer: {
-    backgroundColor: "#fff",
-    paddingBlock: 10,
-    paddingInline: 20,
-    borderRadius: "50%",
   },
 });
 

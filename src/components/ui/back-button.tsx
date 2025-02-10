@@ -1,27 +1,17 @@
-import * as React from "react";
+import React from "react";
 
-import { Pressable, StyleSheet } from "react-native";
+import { Pressable, StyleProp, StyleSheet } from "react-native";
 import { router } from "expo-router";
-
-import { theme } from "@/src/constants/Theme";
 import { hp } from "@/src/utils/common";
 import Icon from "@/src/constants/Icons";
-import { BackButtonProps } from "@/src/types/type";
+import { ViewStyle } from "react-native/Libraries/StyleSheet/StyleSheetTypes";
 
-const setPosition = (position: string) => {
-  switch (position) {
-    case "left":
-      return "flex-start";
-    case "center":
-      return "center";
-    case "right":
-      return "flex-end";
-    default:
-      return "flex-start";
-  }
-};
+interface BackButtonProps {
+  onPress?: () => void;
+  style?: StyleProp<ViewStyle>;
+}
 
-const BackButton = ({ position = "left", onPress }: BackButtonProps) => {
+const BackButton = ({ onPress, style }: BackButtonProps) => {
   const handlePress = () => {
     if (onPress) {
       onPress();
@@ -29,11 +19,9 @@ const BackButton = ({ position = "left", onPress }: BackButtonProps) => {
       router.back();
     }
   };
+
   return (
-    <Pressable
-      onPress={handlePress}
-      style={[styles.button, { alignSelf: setPosition(position) }]}
-    >
+    <Pressable onPress={handlePress} style={[styles.button, style]}>
       <Icon name="left-arrow" />
     </Pressable>
   );
@@ -44,11 +32,11 @@ export default BackButton;
 const styles = StyleSheet.create({
   button: {
     alignItems: "center",
-    paddingHorizontal: hp(1.8),
-    paddingVertical: hp(1),
+    paddingHorizontal: hp(1.6),
+    paddingVertical: hp(0.8),
     justifyContent: "center",
     width: "auto",
-    borderRadius: "50%",
-    backgroundColor: theme.colors.secondary,
+    borderRadius: 10,
+    backgroundColor: "#d3d3d3",
   },
 });
