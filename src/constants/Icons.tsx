@@ -1,6 +1,7 @@
 import {
   ChartLine,
   Check,
+  ChevronLeft,
   CircleUser,
   Eye,
   EyeOff,
@@ -26,6 +27,7 @@ export const Icons = {
   Settings,
   Check,
   LogOut,
+  ChevronLeft,
 };
 
 export type Icon = keyof typeof Icons;

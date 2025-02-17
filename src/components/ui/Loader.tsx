@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { ActivityIndicator, StyleSheet,  View } from "react-native";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { theme } from "@/src/constants/Theme";
 import { hp } from "@/src/utils/common";
 
@@ -18,7 +18,7 @@ interface LoaderProps {
 const Loader = ({ outline }: LoaderProps) => {
   return (
     <View style={[styles.loader, outline && outlineStyle]}>
-      <ActivityIndicator size="large" color={theme.colors.primary} style={{backgroundColor: 'red'}} />
+      <ActivityIndicator size="large" color={theme.colors.primary} />
     </View>
   );
 };
@@ -30,6 +30,5 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: 'yellow'
   },
 });

@@ -2,9 +2,9 @@ import React from "react";
 
 import { Pressable, StyleProp, StyleSheet } from "react-native";
 import { router } from "expo-router";
-import { hp } from "@/src/utils/common";
-import Icon from "@/src/constants/Icons";
+import { hp, wp } from "@/src/utils/common";
 import { ViewStyle } from "react-native/Libraries/StyleSheet/StyleSheetTypes";
+import { Icons } from "@/src/constants/Icons";
 
 interface BackButtonProps {
   onPress?: () => void;
@@ -22,7 +22,7 @@ const BackButton = ({ onPress, style }: BackButtonProps) => {
 
   return (
     <Pressable onPress={handlePress} style={[styles.button, style]}>
-      <Icon name="left-arrow" />
+      <Icons.ChevronLeft color="black" />
     </Pressable>
   );
 };
@@ -32,7 +32,7 @@ export default BackButton;
 const styles = StyleSheet.create({
   button: {
     alignItems: "center",
-    paddingHorizontal: hp(1.6),
+    paddingHorizontal: wp(1.6),
     paddingVertical: hp(0.8),
     justifyContent: "center",
     width: "auto",

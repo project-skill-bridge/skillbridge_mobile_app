@@ -23,9 +23,10 @@ import HexagonSVG from "@/src/components/hexagon-svg";
 import { theme } from "@/src/constants/Theme";
 import { Audio } from "expo-av";
 
-// -------------------------
-// CONSTANTS & HELPERS
-// -------------------------
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import firestore from "@react-native-firebase/firestore";
+import auth from "@react-native-firebase/auth";
+
 const ALPHABETS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const SIMPLE_WORDS = [
   "CAT",
@@ -45,15 +46,11 @@ const SIMPLE_WORDS = [
   "MOON",
 ];
 
-const TIME_LIMIT = 15; // seconds (used for timed levels 2 and 4)
+const TIME_LIMIT = 15;
 const TARGET_SCORE = 10;
 const INITIAL_HEARTS = 5;
 
-// -------------------------
-// MAIN COMPONENT
-// -------------------------
 const TypingGameScreen: React.FC = () => {
-  // Game state
   const [currentLevel, setCurrentLevel] = useState<number>(1);
   const [score, setScore] = useState<number>(0);
   const [hearts, setHearts] = useState<number>(INITIAL_HEARTS);
@@ -65,19 +62,14 @@ const TypingGameScreen: React.FC = () => {
     null
   );
 
-  // Round state (for letter rounds and word rounds)
   const [currentLetter, setCurrentLetter] = useState<string>("");
   const [currentWord, setCurrentWord] = useState<string>("");
   const [currentCharIndex, setCurrentCharIndex] = useState<number>(0);
   const [timeLeft, setTimeLeft] = useState<number>(TIME_LIMIT);
 
-  // Determine mode based on level:
-  // Levels 1 & 2: letter rounds; levels 3 & 4: word rounds.
   const roundType: "letter" | "word" = currentLevel <= 2 ? "letter" : "word";
-  // Levels 2 & 4 have a timer
   const isTimed = currentLevel === 2 || currentLevel === 4;
 
-  // For shake animation on errors
   const shake = useSharedValue(0);
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -85,9 +77,28 @@ const TypingGameScreen: React.FC = () => {
     };
   });
 
-  // -------------------------
-  // EFFECT: Timer for timed rounds
-  // -------------------------
+  useEffect(() => {
+    const loadGameData = async () => {
+      try {
+        const savedData = await AsyncStorage.getItem("gameData");
+        if (savedData) {
+          const {
+            hearts: savedHearts,
+            currentLevel: savedLevel,
+            score: savedScore,
+          } = JSON.parse(savedData);
+          setHearts(savedHearts);
+          setCurrentLevel(savedLevel);
+          setScore(savedScore);
+        }
+      } catch (error) {
+        console.error("Error loading game data:", error);
+      }
+    };
+
+    loadGameData();
+  }, []);
+
   useEffect(() => {
     let timerId: number | null = null;
     if (isTimed && !gameOver && !levelComplete) {
@@ -96,7 +107,6 @@ const TypingGameScreen: React.FC = () => {
           setTimeLeft(timeLeft - 1);
         }, 1000) as unknown as number;
       } else {
-        // Timeout reached: penalize and start a new round
         handleTimeExpired();
       }
     }
@@ -105,12 +115,8 @@ const TypingGameScreen: React.FC = () => {
     };
   }, [timeLeft, isTimed, gameOver, levelComplete]);
 
-  // -------------------------
-  // EFFECT: Lock screen orientation on mount
-  // -------------------------
   useEffect(() => {
     ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
-    // When the level changes, start a new round
     startNewRound();
 
     return () => {
@@ -118,67 +124,47 @@ const TypingGameScreen: React.FC = () => {
     };
   }, [currentLevel]);
 
-  // useEffect(() => {
-  //   const lockOrientation = async () => {
-  //     await ScreenOrientation.lockAsync(
-  //       ScreenOrientation.OrientationLock.LANDSCAPE
-  //     );
-  //   };
-  //   lockOrientation();
+  useEffect(() => {
+    const saveGameData = async () => {
+      try {
+        const localData = {
+          hearts,
+          currentLevel,
+          score,
+        };
+        await AsyncStorage.setItem("gameData", JSON.stringify(localData));
 
-  //   // generateRandomChar();
-  //   startBackgroundMusic();
+        const firebaseData = {
+          level: currentLevel,
+          score: score,
+        };
 
-  //   return () => {
-  //     ScreenOrientation.unlockAsync();
-  //     successSound?.unloadAsync();
-  //     failureSound?.unloadAsync();
-  //     stopBackgroundMusic();
-  //   };
-  // }, []);
+        const user = auth().currentUser;
+        if (user) {
+          await firestore()
+            .collection("users")
+            .doc(user.uid)
+            .collection("games")
+            .doc("typing-game")
+            .set({
+              progress: firebaseData,
+              timestamp: firestore.FieldValue.serverTimestamp(),
+            });
+        }
+      } catch (error) {
+        console.error("Error saving game data:", error);
+      }
+    };
 
-  // useEffect(() => {
-  //   const loadSound = async () => {
-  //     const { sound: loadedSuccessSound } = await Audio.Sound.createAsync(
-  //       require("@/assets/sounds/game_success.mp3")
-  //     );
-  //     const { sound: loadedFailureSound } = await Audio.Sound.createAsync(
-  //       require("@/assets/sounds/game_failure.mp3")
-  //     );
-  //     setSuccessSound(loadedSuccessSound);
-  //     setFailureSound(loadedFailureSound);
-  //   };
-  //   loadSound();
-  // }, []);
+    saveGameData();
+  }, [hearts, currentLevel, score]);
 
-  // const startBackgroundMusic = async () => {
-  //   const { sound: loadedBackgroundMusic } = await Audio.Sound.createAsync(
-  //     require("@/assets/sounds/background.mp3"), // Replace with your background music file
-  //     { isLooping: true } // Enable looping
-  //   );
-  //   await loadedBackgroundMusic.setVolumeAsync(0.2);
-  //   await loadedBackgroundMusic.playAsync();
-  //   setBackgroundMusic(loadedBackgroundMusic);
-  // };
-
-  // const stopBackgroundMusic = async () => {
-  //   if (backgroundMusic) {
-  //     await backgroundMusic.stopAsync(); // Stop playback
-  //     await backgroundMusic.unloadAsync(); // Release resources
-  //     setBackgroundMusic(null); // Reset the state
-  //   }
-  // };
-
-  // -------------------------
-  // ROUND HELPERS
-  // -------------------------
   const generateRandomLetter = (): string => {
     const randomIndex = Math.floor(Math.random() * ALPHABETS.length);
     return ALPHABETS[randomIndex];
   };
 
   const generateRandomWord = (): string => {
-    // Choose a word that is either 3 or 4 letters long.
     const filteredWords = SIMPLE_WORDS.filter(
       (word) => word.length === 3 || word.length === 4
     );
@@ -187,7 +173,6 @@ const TypingGameScreen: React.FC = () => {
   };
 
   const startNewRound = (): void => {
-    // Reset the timer if needed
     if (isTimed) {
       setTimeLeft(TIME_LIMIT);
     }
@@ -209,7 +194,6 @@ const TypingGameScreen: React.FC = () => {
     );
   };
 
-  // Called when the timer expires during a timed round
   const handleTimeExpired = (): void => {
     triggerShakeAnimation();
     const updatedHearts = hearts - 1;
@@ -221,14 +205,10 @@ const TypingGameScreen: React.FC = () => {
     }
   };
 
-  // -------------------------
-  // HANDLE KEY PRESSES FROM THE VIRTUAL KEYBOARD
-  // -------------------------
   const handleKeyPress = (char: string): void => {
     if (gameOver || levelComplete) return;
 
     if (roundType === "letter") {
-      // Letter mode: simply compare the shown letter
       if (char === currentLetter) {
         setScore((prev) => {
           const newScore = prev + 2;
@@ -249,10 +229,8 @@ const TypingGameScreen: React.FC = () => {
         }
       }
     } else {
-      // Word mode: compare the pressed key with the expected character
       if (char === currentWord[currentCharIndex]) {
         if (currentCharIndex + 1 === currentWord.length) {
-          // Entire word correctly entered
           setScore((prev) => {
             const newScore = prev + 2;
             if (newScore >= TARGET_SCORE) {
@@ -262,11 +240,9 @@ const TypingGameScreen: React.FC = () => {
           });
           startNewRound();
         } else {
-          // Move to the next character in the word
           setCurrentCharIndex(currentCharIndex + 1);
         }
       } else {
-        // Wrong key pressed
         triggerShakeAnimation();
         const updatedHearts = hearts - 1;
         setHearts(updatedHearts);
@@ -279,9 +255,6 @@ const TypingGameScreen: React.FC = () => {
     }
   };
 
-  // -------------------------
-  // HANDLERS FOR LEVEL PROGRESSION & GAME OVER
-  // -------------------------
   const handleNextLevel = (): void => {
     if (currentLevel < 4) {
       setCurrentLevel(currentLevel + 1);
@@ -290,7 +263,6 @@ const TypingGameScreen: React.FC = () => {
       setLevelComplete(false);
       startNewRound();
     } else {
-      // Level 4 completed
       Alert.alert("Congratulations!", "You have completed all levels!", [
         { text: "Restart Game", onPress: resetGame },
       ]);
@@ -313,18 +285,12 @@ const TypingGameScreen: React.FC = () => {
     startNewRound();
   };
 
-  // -------------------------
-  // RENDER HELPERS
-  // -------------------------
-  // Virtual keyboard layout
   const keyboardRows: string[][] = [
     ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
     ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
     ["Z", "X", "C", "V", "B", "N", "M"],
   ];
 
-  // For letter rounds we simply display the letter.
-  // For word rounds we show the word progress (typed letters and underscores)
   const renderDisplay = () => {
     if (roundType === "letter") {
       return (
@@ -373,7 +339,7 @@ const TypingGameScreen: React.FC = () => {
     >
       <View style={styles.overlay}>
         <View style={styles.topRow}>
-          {/* Back Button amd Life */}
+          {/* Back Button and Life */}
           <View style={styles.backButtonAndLifeContainer}>
             <BackButton onPress={handleBackButtonPress} />
             <Text style={[styles.infoText, { fontSize: 30 }]}>❤️ {hearts}</Text>
@@ -382,7 +348,7 @@ const TypingGameScreen: React.FC = () => {
           {/* Random Character Display */}
           <View style={styles.randomCharContainer}>{renderDisplay()}</View>
 
-          {/* Score and Time Limit*/}
+          {/* Score and Time Limit */}
           <View style={styles.scoreAndTimeContainer}>
             {isTimed && <Text style={styles.infoText}>Time: {timeLeft}</Text>}
 
@@ -484,13 +450,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-end",
     gap: 30,
-    // backgroundColor: 'green'
   },
   scoreBoardContainer: {
     position: "relative",
     width: wp(34),
     height: hp(10),
-    // backgroundColor: 'red'
   },
   scoreBoardImage: {
     width: "100%",
@@ -516,23 +480,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#fff",
   },
-
-
-
-
-
-
-
-
-
-
-
   infoText: {
     fontSize: 18,
     fontWeight: "600",
   },
   displayContainer: {
-    // padding: 20,
     borderWidth: 2,
     borderColor: "#fff",
     borderRadius: 10,
