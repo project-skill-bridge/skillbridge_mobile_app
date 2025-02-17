@@ -13,10 +13,8 @@ import ReactNativeModal from "react-native-modal";
 import auth from "@react-native-firebase/auth";
 import InputField from "@/src/components/input/Input-field";
 import GoogleAuthButton from "@/src/components/ui/google-button";
-import Icon from "@/src/constants/Icons";
 import { theme } from "@/src/constants/Theme";
 import { hp, wp } from "@/src/utils/common";
-import Loader from "@/src/components/ui/loader";
 import InputGroup from "@/src/components/input/input-group";
 import InputLabel from "@/src/components/input/input-label";
 import ErrorMessage from "@/src/components/input/error-message";
@@ -24,6 +22,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginFormType, LoginSchema } from "@/src/schema";
 import Button from "@/src/components/ui/button";
+import { Icons } from "@/src/constants/Icons";
 
 const SignInScreen = () => {
   const {
@@ -72,11 +71,7 @@ const SignInScreen = () => {
                   name="email"
                   control={control}
                   leftIcon={
-                    <Icon
-                      name="email"
-                      size={22}
-                      color={theme.colors.primaryText}
-                    />
+                    <Icons.Mail size={22} color={theme.colors.primaryText} />
                   }
                   placeholder="Enter your email"
                   keyboardType="email-address"
@@ -92,8 +87,7 @@ const SignInScreen = () => {
                   name="password"
                   control={control}
                   leftIcon={
-                    <Icon
-                      name="lock"
+                    <Icons.LockKeyhole
                       size={24}
                       color={theme.colors.primaryText}
                     />
@@ -119,11 +113,11 @@ const SignInScreen = () => {
             </Text>
           </Link>
 
-          {isLoading ? (
-            <Loader outline />
-          ) : (
-            <Button title="Sign In" onPress={handleSubmit(signInHandler)} />
-          )}
+          <Button
+            title="Sign In"
+            onPress={handleSubmit(signInHandler)}
+            isLoading={isLoading}
+          />
 
           <GoogleAuthButton />
 

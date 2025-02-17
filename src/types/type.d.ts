@@ -18,6 +18,7 @@ declare interface ButtonProps {
   onPress: () => void;
   bgVariant?: "primary" | "secondary" | "outline";
   textVariant?: "primary" | "secondary";
+  isLoading?: boolean;
   icon?: React.JSX.Element;
   style?: StyleProp<ViewStyle>;
   showShadow?: boolean;

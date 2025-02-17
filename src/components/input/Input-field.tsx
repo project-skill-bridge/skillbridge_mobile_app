@@ -12,7 +12,7 @@ import { InputFieldProps } from "../../types/type";
 import { hp, wp } from "@/src/utils/common";
 import { theme } from "@/src/constants/Theme";
 import { Controller } from "react-hook-form";
-import Icon from "@/src/constants/Icons";
+import { Icons } from "@/src/constants/Icons";
 
 const InputField = ({
   name,
@@ -70,9 +70,9 @@ const InputField = ({
         {name === "password" && secureTextEntry && (
           <Pressable onPress={showPasswordHandler}>
             {showPassword ? (
-              <Icon name="eyeOff" color={theme.colors.primaryText} />
+              <Icons.EyeOff color={theme.colors.primaryText} />
             ) : (
-              <Icon name="eye" color={theme.colors.primaryText} />
+              <Icons.Eye color={theme.colors.primaryText} />
             )}
           </Pressable>
         )}
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 10,
     backgroundColor: theme.colors.lightGray,
-    paddingVertical: hp(1.5),
+    paddingVertical: hp(1.7),
     paddingHorizontal: wp(5),
     borderRadius: 100,
     borderWidth: 1,

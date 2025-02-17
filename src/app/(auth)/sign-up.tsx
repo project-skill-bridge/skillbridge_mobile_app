@@ -18,14 +18,13 @@ import auth from "@react-native-firebase/auth";
 import Button from "@/src/components/ui/button";
 import InputField from "@/src/components/input/Input-field";
 import GoogleAuthButton from "@/src/components/ui/google-button";
-import Loader from "@/src/components/ui/loader";
 import ReactNativeModal from "react-native-modal";
 import { RegisterFormType, RegisterSchema } from "@/src/schema";
 import InputGroup from "@/src/components/input/input-group";
 import InputLabel from "@/src/components/input/input-label";
 import ErrorMessage from "@/src/components/input/error-message";
 import firestore from "@react-native-firebase/firestore";
-import Icon from "@/src/constants/Icons";
+import { Icons } from "@/src/constants/Icons";
 
 const SignUpScreen = () => {
   const {
@@ -87,11 +86,7 @@ const SignUpScreen = () => {
                   name="name"
                   control={control}
                   leftIcon={
-                    <Icon
-                      name="person"
-                      size={22}
-                      color={theme.colors.primaryText}
-                    />
+                    <Icons.User size={22} color={theme.colors.primaryText} />
                   }
                   placeholder="Enter your name"
                 />
@@ -106,11 +101,7 @@ const SignUpScreen = () => {
                   name="email"
                   control={control}
                   leftIcon={
-                    <Icon
-                      name="email"
-                      size={22}
-                      color={theme.colors.primaryText}
-                    />
+                    <Icons.Mail size={22} color={theme.colors.primaryText} />
                   }
                   placeholder="Enter your email"
                   keyboardType="email-address"
@@ -126,8 +117,7 @@ const SignUpScreen = () => {
                   name="mobile"
                   control={control}
                   leftIcon={
-                    <Icon
-                      name="mobile"
+                    <Icons.Smartphone
                       size={22}
                       color={theme.colors.primaryText}
                     />
@@ -146,8 +136,7 @@ const SignUpScreen = () => {
                   name="password"
                   control={control}
                   leftIcon={
-                    <Icon
-                      name="lock"
+                    <Icons.LockKeyhole
                       size={24}
                       color={theme.colors.primaryText}
                     />
@@ -162,11 +151,11 @@ const SignUpScreen = () => {
             </View>
           </KeyboardAvoidingView>
 
-          {isLoading ? (
-            <Loader />
-          ) : (
-            <Button title="Sign Up" onPress={handleSubmit(signUpHandler)} />
-          )}
+          <Button
+            title="Sign Up"
+            onPress={handleSubmit(signUpHandler)}
+            isLoading={isLoading}
+          />
 
           <GoogleAuthButton />
 

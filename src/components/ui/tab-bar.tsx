@@ -10,7 +10,6 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import Icon from "@/src/constants/Icons";
 
 const TabBar = ({ state, navigation }: BottomTabBarProps) => {
   const [dimensions, setDimensions] = React.useState({ height: 20, width: 10 });
@@ -99,7 +98,7 @@ const TabBar = ({ state, navigation }: BottomTabBarProps) => {
           <TabBarButton
             key={route.name}
             onPress={onPress}
-            routeName={route.name as keyof typeof Icon}
+            routeName={route.name}
             onLongPress={onLongPress}
           />
         );

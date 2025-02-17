@@ -7,7 +7,7 @@ import { hp } from "@/src/utils/common";
 const outlineStyle = {
   borderWidth: 1,
   borderColor: theme.colors.outline,
-  padding: hp(1.3),
+  padding: hp(3.4),
   borderRadius: 100,
 };
 
@@ -18,7 +18,7 @@ interface LoaderProps {
 const Loader = ({ outline }: LoaderProps) => {
   return (
     <View style={[styles.loader, outline && outlineStyle]}>
-      <ActivityIndicator size="large" color={theme.colors.primary} />
+      <ActivityIndicator size="large" color={theme.colors.primary} style={{backgroundColor: 'red'}} />
     </View>
   );
 };
@@ -30,5 +30,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: 'yellow'
   },
 });

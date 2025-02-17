@@ -13,7 +13,7 @@ import {
 import auth from "@react-native-firebase/auth";
 import { theme } from "@/src/constants/Theme";
 import { hp, wp } from "@/src/utils/common";
-import { images } from "@/src/constants/Images";
+import { Images } from "@/src/constants/Images";
 import InputField from "@/src/components/input/Input-field";
 import InputGroup from "@/src/components/input/input-group";
 import InputLabel from "@/src/components/input/input-label";
@@ -24,7 +24,7 @@ import { UpdateProfileSchema, UpdateProfileType } from "@/src/schema";
 import Loader from "@/src/components/ui/loader";
 import Button from "@/src/components/ui/button";
 import { useUserStore } from "@/src/store/user-store";
-import Icon from "@/src/constants/Icons";
+import { Icons } from "@/src/constants/Icons";
 
 const ProfileScreen = () => {
   const { user } = useUserStore();
@@ -62,15 +62,15 @@ const ProfileScreen = () => {
       <View style={styles.header}>
         <Text style={styles.headerText}>Your Profile</Text>
         <Pressable onPress={logOutHandler} style={styles.logout}>
-          <Icon name="logout" size={20} />
+          <Icons.LogOut size={20} color='black' />
         </Pressable>
       </View>
 
       {/* Profile Image */}
       <View style={styles.imageContainer}>
-        <Image source={user?.image || images.avatar} resizeMode="contain" />
+        <Image source={user?.image || Images.avatar} resizeMode="contain" />
         <View style={styles.editImageIcon}>
-          <Image source={images.editImage} resizeMode="contain" />
+          <Image source={Images.editImage} resizeMode="contain" />
         </View>
       </View>
 
@@ -86,7 +86,7 @@ const ProfileScreen = () => {
                 name="name"
                 control={control}
                 editable={isNameEditable}
-                rightIcon={<Icon name="edit" />}
+                // rightIcon={<Icon name="edit" />}
                 onRightIconPress={() =>
                   setIsNameEditable((prev: boolean) => !prev)
                 }
@@ -114,7 +114,7 @@ const ProfileScreen = () => {
                 control={control}
                 keyboardType="phone-pad"
                 editable={isMobileEditable}
-                rightIcon={<Icon name="edit" />}
+                // rightIcon={<Icon name="edit" />}
                 onRightIconPress={() =>
                   setIsMobileEditable((prev: boolean) => !prev)
                 }
@@ -130,7 +130,7 @@ const ProfileScreen = () => {
                 name="password"
                 control={control}
                 editable={isPasswordEditable}
-                rightIcon={<Icon name="edit" />}
+                // rightIcon={<Icon name="edit" />}
                 onRightIconPress={() =>
                   setIsPasswordEditable((prev: boolean) => !prev)
                 }

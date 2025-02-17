@@ -1,13 +1,12 @@
 import * as React from "react";
 
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Image } from "react-native";
 import auth from "@react-native-firebase/auth";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import Button from "./button";
 import { theme } from "@/src/constants/Theme";
-import Loader from "./loader";
 import firestore from "@react-native-firebase/firestore";
-import Icon from "@/src/constants/Icons";
+import { Images } from "@/src/constants/Images";
 
 const GoogleAuthButton = () => {
   const [isLoading, setIsLoading] = React.useState(false);
@@ -57,18 +56,15 @@ const GoogleAuthButton = () => {
         <View style={styles.line} />
       </View>
 
-      {isLoading ? (
-        <Loader outline />
-      ) : (
-        <Button
-          title="Continue with Google"
-          bgVariant="outline"
-          textVariant="secondary"
-          showShadow={false}
-          onPress={googleSignInHandler}
-          icon={<Icon name="google" />}
-        />
-      )}
+      <Button
+        title="Continue with Google"
+        bgVariant="outline"
+        textVariant="secondary"
+        showShadow={false}
+        onPress={googleSignInHandler}
+        icon={<Image source={Images.google} />}
+        isLoading={isLoading}
+      />
     </View>
   );
 };

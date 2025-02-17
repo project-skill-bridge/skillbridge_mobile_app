@@ -1,20 +1,20 @@
-import { images } from "../constants/Images";
+import { Images } from "../constants/Images";
 
 export const gameInfo = [
   {
     id: 1,
     path: "/typing-game/main-screen",
-    image: images.game1,
+    image: Images.game1,
   },
   {
     id: 2,
     path: "/typing-game",
-    image: images.game2,
+    image: Images.game2,
   },
   {
     id: 3,
     path: "/typing-game",
-    image: images.game3,
+    image: Images.game3,
   },
   // {
   //   id: 4,

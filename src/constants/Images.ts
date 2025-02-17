@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
-export const images = {
+export const Images = {
   onboarding1: require("@/assets/images/onboarding1.png"),
   onboarding2: require("@/assets/images/onboarding1.png"),
   onboarding3: require("@/assets/images/onboarding1.png"),

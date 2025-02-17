@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Pressable, StyleSheet, Text } from "react-native";
+import { ActivityIndicator, Pressable, StyleSheet, Text } from "react-native";
 import { theme } from "@/src/constants/Theme";
 import { ButtonProps } from "@/src/types/type";
 import { hp } from "@/src/utils/common";
@@ -25,11 +25,12 @@ const getBgVariant = (bgVariant: string) => {
 
 const Button = ({
   title,
-  onPress,
-  bgVariant = "primary",
-  icon: Icon,
   style,
+  onPress,
+  icon: Icon,
+  isLoading = false,
   showShadow = true,
+  bgVariant = "primary",
   textVariant = "primary",
 }: ButtonProps) => {
   return (
@@ -45,7 +46,14 @@ const Button = ({
         },
       ]}
     >
+      {isLoading && (
+        <ActivityIndicator
+          color={bgVariant === "outline" ? theme.colors.primary : "white"}
+        />
+      )}
+
       {Icon && <React.Fragment>{Icon}</React.Fragment>}
+
       <Text
         style={[
           styles.text,
@@ -71,7 +79,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: "100%",
     borderRadius: 100,
-    gap: 10,
+    gap: 20,
   },
   text: {
     fontSize: hp(2),
