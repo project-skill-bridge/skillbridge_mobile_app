@@ -57,14 +57,14 @@ const GoogleAuthButton = () => {
       </View>
 
       <Button
-        title="Continue with Google"
-        bgVariant="outline"
-        textVariant="secondary"
+        variant="outline"
         showShadow={false}
         onPress={googleSignInHandler}
-        icon={<Image source={Images.google} />}
         isLoading={isLoading}
-      />
+      >
+        <Text style={theme.buttonTextOutlineStyle}>Continue with Google</Text>
+        <Image source={Images.google} />
+      </Button>
     </View>
   );
 };

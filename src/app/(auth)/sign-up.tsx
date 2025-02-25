@@ -9,7 +9,7 @@ import {
   Text,
   View,
 } from "react-native";
-import { Link, router } from "expo-router";
+import { Link } from "expo-router";
 import { hp, wp } from "@/src/utils/common";
 import { theme } from "@/src/constants/Theme";
 import { useForm } from "react-hook-form";
@@ -17,7 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import auth from "@react-native-firebase/auth";
 import Button from "@/src/components/ui/button";
 import InputField from "@/src/components/input/Input-field";
-import GoogleAuthButton from "@/src/components/ui/google-button";
+import GoogleAuthButton from "@/src/components/ui/google-auth-provider";
 import ReactNativeModal from "react-native-modal";
 import { RegisterFormType, RegisterSchema } from "@/src/schema";
 import InputGroup from "@/src/components/input/input-group";
@@ -152,10 +152,12 @@ const SignUpScreen = () => {
           </KeyboardAvoidingView>
 
           <Button
-            title="Sign Up"
             onPress={handleSubmit(signUpHandler)}
             isLoading={isLoading}
-          />
+            showShadow
+          >
+            <Text style={theme.buttonTextDefaultStyle}>Sign Up</Text>
+          </Button>
 
           <GoogleAuthButton />
 
@@ -198,12 +200,12 @@ const SignUpScreen = () => {
             </Text>
           )} */}
 
-            <Button
+            {/* <Button
               title="Verify Email"
               onPress={() => {}}
               // bgVariant="success"
               // className="mt-5"
-            />
+            /> */}
           </View>
         </ReactNativeModal>
 
@@ -222,11 +224,11 @@ const SignUpScreen = () => {
               You have successfully verified your account
             </Text>
 
-            <Button
+            {/* <Button
               title="Browse Home"
               onPress={() => router.replace("/(tabs)/home")}
               // className="mt-5"
-            />
+            /> */}
           </View>
         </ReactNativeModal>
       </View>

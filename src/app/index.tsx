@@ -86,10 +86,11 @@ const OnboardingScreen = () => {
 
       <SliderIndicator data={onboardingData} scrollX={scrollX} />
       <View style={styles.buttonContainer}>
-        <Button
-          title={isFirstPage ? "Get Started" : "Next"}
-          onPress={scrollTo}
-        />
+        <Button onPress={scrollTo} showShadow>
+          <Text style={theme.buttonTextDefaultStyle}>
+            {isFirstPage ? "Get Started" : "Next"}
+          </Text>
+        </Button>
       </View>
     </SafeAreaView>
   );

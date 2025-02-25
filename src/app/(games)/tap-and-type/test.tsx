@@ -12,7 +12,6 @@ import * as ScreenOrientation from "expo-screen-orientation";
 import { Audio } from "expo-av";
 // import firestore from "@react-native-firebase/firestore";
 
-import BackButton from "@/src/components/ui/back-button";
 import { hp, wp } from "@/src/utils/common";
 import { theme } from "@/src/constants/Theme";
 import Animated, {
@@ -158,13 +157,13 @@ const LandscapeKeyboardScreen = () => {
 
   return (
     <ImageBackground
-      source={require("@/assets/images/typing-game-bg.png")}
+      // source={require("@/assets/images/typing-game-bg.png")}
       style={styles.container}
       resizeMode="cover"
     >
       <View style={styles.overlay}>
         <View style={styles.topRaw}>
-          <BackButton onPress={handleBackButtonPress} />
+          {/* <BackButton onPress={handleBackButtonPress} /> */}
           <Animated.View style={animatedStyle}>
             <HexagonSVG character={randomChar} fill="pink" />
           </Animated.View>

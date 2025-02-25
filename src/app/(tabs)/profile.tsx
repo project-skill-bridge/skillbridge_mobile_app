@@ -4,7 +4,6 @@ import {
   Image,
   KeyboardAvoidingView,
   Platform,
-  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -61,9 +60,9 @@ const ProfileScreen = () => {
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerText}>Your Profile</Text>
-        <Pressable onPress={logOutHandler} style={styles.logout}>
-          <Icons.LogOut size={20} color='black' />
-        </Pressable>
+        <Button onPress={logOutHandler} style={styles.logout} variant="icon">
+          <Icons.LogOut size={20} color="black" />
+        </Button>
       </View>
 
       {/* Profile Image */}
@@ -146,15 +145,11 @@ const ProfileScreen = () => {
           <Loader />
         ) : (
           <Button
-            style={{
-              width: "30%",
-              borderRadius: 8,
-              alignSelf: "flex-end",
-              paddingVertical: hp(1.5),
-            }}
-            title="Save"
+            style={styles.button}
             onPress={handleSubmit(updateProfileHandler)}
-          />
+          >
+            <Text style={theme.buttonTextDefaultStyle}>Save</Text>
+          </Button>
         )}
       </View>
     </ScrollView>
@@ -181,10 +176,7 @@ const styles = StyleSheet.create({
   },
   logout: {
     backgroundColor: "white",
-    padding: hp(1.2),
     borderRadius: "50%",
-    justifyContent: "center",
-    alignItems: "center",
   },
   imageContainer: {
     justifyContent: "center",
@@ -212,5 +204,8 @@ const styles = StyleSheet.create({
   },
   inputGroup: {
     gap: hp(0.2),
+  },
+  button: {
+    borderRadius: 10,
   },
 });

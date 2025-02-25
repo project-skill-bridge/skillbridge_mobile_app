@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { StyleProp, TextInputProps } from "react-native";
+import { PressableProps, StyleProp, TextInputProps } from "react-native";
 import { ViewStyle } from "react-native/Libraries/StyleSheet/StyleSheetTypes";
 import { Control } from "react-hook-form";
 
@@ -13,15 +13,12 @@ declare interface InputFieldProps extends TextInputProps {
   onRightIconPress?: () => void;
 }
 
-declare interface ButtonProps {
-  title: string;
-  onPress: () => void;
-  bgVariant?: "primary" | "secondary" | "outline";
-  textVariant?: "primary" | "secondary";
+declare interface ButtonProps extends PressableProps {
+  variant?: "default" | "secondary" | "outline" | "icon";
   isLoading?: boolean;
-  icon?: React.JSX.Element;
   style?: StyleProp<ViewStyle>;
   showShadow?: boolean;
+  children: React.ReactNode;
 }
 
 declare interface TabIconProps {

@@ -1,70 +1,57 @@
 import * as React from "react";
 
-import { ActivityIndicator, Pressable, StyleSheet, Text } from "react-native";
+import { ActivityIndicator, Pressable, StyleSheet } from "react-native";
 import { theme } from "@/src/constants/Theme";
 import { ButtonProps } from "@/src/types/type";
-import { hp } from "@/src/utils/common";
+import { hp, wp } from "@/src/utils/common";
 
-const outlineStyle = {
-  borderWidth: 1,
-  borderColor: theme.colors.outline,
-};
-
-const getBgVariant = (bgVariant: string) => {
-  switch (bgVariant) {
-    case "primary":
-      return theme.colors.primary;
+const getVariantStyle = (variant: string) => {
+  switch (variant) {
     case "secondary":
-      return theme.colors.secondary;
+      return {
+        backgroundColor: theme.colors.secondary,
+      };
     case "outline":
-      return "transparent";
+      return {
+        borderWidth: 1,
+        borderColor: theme.colors.outline,
+        backgroundColor: "transparent",
+      };
+    case "icon":
+      return {
+        paddingHorizontal: wp(1.6),
+        paddingVertical: hp(0.8),
+        borderRadius: 10,
+      };
     default:
-      return theme.colors.primary;
+      return;
   }
 };
 
 const Button = ({
-  title,
   style,
   onPress,
-  icon: Icon,
   isLoading = false,
-  showShadow = true,
-  bgVariant = "primary",
-  textVariant = "primary",
+  showShadow = false,
+  variant = "default",
+  children,
 }: ButtonProps) => {
   return (
     <Pressable
       onPress={onPress}
       style={[
         styles.button,
+        getVariantStyle(variant),
         style,
-        {
-          backgroundColor: getBgVariant(bgVariant),
-          ...(showShadow && theme.shadowStyle),
-          ...(bgVariant === "outline" && outlineStyle),
-        },
+        showShadow && theme.shadowStyle,
       ]}
     >
       {isLoading && (
         <ActivityIndicator
-          color={bgVariant === "outline" ? theme.colors.primary : "white"}
+          color={variant === "outline" ? theme.colors.primary : "white"}
         />
       )}
-
-      {Icon && <React.Fragment>{Icon}</React.Fragment>}
-
-      <Text
-        style={[
-          styles.text,
-          {
-            color:
-              textVariant === "primary" ? "#FFF" : theme.colors.primaryText,
-          },
-        ]}
-      >
-        {title}
-      </Text>
+      {children}
     </Pressable>
   );
 };
@@ -75,14 +62,11 @@ const styles = StyleSheet.create({
   button: {
     flexDirection: "row",
     alignItems: "center",
-    padding: hp(2.1),
     justifyContent: "center",
-    width: "100%",
-    borderRadius: 100,
+    width: "auto",
     gap: 20,
-  },
-  text: {
-    fontSize: hp(2),
-    fontWeight: theme.fontWeights.bold,
+    padding: hp(2.1),
+    backgroundColor: theme.colors.primary,
+    borderRadius: 100,
   },
 });

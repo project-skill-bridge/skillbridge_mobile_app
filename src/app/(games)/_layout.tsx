@@ -5,8 +5,14 @@ import { Stack } from "expo-router";
 const GamesLayout = () => {
   return (
     <Stack>
-      <Stack.Screen name="typing-game" options={{ headerShown: false }} />
-      {/* <Stack.Screen name="baloon-pop-game" options={{ headerShown: false }} /> */}
+      <Stack.Screen
+        name="tap-and-type/main-screen"
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="tap-and-type/game-screen"
+        options={{ headerShown: false }}
+      />
     </Stack>
   );
 };

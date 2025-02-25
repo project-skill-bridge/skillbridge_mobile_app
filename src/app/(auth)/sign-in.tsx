@@ -8,11 +8,11 @@ import {
   Text,
   View,
 } from "react-native";
-import { Link, router } from "expo-router";
+import { Link } from "expo-router";
 import ReactNativeModal from "react-native-modal";
 import auth from "@react-native-firebase/auth";
 import InputField from "@/src/components/input/Input-field";
-import GoogleAuthButton from "@/src/components/ui/google-button";
+import GoogleAuthButton from "@/src/components/ui/google-auth-provider";
 import { theme } from "@/src/constants/Theme";
 import { hp, wp } from "@/src/utils/common";
 import InputGroup from "@/src/components/input/input-group";
@@ -114,10 +114,12 @@ const SignInScreen = () => {
           </Link>
 
           <Button
-            title="Sign In"
             onPress={handleSubmit(signInHandler)}
             isLoading={isLoading}
-          />
+            showShadow
+          >
+            <Text style={theme.buttonTextDefaultStyle}>Sign In</Text>
+          </Button>
 
           <GoogleAuthButton />
 
@@ -160,12 +162,12 @@ const SignInScreen = () => {
             </Text>
           )} */}
 
-            <Button
+            {/* <Button
               title="Verify Email"
               onPress={() => {}}
               // bgVariant="success"
               // className="mt-5"
-            />
+            /> */}
           </View>
         </ReactNativeModal>
 
@@ -184,11 +186,11 @@ const SignInScreen = () => {
               You have successfully verified your account
             </Text>
 
-            <Button
+            {/* <Button
               title="Browse Home"
               onPress={() => router.replace("/(tabs)/home")}
               // className="mt-5"
-            />
+            /> */}
           </View>
         </ReactNativeModal>
       </View>
