@@ -239,6 +239,7 @@ const TypingGameScreen: React.FC = () => {
       setCurrentLetter(generateRandomLetter());
     } else {
       const newWord = generateRandomWord();
+      console.log("New word:", newWord);
       setCurrentWord(newWord);
       setCurrentCharIndex(0);
     }

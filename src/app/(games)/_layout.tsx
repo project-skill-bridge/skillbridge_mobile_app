@@ -6,6 +6,10 @@ const GamesLayout = () => {
   return (
     <Stack>
       <Stack.Screen
+        name="eye-contact/game-screen"
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
         name="tap-and-type/main-screen"
         options={{ headerShown: false }}
       />
