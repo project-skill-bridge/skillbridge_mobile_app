@@ -198,6 +198,9 @@ dependencies {
         implementation jscFlavor
     }
 
+    //Added com.google.android.material:material:1.7.0 dependency
+    implementation 'com.google.android.material:material:1.7.0'
+
 
     // Kotlin lang
     implementation 'androidx.core:core-ktx:1.8.0'
