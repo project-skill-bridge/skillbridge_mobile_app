@@ -1,3 +1,5 @@
+import { hp } from "../utils/common";
+
 export const theme = {
   colors: {
     primary: "#6277BF",
@@ -25,5 +27,16 @@ export const theme = {
     shadowOpacity: 0.1,
     shadowRadius: 10,
     elevation: 5,
+  },
+
+  buttonTextDefaultStyle: {
+    color: "white",
+    fontSize: hp(2),
+    fontWeight: 700,
+  },
+  buttonTextOutlineStyle: {
+    color: "black",
+    fontSize: hp(2),
+    fontWeight: 700,
   },
 } as const;

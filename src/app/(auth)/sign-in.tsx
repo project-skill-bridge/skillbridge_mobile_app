@@ -1,5 +1,5 @@
-import { Link, router } from "expo-router";
-import { useState } from "react";
+import * as React from "react";
+
 import {
   Image,
   KeyboardAvoidingView,
@@ -8,31 +8,48 @@ import {
   Text,
   View,
 } from "react-native";
+import { Link } from "expo-router";
 import ReactNativeModal from "react-native-modal";
 import auth from "@react-native-firebase/auth";
-
-import Button from "@/src/components/ui/Button";
-import InputField from "@/src/components/ui/InputField";
-import OAuth from "@/src/components/ui/OAuth";
-import { icons } from "@/src/constants/Icons";
+import InputField from "@/src/components/input/Input-field";
+import GoogleAuthButton from "@/src/components/ui/google-auth-provider";
 import { theme } from "@/src/constants/Theme";
 import { hp, wp } from "@/src/utils/common";
-import Loader from "@/src/components/ui/Loader";
+import InputGroup from "@/src/components/input/input-group";
+import InputLabel from "@/src/components/input/input-label";
+import ErrorMessage from "@/src/components/input/error-message";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { LoginFormType, LoginSchema } from "@/src/schema";
+import Button from "@/src/components/ui/button";
+import { Icons } from "@/src/constants/Icons";
 
 const SignInScreen = () => {
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormType>({
+    resolver: zodResolver(LoginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+    mode: "all",
   });
+  const [isLoading, setIsLoading] = React.useState(false);
 
-  const [isLoading, setIsLoading] = useState(false);
-
-  const signInHandler = async () => {
+  const signInHandler = async (formData: LoginFormType) => {
     setIsLoading(true);
     try {
-      await auth().signInWithEmailAndPassword(form.email, form.password);
-    } catch (error: any) {
-      alert(error.message);
+      const { email, password } = formData;
+      await auth().signInWithEmailAndPassword(email, password);
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(error.message);
+      } else {
+        alert("An unknown error occurred");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -48,21 +65,40 @@ const SignInScreen = () => {
             behavior={Platform.OS === "ios" ? "padding" : "height"}
           >
             <View style={styles.inputContainer}>
-              <InputField
-                label="Email"
-                placeholder="Enter email"
-                icon={icons.email}
-                value={form.email}
-                onChangeText={(value) => setForm({ ...form, email: value })}
-              />
-              <InputField
-                label="Password"
-                placeholder="Enter password"
-                secureTextEntry={true}
-                icon={icons.lock}
-                value={form.password}
-                onChangeText={(value) => setForm({ ...form, password: value })}
-              />
+              <InputGroup>
+                <InputLabel>Email</InputLabel>
+                <InputField
+                  name="email"
+                  control={control}
+                  leftIcon={
+                    <Icons.Mail size={22} color={theme.colors.primaryText} />
+                  }
+                  placeholder="Enter your email"
+                  keyboardType="email-address"
+                />
+                {errors.email?.message && (
+                  <ErrorMessage message={errors.email.message} />
+                )}
+              </InputGroup>
+
+              <InputGroup>
+                <InputLabel>Password</InputLabel>
+                <InputField
+                  name="password"
+                  control={control}
+                  leftIcon={
+                    <Icons.LockKeyhole
+                      size={24}
+                      color={theme.colors.primaryText}
+                    />
+                  }
+                  secureTextEntry={true}
+                  placeholder="Enter your password"
+                />
+                {errors.password?.message && (
+                  <ErrorMessage message={errors.password.message} />
+                )}
+              </InputGroup>
             </View>
           </KeyboardAvoidingView>
 
@@ -77,16 +113,18 @@ const SignInScreen = () => {
             </Text>
           </Link>
 
-          {isLoading ? (
-            <Loader />
-          ) : (
-            <Button title="Sign In" onPress={signInHandler} />
-          )}
+          <Button
+            onPress={handleSubmit(signInHandler)}
+            isLoading={isLoading}
+            showShadow
+          >
+            <Text style={theme.buttonTextDefaultStyle}>Sign In</Text>
+          </Button>
 
-          <OAuth />
+          <GoogleAuthButton />
 
           <Link href="/sign-up" style={styles.bottomText}>
-            <Text>Don't have an account? </Text>
+            <Text>Don&apos;t have an account? </Text>
             <Text
               style={{
                 color: theme.colors.primary,
@@ -104,11 +142,11 @@ const SignInScreen = () => {
             <Text className="text-2xl font-JakartaBold">Verification</Text>
 
             <Text className=" text-gray-400 mb-2 font-JakartaMedium">
-              We've sent a verification code to {form.email}
+              We&apos;ve sent a verification code to
             </Text>
 
             <InputField
-              label="Code"
+              name="Code"
               // icon={icons.lock}
               placeholder="123456"
               // value={verification.code}
@@ -124,12 +162,12 @@ const SignInScreen = () => {
             </Text>
           )} */}
 
-            <Button
+            {/* <Button
               title="Verify Email"
               onPress={() => {}}
               // bgVariant="success"
               // className="mt-5"
-            />
+            /> */}
           </View>
         </ReactNativeModal>
 
@@ -148,11 +186,11 @@ const SignInScreen = () => {
               You have successfully verified your account
             </Text>
 
-            <Button
+            {/* <Button
               title="Browse Home"
               onPress={() => router.replace("/(tabs)/home")}
               // className="mt-5"
-            />
+            /> */}
           </View>
         </ReactNativeModal>
       </View>

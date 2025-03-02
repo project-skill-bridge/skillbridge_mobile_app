@@ -1,19 +1,18 @@
-import { useEffect, useState } from "react";
-import { LayoutChangeEvent, StyleSheet, View } from "react-native";
-import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
+import * as React from "react";
 
+import { Keyboard, LayoutChangeEvent, StyleSheet, View } from "react-native";
+import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { hp, wp } from "@/src/utils/common";
 import { theme } from "@/src/constants/Theme";
-import TabBarButton from "./TabBarButton";
+import TabBarButton from "./tab-bar-button";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import { icons } from "@/src/constants/Icons";
 
 const TabBar = ({ state, navigation }: BottomTabBarProps) => {
-  const [dimensions, setDimensions] = useState({ height: 20, width: 10 });
+  const [dimensions, setDimensions] = React.useState({ height: 20, width: 10 });
 
   const buttonWidth = dimensions.width / state.routes.length;
 
@@ -32,11 +31,31 @@ const TabBar = ({ state, navigation }: BottomTabBarProps) => {
     };
   });
 
-  useEffect(() => {
+  React.useEffect(() => {
     tabPositionX.value = withSpring(buttonWidth * state.index, {
       duration: 1500,
     });
   }, [state.index]);
+
+  const [isKeyboardVisible, setKeyboardVisible] = React.useState(false);
+
+  React.useEffect(() => {
+    const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
+      setKeyboardVisible(true);
+    });
+    const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
+      setKeyboardVisible(false);
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
+
+  if (isKeyboardVisible) {
+    return null;
+  }
 
   return (
     <View onLayout={onTabBarLayout} style={[styles.tabBar, theme.shadowStyle]}>
@@ -79,7 +98,7 @@ const TabBar = ({ state, navigation }: BottomTabBarProps) => {
           <TabBarButton
             key={route.name}
             onPress={onPress}
-            routeName={route.name as keyof typeof icons}
+            routeName={route.name}
             onLongPress={onLongPress}
           />
         );
@@ -93,7 +112,7 @@ export default TabBar;
 const styles = StyleSheet.create({
   tabBar: {
     position: "absolute",
-    bottom: hp(4),
+    bottom: hp(2.5),
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: theme.colors.primaryText,

@@ -1,10 +1,12 @@
+import * as React from "react";
+
 import { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import { Stack, useRouter, useSegments } from "expo-router";
-import { useEffect, useState } from "react";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
-
 import auth from "@react-native-firebase/auth";
-import Loader from "../components/ui/Loader";
+import Loader from "@/src/components/ui/loader";
+import { useUserStore } from "../store/user-store";
+import firestore from "@react-native-firebase/firestore";
 
 const RootLayout = () => {
   GoogleSignin.configure({
@@ -13,32 +15,51 @@ const RootLayout = () => {
     scopes: ["email", "profile"],
   });
 
-  const [initializing, setInitializing] = useState(true);
-  const [user, setUser] = useState<FirebaseAuthTypes.User | null>();
+  const [initializing, setInitializing] = React.useState(true);
+  const [userSession, setUserSession] =
+    React.useState<FirebaseAuthTypes.User | null>();
   const router = useRouter();
   const segments = useSegments();
 
+  const { setUser } = useUserStore();
+
   const onAuthStateChanged = (user: FirebaseAuthTypes.User | null) => {
-    setUser(user);
+    setUserSession(user);
     if (initializing) setInitializing(false);
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
     return subscriber;
   }, []);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (initializing) return;
 
     const isRootGroup = segments[0] === "(tabs)";
 
-    if (user && !isRootGroup) {
+    if (userSession && !isRootGroup) {
+      firestore()
+        .collection("users")
+        .doc(userSession?.uid)
+        .get()
+        .then((doc) => {
+          const user = doc.data();
+          if (user) {
+            setUser({
+              name: user.name,
+              email: user.email,
+              mobile: user.mobile,
+              image: user.image,
+            });
+          }
+        });
       router.replace("/(tabs)/home");
-    } else if (!user && isRootGroup) {
-      router.push("/(auth)/sign-in");
+    } else if (!userSession && isRootGroup) {
+      setUser(null);
+      router.replace("/(auth)/sign-in");
     }
-  }, [user, initializing]);
+  }, [userSession, initializing]);
 
   if (initializing) {
     return <Loader />;
@@ -49,6 +70,7 @@ const RootLayout = () => {
       <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen name="(auth)" options={{ headerShown: false }} />
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="(games)" options={{ headerShown: false }} />
     </Stack>
   );
 };
