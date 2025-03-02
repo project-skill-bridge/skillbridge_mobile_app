@@ -1,0 +1,8 @@
+//Added a downloadTaskFile task in download_tasks.gradle to download the hand_landmarker.task model
+task downloadTaskFile(type: Download) {
+    src 'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task'
+    dest project.ext.ASSET_DIR + '/hand_landmarker.task'
+    overwrite false
+}
+
+preBuild.dependsOn downloadTaskFile
