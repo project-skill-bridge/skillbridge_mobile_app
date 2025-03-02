@@ -5,6 +5,12 @@ apply plugin: "de.undercouch.download"
 
 def projectRoot = rootDir.getAbsoluteFile().getParentFile().getAbsolutePath()
 
+//autolinkLibrariesWithApp() to React configuration
+react {
+    
+    autolinkLibrariesWithApp()
+}
+
 /**
  * This is the configuration block to customize your React Native Android app.
  * By default you don't need to apply any configuration, just uncomment the lines you need.
