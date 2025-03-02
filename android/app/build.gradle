@@ -166,6 +166,14 @@ dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
 
+    // App compat and UI things
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+
+
+
+
+
+
     def isGifEnabled = (findProperty('expo.gif.enabled') ?: "") == "true";
     def isWebpEnabled = (findProperty('expo.webp.enabled') ?: "") == "true";
     def isWebpAnimatedEnabled = (findProperty('expo.webp.animated') ?: "") == "true";
@@ -189,6 +197,7 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+
 
     // Kotlin lang
     implementation 'androidx.core:core-ktx:1.8.0'
