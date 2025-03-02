@@ -168,7 +168,7 @@ dependencies {
 
     // App compat and UI things
     implementation 'androidx.appcompat:appcompat:1.5.1'
-    
+
     //Added androidx.constraintlayout:constraintlayout:2.1.4 dependency 
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
@@ -202,6 +202,10 @@ dependencies {
     //Added com.google.android.material:material:1.7.0 dependency
     implementation 'com.google.android.material:material:1.7.0'
 
+    //Added dependencies for navigation-fragment-ktx and navigation-ui-ktx 
+    def nav_version = "2.5.3"
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
     // Kotlin lang
     implementation 'androidx.core:core-ktx:1.8.0'
