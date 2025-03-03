@@ -16,11 +16,11 @@ export const gameInfo = [
     path: "/typing-game",
     image: Images.game3,
   },
-  // {
-  //   id: 4,
-  //   path: "/game/3",
-  //   image: images.game3,
-  // },
+  {
+    id: 4,
+    path: "/circle-burst/game-screen",
+    image: Images.game3,
+  }
   // {
   //   id: 5,
   //   path: "/game/3",
