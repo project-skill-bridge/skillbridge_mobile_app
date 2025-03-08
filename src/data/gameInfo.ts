@@ -16,19 +16,4 @@ export const gameInfo = [
     path: "/typing-game",
     image: Images.game3,
   },
-  // {
-  //   id: 4,
-  //   path: "/game/3",
-  //   image: images.game3,
-  // },
-  // {
-  //   id: 5,
-  //   path: "/game/3",
-  //   image: images.game3,
-  // },
-  // {
-  //   id: 6,
-  //   path: "/game/3",
-  //   image: images.game3,
-  // },
 ] as const;

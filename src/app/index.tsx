@@ -17,6 +17,7 @@ import Button from "@/src/components/ui/button";
 import { hp, wp } from "@/src/utils/common";
 import { theme } from "@/src/constants/Theme";
 import { router } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const OnboardingScreen = () => {
   const [currentIndex, setCurrentIndex] = React.useState(0);
@@ -38,6 +39,16 @@ const OnboardingScreen = () => {
   const viewConfig = React.useRef({
     viewAreaCoveragePercentThreshold: 50,
   }).current;
+
+  React.useEffect(() => {
+    const initializing = async () => {
+      await AsyncStorage.setItem("isOnboarding", JSON.stringify(true));
+    };
+
+    if (currentIndex === 2) {
+      initializing();
+    }
+  }, [currentIndex]);
 
   const scrollTo = () => {
     if (currentIndex < onboardingData.length - 1) {

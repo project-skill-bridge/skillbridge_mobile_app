@@ -1,4 +1,5 @@
 import {
+  ArrowBigRight,
   ChartLine,
   Check,
   ChevronLeft,
@@ -6,14 +7,20 @@ import {
   Eye,
   EyeOff,
   Heart,
+  HeartCrack,
   House,
+  Loader,
   LockKeyhole,
   LogOut,
   Mail,
+  Music,
+  Repeat,
   Settings,
   Smartphone,
   Star,
   User,
+  Volume2,
+  X,
 } from "lucide-react-native";
 
 export const Icons = {
@@ -32,6 +39,14 @@ export const Icons = {
   ChevronLeft,
   Star,
   Heart,
+  Loader,
+  HeartCrack,
+  Music,
+  Volume2,
+  Repeat,
+  ArrowBigRight,
+  X,
+  
 };
 
 export type Icon = keyof typeof Icons;
