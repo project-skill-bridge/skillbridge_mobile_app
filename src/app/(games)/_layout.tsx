@@ -13,6 +13,10 @@ const GamesLayout = () => {
         name="tap-and-type/game-screen"
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+        name="circle-burst/game-screen"
+        options={{ headerShown: false }}
+      />
     </Stack>
   );
 };

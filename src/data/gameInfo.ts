@@ -13,7 +13,7 @@ export const gameInfo = [
   },
   {
     id: 3,
-    path: "/typing-game",
+    path: "/circle-burst/game-screen",
     image: Images.game3,
-  },
+  }
 ] as const;
