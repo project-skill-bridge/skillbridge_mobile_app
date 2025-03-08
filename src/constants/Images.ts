@@ -15,4 +15,5 @@ export const Images = {
   level2Badge: require("@/assets/images/games/tap-and-type/level-2-badge.png"),
   level3Badge: require("@/assets/images/games/tap-and-type/level-3-badge.png"),
   level4Badge: require("@/assets/images/games/tap-and-type/level-4-badge.png"),
+  blakboard: require("@/assets/images/black-board.png"),
 } as const;

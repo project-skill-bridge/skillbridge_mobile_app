@@ -1,34 +1,36 @@
 import * as React from "react";
 
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withTiming,
+} from "react-native-reanimated";
 import { theme } from "@/src/constants/Theme";
-import { hp } from "@/src/utils/common";
+import { Icons } from "@/src/constants/Icons";
+import { LucideProps } from "lucide-react-native";
 
-const outlineStyle = {
-  borderWidth: 1,
-  borderColor: theme.colors.outline,
-  padding: hp(3.4),
-  borderRadius: 100,
-};
+const AnimatedLoader = Animated.createAnimatedComponent(Icons.Loader);
 
-interface LoaderProps {
-  outline?: boolean;
-}
+const Loader = ({ color = theme.colors.primary, ...props }: LucideProps) => {
+  const rotate = useSharedValue(0);
 
-const Loader = ({ outline }: LoaderProps) => {
-  return (
-    <View style={[styles.loader, outline && outlineStyle]}>
-      <ActivityIndicator size="large" color={theme.colors.primary} />
-    </View>
-  );
+  React.useEffect(() => {
+    rotate.value = withRepeat(
+      withTiming(360, { duration: 1500, easing: Easing.inOut(Easing.linear) }),
+      -1, // Infinite loop
+      false
+    );
+  }, []);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ rotate: `${rotate.value}deg` }],
+    };
+  });
+
+  return <AnimatedLoader color={color} {...props} style={animatedStyle} />;
 };
 
 export default Loader;
-
-const styles = StyleSheet.create({
-  loader: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});

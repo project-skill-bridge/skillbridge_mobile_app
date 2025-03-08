@@ -1,16 +1,18 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { Image, ImageBackground, StyleSheet, Text, View } from "react-native";
-import Button from "@/src/components/ui/button";
-import { Images } from "@/src/constants/Images";
 
-import { hp, wp } from "@/src/utils/common";
+import {
+  Alert,
+  Image,
+  ImageBackground,
+  StyleSheet,
+  Switch,
+  Text,
+  View,
+} from "react-native";
 import { useFocusEffect, useRouter } from "expo-router";
+import * as ScreenOrientation from "expo-screen-orientation";
 import { useFonts } from "expo-font";
-import { Icons } from "@/src/constants/Icons";
-import { Loader } from "lucide-react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { theme } from "@/src/constants/Theme";
-import { Fonts } from "@/src/constants/Fonts";
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -18,17 +20,50 @@ import Animated, {
   withRepeat,
   withTiming,
 } from "react-native-reanimated";
+import Button from "@/src/components/ui/button";
+import { Images } from "@/src/constants/Images";
+import { hp, wp } from "@/src/utils/common";
+import { Icons } from "@/src/constants/Icons";
+import { theme } from "@/src/constants/Theme";
+import { Fonts } from "@/src/constants/Fonts";
+import Loader from "@/src/components/ui/loader";
 
 type ImageKeys = `level${1 | 2 | 3 | 4}Badge`;
 
+const INITIAL_HEARTS = 10;
+
 const MainScreen = () => {
   const router = useRouter();
-  const [cooldownTimeLeft, setCooldownTimeLeft] = useState<number | null>(null);
+
+  // Game state
   const [currentLevel, setCurrentLevel] = useState<number>(1);
   const [score, setScore] = useState<number>(0);
-  const [hearts, setHearts] = useState<number>(0);
+  const [hearts, setHearts] = useState<number>(INITIAL_HEARTS);
+
+  // Modal state
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+  // Settings state
+  const [isSoundOn, setIsSoundOn] = useState<boolean>(true);
+  const [isMusicOn, setIsMusicOn] = useState<boolean>(true);
+
+  // Cooldown state
   const cooldownIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const [cooldownTimeLeft, setCooldownTimeLeft] = useState<number>(0);
+
+  // Load settings from AsyncStorage
+  useEffect(() => {
+    const loadSettingsSound = async () => {
+      const sound = await AsyncStorage.getItem("sound");
+      const music = await AsyncStorage.getItem("music");
+
+      if (sound !== null) setIsSoundOn(JSON.parse(sound) === true);
+      if (music !== null) setIsMusicOn(JSON.parse(music) === true);
+    };
+    loadSettingsSound();
+  }, []);
+
   const scale = useSharedValue(0.9);
 
   // Load the custom font
@@ -36,19 +71,8 @@ const MainScreen = () => {
     Coiny: Fonts.Coiny,
   });
 
-  const backButtonHandler = () => {
-    router.back();
-  };
-
-  const handlePlayNow = async () => {
-    if (cooldownTimeLeft !== null && cooldownTimeLeft > 0) {
-      setIsModalVisible(true);
-      return;
-    }
-    router.push("/tap-and-type/game-screen");
-  };
-
-  React.useEffect(() => {
+  // Animation effect for badge
+  useEffect(() => {
     scale.value = withRepeat(
       withTiming(1.1, { duration: 1000, easing: Easing.inOut(Easing.ease) }),
       -1, // Infinite loop
@@ -56,12 +80,12 @@ const MainScreen = () => {
     );
   }, []);
 
+  // Animated style for badge
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
   }));
 
-  // Check for active cooldown on mount
-
+  // Check for active cooldown on mount and load game data
   useFocusEffect(
     useCallback(() => {
       const checkCooldown = async () => {
@@ -74,7 +98,7 @@ const MainScreen = () => {
             setCooldownTimeLeft(remaining);
           } else {
             await AsyncStorage.removeItem("cooldownEndTime");
-            setCooldownTimeLeft(null);
+            setCooldownTimeLeft(0);
           }
         }
       };
@@ -82,7 +106,7 @@ const MainScreen = () => {
 
       const loadGameData = async () => {
         try {
-          const savedData = await AsyncStorage.getItem("gameData");
+          const savedData = await AsyncStorage.getItem("tap-and-type-game");
           if (savedData) {
             const {
               currentLevel: savedLevel,
@@ -94,12 +118,19 @@ const MainScreen = () => {
             setCurrentLevel(savedLevel);
             setScore(savedScore);
           }
-        } catch (error) {
-          console.error("Error loading game data:", error);
+        } catch {
+          handleGameError(
+            "Error",
+            "An error occurred while loading the game data."
+          );
         }
       };
 
       loadGameData();
+
+      if (cooldownTimeLeft === 0 && hearts === 0) {
+        handleHeartRefill();
+      }
     }, [])
   );
 
@@ -112,6 +143,7 @@ const MainScreen = () => {
           else {
             if (cooldownIntervalRef.current)
               clearInterval(cooldownIntervalRef.current);
+            handleHeartRefill();
             AsyncStorage.removeItem("cooldownEndTime");
             return 0;
           }
@@ -124,8 +156,59 @@ const MainScreen = () => {
     };
   }, [cooldownTimeLeft]);
 
+  // Navigate to game screen
+  const handlePlayNow = async () => {
+    if (cooldownTimeLeft !== null && cooldownTimeLeft > 0) {
+      setIsModalVisible(true);
+      return;
+    }
+    router.push("/tap-and-type/game-screen");
+  };
+
+  // Refill hearts
+  const handleHeartRefill = async () => {
+    const savedData = JSON.parse(
+      (await AsyncStorage.getItem("tap-and-type-game")) as string
+    );
+    await AsyncStorage.setItem(
+      "tap-and-type-game",
+      JSON.stringify({ ...savedData, hearts: INITIAL_HEARTS })
+    );
+    setHearts(INITIAL_HEARTS);
+  };
+
+  // Handle sound toggle
+  const handleSoundToggle = async () => {
+    setIsSoundOn((prev) => !prev);
+    await AsyncStorage.setItem("sound", JSON.stringify(!isSoundOn));
+  };
+
+  // Handle music toggle
+  const handleMusicToggle = async () => {
+    setIsMusicOn((prev) => !prev);
+    await AsyncStorage.setItem("music", JSON.stringify(!isMusicOn));
+  };
+
+  // Handle game error
+  const handleGameError = (title: string, message: string) => {
+    Alert.alert(title, message, [
+      {
+        text: "Exit",
+        onPress: async () => {
+          await ScreenOrientation.unlockAsync();
+          router.back();
+        },
+      },
+    ]);
+  };
+
+  // Fallback if font is not loaded
   if (!fontsLoaded) {
-    return <Loader />;
+    return (
+      <View style={styles.loader}>
+        <Loader size={30} />
+      </View>
+    );
   }
 
   return (
@@ -136,10 +219,10 @@ const MainScreen = () => {
     >
       <View style={styles.container}>
         <View style={styles.topRaw}>
-          <Button variant="icon" onPress={backButtonHandler}>
+          <Button variant="icon" onPress={() => router.back()}>
             <Icons.ChevronLeft color="black" />
           </Button>
-          <Button variant="icon">
+          <Button variant="icon" onPress={() => setIsSettingsOpen(true)}>
             <Icons.Settings color="black" />
           </Button>
         </View>
@@ -180,37 +263,86 @@ const MainScreen = () => {
               <Text style={styles.score}>{score}</Text>
             </View>
             <View style={styles.heartsContainer}>
-              <Icons.Heart
-                size={40}
-                fill="red"
-                stroke="black"
-                strokeWidth={1}
-              />
+              {cooldownTimeLeft > 0 ? (
+                <Text style={styles.scoreText}>
+                  {`${Math.floor(cooldownTimeLeft / 60)
+                    .toString()
+                    .padStart(2, "0")}:${(cooldownTimeLeft % 60)
+                    .toString()
+                    .padStart(2, "0")}`}
+                </Text>
+              ) : null}
+              {hearts > 0 ? (
+                <Icons.Heart
+                  size={40}
+                  fill="red"
+                  stroke="black"
+                  strokeWidth={1}
+                />
+              ) : (
+                <Icons.HeartCrack
+                  size={40}
+                  fill="red"
+                  stroke="black"
+                  strokeWidth={1}
+                />
+              )}
+
               <Text style={styles.hearts}>{hearts}</Text>
             </View>
           </View>
         </View>
 
-        {cooldownTimeLeft !== null &&
-          cooldownTimeLeft > 0 &&
-          isModalVisible && (
-            <View style={styles.overlayContainer}>
-              <View style={styles.modal}>
-                <View style={styles.countdownContainer}>
-                  <Text style={styles.countdownText}>
-                    Please wait {cooldownTimeLeft} Minute to play
-                  </Text>
-                  <Button
-                    variant="secondary"
-                    style={styles.button}
-                    onPress={() => setIsModalVisible(false)}
-                  >
-                    <Text style={styles.modelText}>OK</Text>
-                  </Button>
-                </View>
+        {cooldownTimeLeft > 0 && isModalVisible && (
+          <View style={styles.modelWrapper}>
+            <View
+              style={styles.overlay}
+              onTouchEnd={() => setIsModalVisible(false)}
+            />
+            <View style={styles.modal}>
+              <View style={styles.countdownContainer}>
+                <Text style={styles.countdownText}>
+                  Please wait{" "}
+                  {`${Math.floor(cooldownTimeLeft / 60)
+                    .toString()
+                    .padStart(2, "0")}:${(cooldownTimeLeft % 60)
+                    .toString()
+                    .padStart(2, "0")}`}{" "}
+                  seconds to play
+                </Text>
+                <Button
+                  variant="secondary"
+                  style={styles.button}
+                  onPress={() => setIsModalVisible(false)}
+                >
+                  <Text style={styles.modelText}>OK</Text>
+                </Button>
               </View>
             </View>
-          )}
+          </View>
+        )}
+
+        {isSettingsOpen && (
+          <View style={styles.modelWrapper}>
+            <View
+              style={styles.overlay}
+              onTouchEnd={() => setIsSettingsOpen(false)}
+            />
+            <View style={styles.switchModel}>
+              <Text style={styles.settingText}>Settings</Text>
+              <View style={styles.switchContainer}>
+                <Icons.Volume2 size={30} color={theme.colors.primary} />
+                <Text style={styles.switchLabel}>Sound</Text>
+                <Switch value={isSoundOn} onValueChange={handleSoundToggle} />
+              </View>
+              <View style={styles.switchContainer}>
+                <Icons.Music size={30} color={theme.colors.primary} />
+                <Text style={styles.switchLabel}>Music</Text>
+                <Switch value={isMusicOn} onValueChange={handleMusicToggle} />
+              </View>
+            </View>
+          </View>
+        )}
 
         <Button variant="secondary" showShadow onPress={handlePlayNow}>
           <Text style={theme.buttonTextDefaultStyle}>Play Now</Text>
@@ -223,6 +355,11 @@ const MainScreen = () => {
 export default MainScreen;
 
 const styles = StyleSheet.create({
+  loader: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   background: {
     flex: 1,
     width: "100%",
@@ -244,17 +381,12 @@ const styles = StyleSheet.create({
     color: "#0c264f",
     textAlign: "center",
   },
-  overlayContainer: {
+  overlay: {
     position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "rgba(0,0,0,0.8)",
-    justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: wp(5),
-    zIndex: 2,
   },
   modal: {
     backgroundColor: "#a15e34",
@@ -357,5 +489,45 @@ const styles = StyleSheet.create({
     fontFamily: "Coiny",
     fontSize: hp(3.5),
     color: "red",
+  },
+  modelWrapper: {
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.4)",
+    position: "absolute",
+    zIndex: 1,
+  },
+  switchModel: {
+    backgroundColor: "rgb(3, 5, 21)",
+    paddingVertical: hp(4),
+    paddingHorizontal: wp(10),
+    alignItems: "center",
+    width: "auto",
+    borderRadius: 10,
+    zIndex: 2,
+    borderWidth: 2,
+    borderColor: "rgba(255, 255, 255, 0.8)",
+  },
+  settingText: {
+    textAlign: "center",
+    fontSize: hp(4),
+    fontFamily: "Coiny",
+    color: "rgba(255, 255, 255, 0.9)",
+  },
+  switchContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginVertical: hp(1),
+    gap: wp(10),
+  },
+  switchLabel: {
+    fontSize: hp(3),
+    color: "rgba(255, 255, 255, 0.8)",
+    fontFamily: "Coiny",
   },
 });
