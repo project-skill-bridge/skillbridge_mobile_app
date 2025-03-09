@@ -47,6 +47,13 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
     robot: { pitch: 0.8, rate: 0.9 }
   };
   
+    // Speed settings
+    const speedSettings: Record<string, number> = {
+        slow: 1.5,
+        normal: 1,
+        fast: 0.5
+      };
+    
   
 
 export default FinnVoiceIntro;
