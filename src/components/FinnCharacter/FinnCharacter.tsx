@@ -47,8 +47,11 @@ const ElementsSection: React.FC = () => {
       })
     ]).start(() => {
 
+      // Restart animation randomly between 5-10 seconds
+      setTimeout(startBounceAnimation, Math.random() * 5000 + 5000);
+    });
+  };
 
 
 
-      
 export default ElementsSection;
