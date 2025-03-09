@@ -6,7 +6,6 @@ import {
   Dimensions,
   Animated
 } from 'react-native';
-import { useFonts } from 'expo-font';
 import { Image } from "expo-image";
 
 const { width } = Dimensions.get('window');
