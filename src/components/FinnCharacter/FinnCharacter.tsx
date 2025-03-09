@@ -61,5 +61,11 @@ const ElementsSection: React.FC = () => {
         setMessage(getTimeBasedMessage());
       }, 60000);
 
+          // Start the bounce animation
+    startBounceAnimation();
+    
+    return () => clearInterval(intervalId);
+  }, []);
+
 
 export default ElementsSection;
