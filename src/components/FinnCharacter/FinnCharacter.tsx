@@ -114,5 +114,27 @@ const ElementsSection: React.FC = () => {
             </View>
           </View>
 
+          {/* Finn character positioned lower */}
+          <View style={styles.characterSection}>
+            <Animated.View 
+              style={[
+                styles.characterContainer, 
+                { 
+                  width: responsiveSizes.characterSize, 
+                  height: responsiveSizes.characterSize,
+                  transform: [{ translateY: bounceTransform }]
+                }
+              ]}
+            >
+              <Image 
+                source={require('./assets/Normal-Finn.gif')}
+                contentFit='contain' 
+                style={styles.character}
+              />
+            </Animated.View>
+          </View>
+        </View>
+      );
+    };
 
 export default ElementsSection;
