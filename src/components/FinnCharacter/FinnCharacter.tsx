@@ -163,5 +163,15 @@ const ElementsSection: React.FC = () => {
         maxWidth: '95%',
       },
 
+      thoughtBubble: {
+        backgroundColor: '#87CEFA',
+        borderRadius: 20,
+        borderTopLeftRadius: 4,
+        marginRight: 5,
+      },
+
+      
+
+
 
 export default ElementsSection;
