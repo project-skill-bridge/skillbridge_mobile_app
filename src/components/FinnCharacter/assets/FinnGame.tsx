@@ -449,5 +449,13 @@ const styles = StyleSheet.create({
         borderColor: 'rgba(255,255,255,0.5)',
       },
 
+      voiceButtonText: {
+        color: 'white',
+        fontWeight: '600',
+        fontSize: 16,
+        textAlign: 'center',
+      }
+    });
+
 
 export default FinnVoiceIntro;
