@@ -353,5 +353,14 @@ const styles = StyleSheet.create({
         maxWidth: '95%',
       },
 
+      thoughtBubble: {
+        backgroundColor: '#87CEFA',
+        borderRadius: 20,
+        borderTopLeftRadius: 4,
+        marginRight: 5,
+        position: 'relative',
+        maxWidth: '95%',
+      },
+
 
 export default FinnVoiceIntro;
