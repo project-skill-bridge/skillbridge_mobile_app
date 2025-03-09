@@ -159,4 +159,13 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
     });
   };
 
+    // Handle close button press
+    const handleClose = () => {
+        Speech.stop();
+        setShowBubble(false);
+        setShowButton(false);
+        animateButton(false);
+        if (onComplete) onComplete();
+      };
+
 export default FinnVoiceIntro;
