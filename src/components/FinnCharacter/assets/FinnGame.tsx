@@ -118,6 +118,12 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
     setShowBubble(true);
     setShowButton(false);
 
+  // Reset animation values
+  setIsComplete(false);
     
+  const { pitch, rate } = voiceSettings[voiceType];
+  const speedMultiplier = speedSettings[speed];
+  
+  
 
 export default FinnVoiceIntro;
