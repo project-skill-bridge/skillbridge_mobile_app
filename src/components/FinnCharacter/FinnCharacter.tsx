@@ -1,4 +1,4 @@
-mport React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   StyleSheet, 
   View, 
@@ -8,6 +8,8 @@ import {
   Animated
 } from 'react-native';
 import { useFonts } from 'expo-font';
+import { Image } from "expo-image";
 
 const { width } = Dimensions.get('window');
 
+export default ElementsSection;
