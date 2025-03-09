@@ -92,6 +92,24 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
       
       return lines.join('\n');
     };
+
+    const formattedIntroText = formatTextIntoLines(introText);
+
+    // Check if it's the first visit
+    const checkFirstVisit = async () => {
+      try {
+        const hasVisited = await AsyncStorage.getItem('hasVisitedBefore');
+        if (hasVisited !== null) {
+          setIsFirstVisit(false);
+          setShowBubble(false);
+        } else {
+          await AsyncStorage.setItem('hasVisitedBefore', 'true');
+          setShowBubble(true);
+        }
+      } catch (error) {
+        console.error('Error checking first visit:', error);
+      }
+    };
   
 
 export default FinnVoiceIntro;
