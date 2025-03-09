@@ -16,5 +16,21 @@ const ElementsSection: React.FC = () => {
   const [message, setMessage] = useState("");
   const bounceAnim = useRef(new Animated.Value(0)).current;
 
+  
+  // Time-based message function
+  const getTimeBasedMessage = (): string => {
+    const hour = new Date().getHours();
+    
+    if (hour >= 4 && hour < 11) {
+      return "Hi, Good Morning! My name is Finn.";
+    } else if (hour >= 11 && hour < 16) {
+      return "Hello, Good Afternoon! I'm Finn!";
+    } else if (hour >= 16 && hour < 21) {
+      return "Good Evening! Finn here to help!";
+    } else {
+      return "Still awake? I'm Finn, your night buddy!";
+    }
+  };
+
 
 export default ElementsSection;
