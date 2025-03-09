@@ -82,5 +82,37 @@ const ElementsSection: React.FC = () => {
     
     const responsiveSizes = getResponsiveSizes();
 
+      // Transform for bounce animation
+      const bounceTransform = bounceAnim.interpolate({
+        inputRange: [0, 0.5, 1],
+        outputRange: [0, -8, 0]
+      });
+
+      return (
+        <View style={[styles.container, { height: responsiveSizes.containerHeight }]}>
+          {/* Message section aligned to top */}
+          <View style={styles.messageSection}>
+            {/* Improved thought bubble */}
+            <View style={styles.bubbleContainer}>
+              <View style={[
+                styles.thoughtBubble, 
+                { padding: responsiveSizes.bubblePadding }
+              ]}>
+                <Text style={[
+                  styles.thoughtText, 
+                  { fontSize: responsiveSizes.fontSize, fontFamily: 'Bubblegum' }
+                ]}>
+                  {message}
+                </Text>
+              </View>
+              <View style={styles.bubbleDots}>
+                <View style={styles.dot1}></View>
+                <View style={styles.dot2}></View>
+                <View style={styles.dot3}></View>
+                <View style={styles.dot4}></View>
+              </View>
+            </View>
+          </View>
+
 
 export default ElementsSection;
