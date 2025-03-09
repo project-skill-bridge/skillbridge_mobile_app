@@ -371,6 +371,36 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         height: 40,
       },
+      dot1: {
+        width: 12,
+        height: 12,
+        borderRadius: 6,
+        backgroundColor: '#87CEFA',
+        marginBottom: 3,
+      },
+      dot2: {
+        width: 9,
+        height: 9,
+        borderRadius: 4.5,
+        backgroundColor: '#87CEFA',
+        marginBottom: 3,
+        marginLeft: 3,
+      },
+      dot3: {
+        width: 6,
+        height: 6,
+        borderRadius: 3,
+        backgroundColor: '#87CEFA',
+        marginBottom: 2,
+        marginLeft: 6,
+      },
+      dot4: {
+        width: 4,
+        height: 4,
+        borderRadius: 2,
+        backgroundColor: '#87CEFA',
+        marginLeft: 8,
+      },
 
 
 export default FinnVoiceIntro;
