@@ -433,6 +433,21 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         zIndex: 10,
       },
+      voiceButton: {
+        backgroundColor: 'rgba(66, 133, 244, 0.9)',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 24,
+        elevation: 4,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderWidth: 1,
+        borderColor: 'rgba(255,255,255,0.5)',
+      },
 
 
 export default FinnVoiceIntro;
