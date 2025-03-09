@@ -203,4 +203,6 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
     };
   };
 
+  const responsiveSizes = getResponsiveSizes();
+
 export default FinnVoiceIntro;
