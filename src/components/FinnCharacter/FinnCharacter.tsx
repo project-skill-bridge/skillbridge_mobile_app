@@ -208,6 +208,15 @@ const ElementsSection: React.FC = () => {
         backgroundColor: '#87CEFA',
         marginLeft: 8,
       },
+      characterContainer: {
+        // Position adjusted in character section
+      },
+      character: {
+        width: '100%',
+        height: '100%',
+        resizeMode: 'contain',
+      },
+    });
 
 
 
