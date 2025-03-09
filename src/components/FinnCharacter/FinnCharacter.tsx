@@ -169,8 +169,12 @@ const ElementsSection: React.FC = () => {
         borderTopLeftRadius: 4,
         marginRight: 5,
       },
+      thoughtText: {
+        color: '#000',
+        fontWeight: '500',
+      },
 
-      
+
 
 
 
