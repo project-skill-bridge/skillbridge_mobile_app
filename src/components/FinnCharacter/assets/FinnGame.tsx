@@ -335,6 +335,12 @@ const styles = StyleSheet.create({
       paddingHorizontal: 15,
       position: 'relative',
     },
+    messageSection: {
+        flex: 1,
+        alignItems: 'flex-start',
+        justifyContent: 'flex-start',
+        paddingTop: 10,
+      },
 
 
 export default FinnVoiceIntro;
