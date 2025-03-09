@@ -411,5 +411,28 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
       },
 
+      closeButton: {
+        position: 'absolute',
+        top: 5,
+        right: 5,
+        width: 24,
+        height: 24,
+        borderRadius: 12,
+        backgroundColor: 'rgba(0,0,0,0.2)',
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      closeButtonText: {
+        color: 'white',
+        fontSize: 18,
+        fontWeight: 'bold',
+      },
+      buttonContainer: {
+        position: 'absolute',
+        top: -60,
+        alignSelf: 'center',
+        zIndex: 10,
+      },
+
 
 export default FinnVoiceIntro;
