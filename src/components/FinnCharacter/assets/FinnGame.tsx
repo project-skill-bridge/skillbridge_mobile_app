@@ -299,6 +299,21 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
           )}
         </Animated.View>
 
+                {/* Clickable Finn character */}
+                <TouchableOpacity 
+          onPress={handleFinnPress}
+          activeOpacity={0.8}
+        >
+          <Animated.View 
+            style={[
+              styles.characterContainer, 
+              { 
+                width: responsiveSizes.characterSize, 
+                height: responsiveSizes.characterSize,
+                transform: [{ translateY: bounceTransform }]
+              }
+            ]}
+
 
 
 export default FinnVoiceIntro;
