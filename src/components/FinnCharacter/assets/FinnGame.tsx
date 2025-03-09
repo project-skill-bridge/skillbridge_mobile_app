@@ -366,6 +366,11 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         lineHeight: 26,
       },
+      bubbleDots: {
+        flexDirection: 'column',
+        justifyContent: 'center',
+        height: 40,
+      },
 
 
 export default FinnVoiceIntro;
