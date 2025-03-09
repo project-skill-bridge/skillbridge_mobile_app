@@ -288,6 +288,17 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
               width: responsiveSizes.buttonSize
             }
           ]}
+          >
+          {showButton && (
+            <TouchableOpacity 
+              style={styles.voiceButton}
+              onPress={startIntro}
+            >
+              <Text style={styles.voiceButtonText}>Voice Intro</Text>
+            </TouchableOpacity>
+          )}
+        </Animated.View>
+
 
 
 export default FinnVoiceIntro;
