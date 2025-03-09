@@ -24,12 +24,12 @@ interface FinnVoiceIntroProps {
     voiceType?: 'child' | 'adult' | 'robot';
 }
 
-const FinnVoiceIntro = () => {
-  return (
-    <View>
-      <Text>Hello! I am Finn, your learning buddy.</Text>
-    </View>
-  );
-};
+const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({ 
+    introText = "Hi, I'm Finn! Welcome to our adventure!",
+    onComplete = () => {},
+    language = 'en-US',
+    speed = 'normal',
+    voiceType = 'child',
+}) => {
 
 export default FinnVoiceIntro;
