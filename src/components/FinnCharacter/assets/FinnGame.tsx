@@ -361,6 +361,11 @@ const styles = StyleSheet.create({
         position: 'relative',
         maxWidth: '95%',
       },
+      thoughtText: {
+        color: '#000',
+        fontWeight: '500',
+        lineHeight: 26,
+      },
 
 
 export default FinnVoiceIntro;
