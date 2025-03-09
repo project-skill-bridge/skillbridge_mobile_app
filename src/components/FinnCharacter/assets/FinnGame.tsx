@@ -111,5 +111,13 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
       }
     };
   
+    // Start the animation and voice
+  const startIntro = () => {
+    setIsPlaying(true);
+    setIsTalking(true);
+    setShowBubble(true);
+    setShowButton(false);
+
+    
 
 export default FinnVoiceIntro;
