@@ -273,5 +273,21 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
         )}
       </View>
 
+      {/* Finn character section */}
+      <View style={styles.characterSection}>
+        {/* Voice Intro Button */}
+        <Animated.View 
+          style={[
+            styles.buttonContainer,
+            {
+              transform: [
+                { translateY: buttonTransform },
+                { scale: buttonScale }
+              ],
+              opacity: buttonOpacity,
+              width: responsiveSizes.buttonSize
+            }
+          ]}
+
 
 export default FinnVoiceIntro;
