@@ -152,4 +152,11 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
         useNativeDriver: true
       })
     ]).start(() => {
+        // Only restart animation if not talking
+      if (!isTalking) {
+        setTimeout(startBounceAnimation, Math.random() * 5000 + 5000);
+      }
+    });
+  };
+
 export default FinnVoiceIntro;
