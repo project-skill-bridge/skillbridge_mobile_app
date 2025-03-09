@@ -11,7 +11,18 @@ import {
     TouchableOpacity,
     Easing,
   } from 'react-native';
-  import * as Speech from 'expo-speech';
+import * as Speech from 'expo-speech';
+
+
+const { width } = Dimensions.get('window');
+
+interface FinnVoiceIntroProps {
+    introText: string;
+    onComplete?: () => void;
+    language?: string;
+    speed?: 'slow' | 'normal' | 'fast';
+    voiceType?: 'child' | 'adult' | 'robot';
+}
 
 const FinnVoiceIntro = () => {
   return (
