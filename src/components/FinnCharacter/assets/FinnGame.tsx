@@ -314,6 +314,19 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
               }
             ]}
 
+            >
+            <Image 
+              source={isTalking ? require('./assets/Talking-Finn.gif') : require('./assets/Normal-Finn.gif')} 
+              contentFit='contain'
+              style={styles.character}
+            />
+          </Animated.View>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
+
 
 
 export default FinnVoiceIntro;
