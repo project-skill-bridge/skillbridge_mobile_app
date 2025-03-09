@@ -221,5 +221,22 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
     outputRange: [0.5, 1.1, 1]
   });
 
+  const buttonOpacity = buttonAnim;
+
+  // Effects on component mount
+  useEffect(() => {
+    checkFirstVisit().then(() => {
+      if (isFirstVisit) {
+        startIntro();
+      }
+    });
+    
+    startBounceAnimation();
+    
+    return () => {
+      Speech.stop();
+    };
+  }, []);
+
 
 export default FinnVoiceIntro;
