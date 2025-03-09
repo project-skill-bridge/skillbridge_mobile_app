@@ -239,4 +239,39 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
   }, []);
 
 
+  return (
+    <View style={[styles.container, { height: responsiveSizes.containerHeight }]}>
+      {/* Message section */}
+      <View style={styles.messageSection}>
+        {showBubble && (
+          <View style={styles.bubbleContainer}>
+            <View style={[
+              styles.thoughtBubble, 
+              { padding: responsiveSizes.bubblePadding }
+            ]}>
+              <Text style={[
+                styles.thoughtText, 
+                { fontSize: responsiveSizes.fontSize }
+              ]}>
+                {formattedIntroText}
+              </Text>
+              
+              <TouchableOpacity 
+                onPress={handleClose}
+                style={styles.closeButton}
+              >
+                <Text style={styles.closeButtonText}>×</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.bubbleDots}>
+              <View style={styles.dot1}></View>
+              <View style={styles.dot2}></View>
+              <View style={styles.dot3}></View>
+              <View style={styles.dot4}></View>
+            </View>
+          </View>
+        )}
+      </View>
+
+
 export default FinnVoiceIntro;
