@@ -78,4 +78,20 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
         lines.push(currentLine);
       }
 
+    // If we haven't filled all lines, add remaining words to the last line
+    if (lines.length < maxLines) {
+        const remainingWords = words.slice(
+          words.indexOf(lines[lines.length - 1].split(' ')[0]) + 
+          lines[lines.length - 1].split(' ').length
+        );
+        
+        if (remainingWords.length > 0) {
+          lines[lines.length - 1] += ' ' + remainingWords.join(' ');
+        }
+      }
+      
+      return lines.join('\n');
+    };
+  
+
 export default FinnVoiceIntro;
