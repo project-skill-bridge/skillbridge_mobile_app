@@ -347,6 +347,11 @@ const styles = StyleSheet.create({
         paddingBottom: 5,
         position: 'relative',
       },
+      bubbleContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        maxWidth: '95%',
+      },
 
 
 export default FinnVoiceIntro;
