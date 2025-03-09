@@ -40,6 +40,13 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
     const bounceAnim = useRef(new Animated.Value(0)).current;
     const buttonAnim = useRef(new Animated.Value(0)).current;
 
-    
+     // Voice settings based on type
+  const voiceSettings: Record<string, { pitch: number, rate: number }> = {
+    child: { pitch: 1.2, rate: 0.8 },
+    adult: { pitch: 1.0, rate: 1.0 },
+    robot: { pitch: 0.8, rate: 0.9 }
+  };
+  
+  
 
 export default FinnVoiceIntro;
