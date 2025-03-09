@@ -188,4 +188,19 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
         }
       };
 
+
+      // Calculate responsive sizes based on screen width
+  const getResponsiveSizes = () => {
+    const baseWidth = 375;
+    const scale = width / baseWidth;
+    
+    return {
+      containerHeight: Math.min(120 * scale, 190),
+      characterSize: Math.min(100 * scale, 150),
+      fontSize: Math.min(16 * scale, 20),
+      bubblePadding: Math.min(15 * scale, 22),
+      buttonSize: Math.min(120 * scale, 160)
+    };
+  };
+
 export default FinnVoiceIntro;
