@@ -67,5 +67,20 @@ const ElementsSection: React.FC = () => {
     return () => clearInterval(intervalId);
   }, []);
 
+    // Calculate responsive sizes based on screen width
+    const getResponsiveSizes = () => {
+      const baseWidth = 375; 
+      const scale = width / baseWidth;
+      
+      return {
+        containerHeight: Math.min(120 * scale, 180), // Cap at 180
+        characterSize: Math.min(100 * scale, 150),   // Cap at 150
+        fontSize: Math.min(18 * scale, 24),          // Cap at 24
+        bubblePadding: Math.min(15 * scale, 25)      // Cap at 25
+      };
+    };
+    
+    const responsiveSizes = getResponsiveSizes();
+
 
 export default ElementsSection;
