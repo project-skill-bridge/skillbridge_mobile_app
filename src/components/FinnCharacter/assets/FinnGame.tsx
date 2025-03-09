@@ -138,4 +138,18 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
       });
     };
 
+    // Character bounce animation
+  const startBounceAnimation = () => {
+    Animated.sequence([
+      Animated.timing(bounceAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true
+      }),
+      Animated.timing(bounceAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true
+      })
+    ]).start(() => {
 export default FinnVoiceIntro;
