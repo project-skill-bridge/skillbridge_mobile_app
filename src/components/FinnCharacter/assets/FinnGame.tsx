@@ -327,6 +327,14 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
   );
 };
 
+const styles = StyleSheet.create({
+    container: {
+      width: '100%',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      paddingHorizontal: 15,
+      position: 'relative',
+    },
 
 
 export default FinnVoiceIntro;
