@@ -124,6 +124,18 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
   const { pitch, rate } = voiceSettings[voiceType];
   const speedMultiplier = speedSettings[speed];
   
-  
+      // Start the speech
+      Speech.speak(formattedIntroText, {
+        language,
+        rate: rate * speedMultiplier,
+        pitch,
+        onDone: () => {
+          setIsPlaying(false);
+          setIsTalking(false);
+          setIsComplete(true);
+          if (onComplete) onComplete();
+        },
+      });
+    };
 
 export default FinnVoiceIntro;
