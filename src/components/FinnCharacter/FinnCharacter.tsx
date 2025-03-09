@@ -52,6 +52,14 @@ const ElementsSection: React.FC = () => {
     });
   };
 
+    // Update message based on time and start animation
+    useEffect(() => {
+      setMessage(getTimeBasedMessage());
+      
+      // Update message every minute
+      const intervalId = setInterval(() => {
+        setMessage(getTimeBasedMessage());
+      }, 60000);
 
 
 export default ElementsSection;
