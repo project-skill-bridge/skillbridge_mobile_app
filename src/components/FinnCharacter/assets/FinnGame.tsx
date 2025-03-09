@@ -46,7 +46,7 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
     adult: { pitch: 1.0, rate: 1.0 },
     robot: { pitch: 0.8, rate: 0.9 }
   };
-  
+
     // Speed settings
     const speedSettings: Record<string, number> = {
         slow: 1.5,
@@ -54,6 +54,28 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
         fast: 0.5
       };
     
-  
+    // Format text into multiple lines for display
+  const formatTextIntoLines = (text: string, maxLines: number = 6): string => {
+    const words = text.split(' ');
+    const approxCharsPerLine = Math.ceil(text.length / maxLines) + 10;
+    let lines = [];
+    let currentLine = '';
+    
+    for (const word of words) {
+      if ((currentLine + word).length <= approxCharsPerLine || currentLine === '') {
+        currentLine += (currentLine ? ' ' : '') + word;
+      } else {
+        lines.push(currentLine);
+        currentLine = word;
+        
+        if (lines.length >= maxLines - 1) {
+          break;
+        }
+      }
+    }
+
+    if (currentLine) {
+        lines.push(currentLine);
+      }
 
 export default FinnVoiceIntro;
