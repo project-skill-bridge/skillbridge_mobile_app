@@ -178,4 +178,14 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
     }).start();
   };
 
+    // Handle Finn character press
+    const handleFinnPress = () => {
+        if (!isFirstVisit && !showBubble) {
+          // Toggle button state with animation
+          const newButtonState = !showButton;
+          setShowButton(newButtonState);
+          animateButton(newButtonState);
+        }
+      };
+
 export default FinnVoiceIntro;
