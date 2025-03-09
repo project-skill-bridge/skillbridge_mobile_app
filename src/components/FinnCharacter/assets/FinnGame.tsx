@@ -168,4 +168,14 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
         if (onComplete) onComplete();
       };
 
+    // Button animation
+  const animateButton = (show: boolean) => {
+    Animated.timing(buttonAnim, {
+      toValue: show ? 1 : 0,
+      duration: 800,
+      easing: Easing.bezier(0.16, 1, 0.3, 1),
+      useNativeDriver: true
+    }).start();
+  };
+
 export default FinnVoiceIntro;
