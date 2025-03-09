@@ -205,4 +205,21 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
 
   const responsiveSizes = getResponsiveSizes();
 
+   // Animation values
+   const bounceTransform = bounceAnim.interpolate({
+    inputRange: [0, 0.5, 1],
+    outputRange: [0, -8, 0]
+  });
+
+  const buttonTransform = buttonAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [40, -30]
+  });
+
+  const buttonScale = buttonAnim.interpolate({
+    inputRange: [0, 0.7, 1],
+    outputRange: [0.5, 1.1, 1]
+  });
+
+
 export default FinnVoiceIntro;
