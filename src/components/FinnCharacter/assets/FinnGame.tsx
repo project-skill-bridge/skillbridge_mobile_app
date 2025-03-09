@@ -402,5 +402,14 @@ const styles = StyleSheet.create({
         marginLeft: 8,
       },
 
+      characterContainer: {
+        // Position adjusted in character section
+      },
+      character: {
+        width: '100%',
+        height: '100%',
+        resizeMode: 'contain',
+      },
+
 
 export default FinnVoiceIntro;
