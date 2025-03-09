@@ -146,7 +146,22 @@ const ElementsSection: React.FC = () => {
         position: 'relative',
       },
 
-      
+      messageSection: {
+        flex: 1,
+        alignItems: 'flex-start',
+        justifyContent: 'flex-start',
+        paddingTop: 10,
+      },
+      characterSection: {
+        justifyContent: 'flex-end', 
+        alignItems: 'flex-end',
+        paddingBottom: 5, 
+      },
+      bubbleContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        maxWidth: '95%',
+      },
 
 
 export default ElementsSection;
