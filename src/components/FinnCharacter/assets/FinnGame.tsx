@@ -1,60 +1,59 @@
-import React,{ useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Image} from 'expo-image';
 
 import { 
-    StyleSheet, 
-    View, 
-    Text,
-    Dimensions,
-    Animated,
-    TouchableOpacity,
-    Easing,
-  } from 'react-native';
+  StyleSheet, 
+  View, 
+  Text,
+  Dimensions,
+  Animated,
+  TouchableOpacity,
+  Easing,
+} from 'react-native';
 import * as Speech from 'expo-speech';
-
 
 const { width } = Dimensions.get('window');
 
 interface FinnVoiceIntroProps {
-    introText: string;
-    onComplete?: () => void;
-    language?: string;
-    speed?: 'slow' | 'normal' | 'fast';
-    voiceType?: 'child' | 'adult' | 'robot';
+  introText: string;
+  onComplete?: () => void;
+  language?: string;
+  speed?: 'slow' | 'normal' | 'fast';
+  voiceType?: 'child' | 'adult' | 'robot';
 }
 
 const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({ 
-    introText = "Hi, I'm Finn! Welcome to our adventure!",
-    onComplete = () => {},
-    language = 'en-US',
-    speed = 'normal',
-    voiceType = 'child',
+  introText = "Hi, I'm Finn! Welcome to our adventure!",
+  onComplete = () => {},
+  language = 'en-US',
+  speed = 'normal',
+  voiceType = 'child',
 }) => {
-    const [isPlaying, setIsPlaying] = useState<boolean>(false);
-    const [isComplete, setIsComplete] = useState<boolean>(false);
-    const [isFirstVisit, setIsFirstVisit] = useState<boolean>(true);
-    const [isTalking, setIsTalking] = useState<boolean>(false);
-    const [showBubble, setShowBubble] = useState<boolean>(true);
-    const [showButton, setShowButton] = useState<boolean>(false);
-    const bounceAnim = useRef(new Animated.Value(0)).current;
-    const buttonAnim = useRef(new Animated.Value(0)).current;
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [isComplete, setIsComplete] = useState<boolean>(false);
+  const [isFirstVisit, setIsFirstVisit] = useState<boolean>(true);
+  const [isTalking, setIsTalking] = useState<boolean>(false);
+  const [showBubble, setShowBubble] = useState<boolean>(true);
+  const [showButton, setShowButton] = useState<boolean>(false);
+  const bounceAnim = useRef(new Animated.Value(0)).current;
+  const buttonAnim = useRef(new Animated.Value(0)).current;
 
-     // Voice settings based on type
+  // Voice settings based on type
   const voiceSettings: Record<string, { pitch: number, rate: number }> = {
     child: { pitch: 1.2, rate: 0.8 },
     adult: { pitch: 1.0, rate: 1.0 },
     robot: { pitch: 0.8, rate: 0.9 }
   };
 
-    // Speed settings
-    const speedSettings: Record<string, number> = {
-        slow: 1.5,
-        normal: 1,
-        fast: 0.5
-      };
-    
-    // Format text into multiple lines for display
+  // Speed settings
+  const speedSettings: Record<string, number> = {
+    slow: 1.5,
+    normal: 1,
+    fast: 0.5
+  };
+
+  // Format text into multiple lines for display
   const formatTextIntoLines = (text: string, maxLines: number = 6): string => {
     const words = text.split(' ');
     const approxCharsPerLine = Math.ceil(text.length / maxLines) + 10;
@@ -73,72 +72,72 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
         }
       }
     }
-
+    
     if (currentLine) {
-        lines.push(currentLine);
-      }
-
+      lines.push(currentLine);
+    }
+    
     // If we haven't filled all lines, add remaining words to the last line
     if (lines.length < maxLines) {
-        const remainingWords = words.slice(
-          words.indexOf(lines[lines.length - 1].split(' ')[0]) + 
-          lines[lines.length - 1].split(' ').length
-        );
-        
-        if (remainingWords.length > 0) {
-          lines[lines.length - 1] += ' ' + remainingWords.join(' ');
-        }
-      }
+      const remainingWords = words.slice(
+        words.indexOf(lines[lines.length - 1].split(' ')[0]) + 
+        lines[lines.length - 1].split(' ').length
+      );
       
-      return lines.join('\n');
-    };
-
-    const formattedIntroText = formatTextIntoLines(introText);
-
-    // Check if it's the first visit
-    const checkFirstVisit = async () => {
-      try {
-        const hasVisited = await AsyncStorage.getItem('hasVisitedBefore');
-        if (hasVisited !== null) {
-          setIsFirstVisit(false);
-          setShowBubble(false);
-        } else {
-          await AsyncStorage.setItem('hasVisitedBefore', 'true');
-          setShowBubble(true);
-        }
-      } catch (error) {
-        console.error('Error checking first visit:', error);
+      if (remainingWords.length > 0) {
+        lines[lines.length - 1] += ' ' + remainingWords.join(' ');
       }
-    };
-  
-    // Start the animation and voice
+    }
+    
+    return lines.join('\n');
+  };
+
+  const formattedIntroText = formatTextIntoLines(introText);
+
+  // Check if it's the first visit
+  const checkFirstVisit = async () => {
+    try {
+      const hasVisited = await AsyncStorage.getItem('hasVisitedBefore');
+      if (hasVisited !== null) {
+        setIsFirstVisit(false);
+        setShowBubble(false);
+      } else {
+        await AsyncStorage.setItem('hasVisitedBefore', 'true');
+        setShowBubble(true);
+      }
+    } catch (error) {
+      console.error('Error checking first visit:', error);
+    }
+  };
+
+  // Start the animation and voice
   const startIntro = () => {
     setIsPlaying(true);
     setIsTalking(true);
     setShowBubble(true);
     setShowButton(false);
-
-  // Reset animation values
-  setIsComplete(false);
     
-  const { pitch, rate } = voiceSettings[voiceType];
-  const speedMultiplier = speedSettings[speed];
-  
-      // Start the speech
-      Speech.speak(formattedIntroText, {
-        language,
-        rate: rate * speedMultiplier,
-        pitch,
-        onDone: () => {
-          setIsPlaying(false);
-          setIsTalking(false);
-          setIsComplete(true);
-          if (onComplete) onComplete();
-        },
-      });
-    };
+    // Reset animation values
+    setIsComplete(false);
+    
+    const { pitch, rate } = voiceSettings[voiceType];
+    const speedMultiplier = speedSettings[speed];
+    
+    // Start the speech
+    Speech.speak(formattedIntroText, {
+      language,
+      rate: rate * speedMultiplier,
+      pitch,
+      onDone: () => {
+        setIsPlaying(false);
+        setIsTalking(false);
+        setIsComplete(true);
+        if (onComplete) onComplete();
+      },
+    });
+  };
 
-    // Character bounce animation
+  // Character bounce animation
   const startBounceAnimation = () => {
     Animated.sequence([
       Animated.timing(bounceAnim, {
@@ -152,23 +151,23 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
         useNativeDriver: true
       })
     ]).start(() => {
-        // Only restart animation if not talking
+      // Only restart animation if not talking
       if (!isTalking) {
         setTimeout(startBounceAnimation, Math.random() * 5000 + 5000);
       }
     });
   };
 
-    // Handle close button press
-    const handleClose = () => {
-        Speech.stop();
-        setShowBubble(false);
-        setShowButton(false);
-        animateButton(false);
-        if (onComplete) onComplete();
-      };
+  // Handle close button press
+  const handleClose = () => {
+    Speech.stop();
+    setShowBubble(false);
+    setShowButton(false);
+    animateButton(false);
+    if (onComplete) onComplete();
+  };
 
-    // Button animation
+  // Button animation
   const animateButton = (show: boolean) => {
     Animated.timing(buttonAnim, {
       toValue: show ? 1 : 0,
@@ -178,18 +177,17 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
     }).start();
   };
 
-    // Handle Finn character press
-    const handleFinnPress = () => {
-        if (!isFirstVisit && !showBubble) {
-          // Toggle button state with animation
-          const newButtonState = !showButton;
-          setShowButton(newButtonState);
-          animateButton(newButtonState);
-        }
-      };
+  // Handle Finn character press
+  const handleFinnPress = () => {
+    if (!isFirstVisit && !showBubble) {
+      // Toggle button state with animation
+      const newButtonState = !showButton;
+      setShowButton(newButtonState);
+      animateButton(newButtonState);
+    }
+  };
 
-
-      // Calculate responsive sizes based on screen width
+  // Calculate responsive sizes based on screen width
   const getResponsiveSizes = () => {
     const baseWidth = 375;
     const scale = width / baseWidth;
@@ -202,11 +200,11 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
       buttonSize: Math.min(120 * scale, 160)
     };
   };
-
+  
   const responsiveSizes = getResponsiveSizes();
-
-   // Animation values
-   const bounceTransform = bounceAnim.interpolate({
+  
+  // Animation values
+  const bounceTransform = bounceAnim.interpolate({
     inputRange: [0, 0.5, 1],
     outputRange: [0, -8, 0]
   });
@@ -237,7 +235,6 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
       Speech.stop();
     };
   }, []);
-
 
   return (
     <View style={[styles.container, { height: responsiveSizes.containerHeight }]}>
@@ -288,7 +285,7 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
               width: responsiveSizes.buttonSize
             }
           ]}
-          >
+        >
           {showButton && (
             <TouchableOpacity 
               style={styles.voiceButton}
@@ -299,8 +296,8 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
           )}
         </Animated.View>
 
-                {/* Clickable Finn character */}
-                <TouchableOpacity 
+        {/* Clickable Finn character */}
+        <TouchableOpacity 
           onPress={handleFinnPress}
           activeOpacity={0.8}
         >
@@ -313,8 +310,7 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
                 transform: [{ translateY: bounceTransform }]
               }
             ]}
-
-            >
+          >
             <Image 
               source={isTalking ? require('./assets/Talking-Finn.gif') : require('./assets/Normal-Finn.gif')} 
               contentFit='contain'
@@ -328,134 +324,129 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
 };
 
 const styles = StyleSheet.create({
-    container: {
-      width: '100%',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      paddingHorizontal: 15,
-      position: 'relative',
-    },
-    messageSection: {
-        flex: 1,
-        alignItems: 'flex-start',
-        justifyContent: 'flex-start',
-        paddingTop: 10,
-      },
-    characterSection: {
-        justifyContent: 'flex-end',
-        alignItems: 'flex-end',
-        paddingBottom: 5,
-        position: 'relative',
-      },
-      bubbleContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        maxWidth: '95%',
-      },
-
-      thoughtBubble: {
-        backgroundColor: '#87CEFA',
-        borderRadius: 20,
-        borderTopLeftRadius: 4,
-        marginRight: 5,
-        position: 'relative',
-        maxWidth: '95%',
-      },
-      thoughtText: {
-        color: '#000',
-        fontWeight: '500',
-        lineHeight: 26,
-      },
-      bubbleDots: {
-        flexDirection: 'column',
-        justifyContent: 'center',
-        height: 40,
-      },
-      dot1: {
-        width: 12,
-        height: 12,
-        borderRadius: 6,
-        backgroundColor: '#87CEFA',
-        marginBottom: 3,
-      },
-      dot2: {
-        width: 9,
-        height: 9,
-        borderRadius: 4.5,
-        backgroundColor: '#87CEFA',
-        marginBottom: 3,
-        marginLeft: 3,
-      },
-      dot3: {
-        width: 6,
-        height: 6,
-        borderRadius: 3,
-        backgroundColor: '#87CEFA',
-        marginBottom: 2,
-        marginLeft: 6,
-      },
-      dot4: {
-        width: 4,
-        height: 4,
-        borderRadius: 2,
-        backgroundColor: '#87CEFA',
-        marginLeft: 8,
-      },
-
-      characterContainer: {
-        // Position adjusted in character section
-      },
-      character: {
-        width: '100%',
-        height: '100%',
-        resizeMode: 'contain',
-      },
-
-      closeButton: {
-        position: 'absolute',
-        top: 5,
-        right: 5,
-        width: 24,
-        height: 24,
-        borderRadius: 12,
-        backgroundColor: 'rgba(0,0,0,0.2)',
-        justifyContent: 'center',
-        alignItems: 'center',
-      },
-      closeButtonText: {
-        color: 'white',
-        fontSize: 18,
-        fontWeight: 'bold',
-      },
-      buttonContainer: {
-        position: 'absolute',
-        top: -60,
-        alignSelf: 'center',
-        zIndex: 10,
-      },
-      voiceButton: {
-        backgroundColor: 'rgba(66, 133, 244, 0.9)',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 24,
-        elevation: 4,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderWidth: 1,
-        borderColor: 'rgba(255,255,255,0.5)',
-      },
-
-      voiceButtonText: {
-        color: 'white',
-        fontWeight: '600',
-        fontSize: 16,
-        textAlign: 'center',
-      }
-    });
-
+  container: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 15,
+    position: 'relative',
+  },
+  messageSection: {
+    flex: 1,
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    paddingTop: 10,
+  },
+  characterSection: {
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
+    paddingBottom: 5,
+    position: 'relative',
+  },
+  bubbleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    maxWidth: '95%',
+  },
+  thoughtBubble: {
+    backgroundColor: '#87CEFA',
+    borderRadius: 20,
+    borderTopLeftRadius: 4,
+    marginRight: 5,
+    position: 'relative',
+    maxWidth: '95%',
+  },
+  thoughtText: {
+    color: '#000',
+    fontWeight: '500',
+    lineHeight: 26,
+  },
+  bubbleDots: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    height: 40,
+  },
+  dot1: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: '#87CEFA',
+    marginBottom: 3,
+  },
+  dot2: {
+    width: 9,
+    height: 9,
+    borderRadius: 4.5,
+    backgroundColor: '#87CEFA',
+    marginBottom: 3,
+    marginLeft: 3,
+  },
+  dot3: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#87CEFA',
+    marginBottom: 2,
+    marginLeft: 6,
+  },
+  dot4: {
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: '#87CEFA',
+    marginLeft: 8,
+  },
+  characterContainer: {
+    // Position adjusted in character section
+  },
+  character: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'contain',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: 'rgba(0,0,0,0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  closeButtonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  buttonContainer: {
+    position: 'absolute',
+    top: -60,
+    alignSelf: 'center',
+    zIndex: 10,
+  },
+  voiceButton: {
+    backgroundColor: 'rgba(66, 133, 244, 0.9)',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 24,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.5)',
+  },
+  voiceButtonText: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 16,
+    textAlign: 'center',
+  }
+});
 
 export default FinnVoiceIntro;
