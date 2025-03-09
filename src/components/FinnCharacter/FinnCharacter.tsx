@@ -16,7 +16,7 @@ const ElementsSection: React.FC = () => {
   const [message, setMessage] = useState("");
   const bounceAnim = useRef(new Animated.Value(0)).current;
 
-  
+
   // Time-based message function
   const getTimeBasedMessage = (): string => {
     const hour = new Date().getHours();
@@ -32,5 +32,23 @@ const ElementsSection: React.FC = () => {
     }
   };
 
+  // Character bounce animation
+  const startBounceAnimation = () => {
+    Animated.sequence([
+      Animated.timing(bounceAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true
+      }),
+      Animated.timing(bounceAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true
+      })
+    ]).start(() => {
 
+
+
+
+      
 export default ElementsSection;
