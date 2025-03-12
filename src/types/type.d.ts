@@ -1,29 +1,40 @@
-import { TextInputProps } from "react-native";
-import { icons } from "../constants/Icons";
+import * as React from "react";
+
+import { PressableProps, StyleProp, TextInputProps } from "react-native";
+import { ViewStyle } from "react-native/Libraries/StyleSheet/StyleSheetTypes";
+import { Control } from "react-hook-form";
 
 declare interface InputFieldProps extends TextInputProps {
-  label: string;
-  icon?: any;
+  name: string;
+  control?: Control<T>;
+  leftIcon?: React.JSX.Element;
+  rightIcon?: React.JSX.Element;
   secureTextEntry?: boolean;
+  onRightIconPress?: () => void;
 }
 
-declare interface ButtonProps {
-  title: string;
-  onPress: () => void;
-  bgVariant?: "primary" | "secondary" | "outline";
-  textVariant?: "primary" | "secondary";
-  icon?: any;
+declare interface ButtonProps extends PressableProps {
+  variant?: "default" | "secondary" | "outline" | "icon";
+  isLoading?: boolean;
   style?: StyleProp<ViewStyle>;
   showShadow?: boolean;
+  children: React.ReactNode;
 }
 
 declare interface TabIconProps {
   focused: boolean;
-  icon: any;
+  icon: React.JSX.Element;
 }
 
 declare interface TabBarButtonProps {
   onPress: () => void;
   onLongPress: () => void;
-  routeName: keyof typeof icons;
+  routeName: string;
+}
+
+declare interface User {
+  name: string;
+  email: string;
+  mobile?: string;
+  image?: string;
 }

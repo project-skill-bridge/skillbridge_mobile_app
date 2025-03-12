@@ -1,60 +1,91 @@
-import { Pressable, StyleSheet, Text } from "react-native";
+import * as React from "react";
+
+import { GestureResponderEvent, Pressable, StyleSheet } from "react-native";
 import { theme } from "@/src/constants/Theme";
 import { ButtonProps } from "@/src/types/type";
-import { hp } from "@/src/utils/common";
+import { hp, wp } from "@/src/utils/common";
+import Loader from "./loader";
+import { Audio } from "expo-av";
+import { Sounds } from "@/src/constants/Sounds";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const outlineStyle = {
-  borderWidth: 1,
-  borderColor: theme.colors.outline,
-};
-
-const getBgVariant = (bgVariant: string) => {
-  switch (bgVariant) {
-    case "primary":
-      return theme.colors.primary;
+const getVariantStyle = (variant: string) => {
+  switch (variant) {
     case "secondary":
-      return theme.colors.secondary;
+      return {
+        backgroundColor: theme.colors.secondary,
+      };
     case "outline":
-      return "transparent";
+      return {
+        borderWidth: 1,
+        borderColor: theme.colors.outline,
+        backgroundColor: "transparent",
+      };
+    case "icon":
+      return {
+        paddingHorizontal: wp(1.6),
+        paddingVertical: hp(0.8),
+        borderRadius: 10,
+      };
     default:
-      return theme.colors.primary;
+      return;
   }
 };
 
 const Button = ({
-  title,
-  onPress,
-  bgVariant = "primary",
-  icon,
   style,
-  showShadow = true,
-  textVariant = "primary",
+  onPress,
+  isLoading = false,
+  showShadow = false,
+  variant = "default",
+  children,
 }: ButtonProps) => {
+  const buttonClickRef = React.useRef<Audio.Sound | null>(null);
+
+  React.useEffect(() => {
+    const loadSound = async () => {
+      const { sound: buttonClick } = await Audio.Sound.createAsync(
+        Sounds.buttonClick
+      );
+      buttonClickRef.current = buttonClick;
+    };
+
+    loadSound();
+    return () => {
+      buttonClickRef.current?.unloadAsync();
+    };
+  }, []);
+
+  const handlePress = async (e: GestureResponderEvent) => {
+    if (!onPress) return;
+
+    const hasSound = JSON.parse(
+      (await AsyncStorage.getItem("sound")) as string
+    );
+
+    if (hasSound && variant === "icon") {
+      await buttonClickRef.current?.setVolumeAsync(0.1);
+      await buttonClickRef.current?.replayAsync();
+    }
+    onPress(e);
+  };
+
   return (
     <Pressable
-      onPress={onPress}
+      onPress={(e) => handlePress(e)}
       style={[
-        style,
         styles.button,
-        {
-          backgroundColor: getBgVariant(bgVariant),
-          ...(showShadow && theme.shadowStyle),
-          ...(bgVariant === "outline" && outlineStyle),
-        },
+        getVariantStyle(variant),
+        style,
+        showShadow && theme.shadowStyle,
       ]}
     >
-      {icon && icon}
-      <Text
-        style={[
-          styles.text,
-          {
-            color:
-              textVariant === "primary" ? "#FFF" : theme.colors.primaryText,
-          },
-        ]}
-      >
-        {title}
-      </Text>
+      {isLoading && (
+        <Loader
+          color={variant === "outline" ? theme.colors.primary : "white"}
+        />
+      )}
+      {children}
     </Pressable>
   );
 };
@@ -65,14 +96,11 @@ const styles = StyleSheet.create({
   button: {
     flexDirection: "row",
     alignItems: "center",
-    padding: hp(2.1),
     justifyContent: "center",
-    width: "100%",
+    width: "auto",
+    gap: 20,
+    padding: hp(2.1),
+    backgroundColor: theme.colors.primary,
     borderRadius: 100,
-    gap: 10,
-  },
-  text: {
-    fontSize: hp(2),
-    fontWeight: theme.fontWeights.bold,
   },
 });
