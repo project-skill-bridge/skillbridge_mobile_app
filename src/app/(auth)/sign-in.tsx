@@ -1,15 +1,14 @@
 import * as React from "react";
 
 import {
-  Image,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   StyleSheet,
   Text,
   View,
 } from "react-native";
 import { Link } from "expo-router";
-import ReactNativeModal from "react-native-modal";
 import auth from "@react-native-firebase/auth";
 import InputField from "@/src/components/input/Input-field";
 import GoogleAuthButton from "@/src/components/ui/google-auth-provider";
@@ -23,12 +22,21 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginFormType, LoginSchema } from "@/src/schema";
 import Button from "@/src/components/ui/button";
 import { Icons } from "@/src/constants/Icons";
+import Modal from "@/src/components/ui/modal";
+
+interface ModalState {
+  visible: boolean;
+  message: string;
+  type: "success" | "error" | "";
+}
 
 const SignInScreen = () => {
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    getValues,
+    getFieldState,
+    formState: { errors, isSubmitting },
   } = useForm<LoginFormType>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -37,10 +45,14 @@ const SignInScreen = () => {
     },
     mode: "all",
   });
-  const [isLoading, setIsLoading] = React.useState(false);
+
+  const [isVisible, setIsVisible] = React.useState<ModalState>({
+    visible: false,
+    message: "",
+    type: "",
+  });
 
   const signInHandler = async (formData: LoginFormType) => {
-    setIsLoading(true);
     try {
       const { email, password } = formData;
       await auth().signInWithEmailAndPassword(email, password);
@@ -50,8 +62,34 @@ const SignInScreen = () => {
       } else {
         alert("An unknown error occurred");
       }
-    } finally {
-      setIsLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    const email = getValues("email");
+
+    if (!email.trim() || getFieldState("email").invalid) {
+      setIsVisible({
+        visible: true,
+        message: "Please enter your email address",
+        type: "error",
+      });
+      return;
+    }
+
+    try {
+      await auth().sendPasswordResetEmail(email);
+      setIsVisible({
+        visible: true,
+        message: "An email has been sent to your email address.",
+        type: "success",
+      });
+    } catch {
+      setIsVisible({
+        visible: true,
+        message: "An error occurred. Please try again.",
+        type: "error",
+      });
     }
   };
 
@@ -102,7 +140,10 @@ const SignInScreen = () => {
             </View>
           </KeyboardAvoidingView>
 
-          <Link href="/sign-up" style={styles.forgotPassword}>
+          <Pressable
+            style={styles.forgotPassword}
+            onPress={handleForgotPassword}
+          >
             <Text
               style={{
                 color: theme.colors.primary,
@@ -111,11 +152,11 @@ const SignInScreen = () => {
             >
               Forgot Password
             </Text>
-          </Link>
+          </Pressable>
 
           <Button
             onPress={handleSubmit(signInHandler)}
-            isLoading={isLoading}
+            isLoading={isSubmitting}
             showShadow
           >
             <Text style={theme.buttonTextDefaultStyle}>Sign In</Text>
@@ -136,63 +177,15 @@ const SignInScreen = () => {
           </Link>
         </View>
 
-        {/* Verification Modal */}
-        <ReactNativeModal isVisible={false}>
-          <View className="bg-white px-4 py-9 rounded-2xl min-h-[300px]">
-            <Text className="text-2xl font-JakartaBold">Verification</Text>
-
-            <Text className=" text-gray-400 mb-2 font-JakartaMedium">
-              We&apos;ve sent a verification code to
-            </Text>
-
-            <InputField
-              name="Code"
-              // icon={icons.lock}
-              placeholder="123456"
-              // value={verification.code}
-              keyboardType="numeric"
-              // onChangeText={(code) =>
-              //   setVerification({ ...verification, code })
-              // }
-            />
-
-            {/* {verification.error && (
-            <Text className="text-red-500 text-sm mt-1">
-              {verification.error}
-            </Text>
-          )} */}
-
-            {/* <Button
-              title="Verify Email"
-              onPress={() => {}}
-              // bgVariant="success"
-              // className="mt-5"
-            /> */}
-          </View>
-        </ReactNativeModal>
-
-        <ReactNativeModal isVisible={false}>
-          <View className="bg-white px-4 py-9 rounded-2xl min-h-[300px]">
-            <Image
-              // source={images.check}
-              className="w-[110px] h-[110px] mx-auto my-5"
-            />
-
-            <Text className="text-3xl font-JakartaBold text-center">
-              Verified!
-            </Text>
-
-            <Text className="text-center text-gray-400 text-base mt-2 font-JakartaMedium">
-              You have successfully verified your account
-            </Text>
-
-            {/* <Button
-              title="Browse Home"
-              onPress={() => router.replace("/(tabs)/home")}
-              // className="mt-5"
-            /> */}
-          </View>
-        </ReactNativeModal>
+        {/*Modal */}
+        <Modal
+          type={isVisible.type}
+          isVisible={isVisible.visible}
+          setCloseModel={() =>
+            setIsVisible({ visible: false, message: "", type: "" })
+          }
+          message={isVisible.message}
+        />
       </View>
     </View>
   );
@@ -232,7 +225,7 @@ const styles = StyleSheet.create({
   },
   forgotPassword: {
     marginBottom: hp(4),
-    textAlign: "right",
+    alignSelf: "flex-end",
     color: theme.colors.secondaryText,
     fontWeight: theme.fontWeights.regular,
     fontSize: hp(1.8),

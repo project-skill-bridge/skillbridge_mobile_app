@@ -36,3 +36,10 @@ declare interface User {
   mobile?: string;
   image?: string;
 }
+
+declare interface ModalProps {
+  isVisible: boolean;
+  message: string;
+  type: "success" | "error" | "";
+  setCloseModel: () => void;
+}
