@@ -85,7 +85,7 @@ const SignUpScreen = () => {
                 <InputField
                   name="name"
                   control={control}
-                  leftIcon={
+                  icon={
                     <Icons.User size={22} color={theme.colors.primaryText} />
                   }
                   placeholder="Enter your name"
@@ -100,7 +100,7 @@ const SignUpScreen = () => {
                 <InputField
                   name="email"
                   control={control}
-                  leftIcon={
+                  icon={
                     <Icons.Mail size={22} color={theme.colors.primaryText} />
                   }
                   placeholder="Enter your email"
@@ -116,7 +116,7 @@ const SignUpScreen = () => {
                 <InputField
                   name="mobile"
                   control={control}
-                  leftIcon={
+                  icon={
                     <Icons.Smartphone
                       size={22}
                       color={theme.colors.primaryText}
@@ -135,7 +135,7 @@ const SignUpScreen = () => {
                 <InputField
                   name="password"
                   control={control}
-                  leftIcon={
+                  icon={
                     <Icons.LockKeyhole
                       size={24}
                       color={theme.colors.primaryText}

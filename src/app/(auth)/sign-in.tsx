@@ -70,7 +70,7 @@ const SignInScreen = () => {
                 <InputField
                   name="email"
                   control={control}
-                  leftIcon={
+                  icon={
                     <Icons.Mail size={22} color={theme.colors.primaryText} />
                   }
                   placeholder="Enter your email"
@@ -86,7 +86,7 @@ const SignInScreen = () => {
                 <InputField
                   name="password"
                   control={control}
-                  leftIcon={
+                  icon={
                     <Icons.LockKeyhole
                       size={24}
                       color={theme.colors.primaryText}

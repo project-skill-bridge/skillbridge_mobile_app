@@ -8,67 +8,57 @@ import {
   StyleSheet,
   Pressable,
 } from "react-native";
+import { Controller } from "react-hook-form";
 import { InputFieldProps } from "../../types/type";
 import { hp, wp } from "@/src/utils/common";
 import { theme } from "@/src/constants/Theme";
-import { Controller } from "react-hook-form";
 import { Icons } from "@/src/constants/Icons";
 
 const InputField = ({
   name,
   control,
   placeholder,
-  editable = true,
-  onRightIconPress,
   value: inputValue,
-  leftIcon: LeftIcon,
-  rightIcon: RightIcon,
+  icon: Icon,
   secureTextEntry = false,
+  ...props
 }: InputFieldProps) => {
   const [showPassword, setShowPassword] = React.useState(secureTextEntry);
   const [isFocused, setIsFocused] = React.useState(false);
 
-  const showPasswordHandler = () => {
-    setShowPassword((prev: boolean) => !prev);
-  };
-
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <TouchableWithoutFeedback onPress={Keyboard.isVisible}>
       <View
         style={[
           styles.inputContainer,
           isFocused && styles.focused,
-          !editable && styles.disabled,
+          !isFocused && styles.disabled,
         ]}
       >
-        {LeftIcon}
+        {Icon}
 
         <Controller
           name={name}
           control={control}
           render={({ field: { value, onBlur, onChange } }) => (
             <TextInput
-              value={inputValue || value}
               style={styles.input}
+              onChangeText={onChange}
               placeholder={placeholder}
+              value={inputValue || value}
               secureTextEntry={showPassword}
               onFocus={() => setIsFocused(true)}
-              onChangeText={onChange}
               onBlur={() => {
                 setIsFocused(false);
                 onBlur();
               }}
-              editable={editable}
+              {...props}
             />
           )}
         />
 
-        {RightIcon && (
-          <Pressable onPress={onRightIconPress}>{RightIcon}</Pressable>
-        )}
-
         {name === "password" && secureTextEntry && (
-          <Pressable onPress={showPasswordHandler}>
+          <Pressable onPress={() => setShowPassword((prev: boolean) => !prev)}>
             {showPassword ? (
               <Icons.EyeOff color={theme.colors.primaryText} />
             ) : (

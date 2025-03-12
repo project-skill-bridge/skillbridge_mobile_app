@@ -57,8 +57,10 @@ const RootLayout = () => {
           .get();
 
         const user = doc.data();
+
         if (user) {
           setUser({
+            id: userSession.uid,
             name: user.name,
             email: user.email,
             mobile: user.mobile,

@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import {
+  Alert,
   Image,
   KeyboardAvoidingView,
   Platform,
@@ -9,7 +10,10 @@ import {
   Text,
   View,
 } from "react-native";
+import { useForm } from "react-hook-form";
 import auth from "@react-native-firebase/auth";
+import { zodResolver } from "@hookform/resolvers/zod";
+import firestore from "@react-native-firebase/firestore";
 import { theme } from "@/src/constants/Theme";
 import { hp, wp } from "@/src/utils/common";
 import { Images } from "@/src/constants/Images";
@@ -17,42 +21,54 @@ import InputField from "@/src/components/input/Input-field";
 import InputGroup from "@/src/components/input/input-group";
 import InputLabel from "@/src/components/input/input-label";
 import ErrorMessage from "@/src/components/input/error-message";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { UpdateProfileSchema, UpdateProfileType } from "@/src/schema";
-import Loader from "@/src/components/ui/loader";
 import Button from "@/src/components/ui/button";
 import { useUserStore } from "@/src/store/user-store";
 import { Icons } from "@/src/constants/Icons";
+import { User } from "@/src/types/type";
 
 const ProfileScreen = () => {
-  const { user } = useUserStore();
+  const { user, setUser } = useUserStore();
 
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
+    getFieldState,
   } = useForm<UpdateProfileType>({
     resolver: zodResolver(UpdateProfileSchema),
     defaultValues: {
       name: user?.name || "",
-      mobile: user?.mobile || "Not Provided",
+      mobile: user?.mobile || "",
       password: "******",
     },
     mode: "all",
   });
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [isNameEditable, setIsNameEditable] = React.useState(false);
-  const [isMobileEditable, setIsMobileEditable] = React.useState(false);
-  const [isPasswordEditable, setIsPasswordEditable] = React.useState(false);
 
   const logOutHandler = async () => {
     await auth().signOut();
   };
 
-  const updateProfileHandler = async (data: UpdateProfileType) => {
-    setIsLoading(true);
-    console.log(data);
+  const updateProfileHandler = async ({
+    name,
+    password,
+    mobile,
+  }: UpdateProfileType) => {
+    try {
+      const userRef = firestore().collection("users").doc(user?.id);
+      await userRef.update({
+        name,
+        mobile,
+      });
+
+      if (getFieldState("password").isDirty) {
+        await auth().currentUser?.updatePassword(password);
+      }
+
+      setUser({ ...user, name, mobile } as User);
+    } catch {
+      Alert.alert("Error updating profile");
+    }
   };
 
   return (
@@ -81,15 +97,7 @@ const ProfileScreen = () => {
           <View style={styles.inputGroupContainer}>
             <InputGroup style={styles.inputGroup}>
               <InputLabel>Name</InputLabel>
-              <InputField
-                name="name"
-                control={control}
-                editable={isNameEditable}
-                // rightIcon={<Icon name="edit" />}
-                onRightIconPress={() =>
-                  setIsNameEditable((prev: boolean) => !prev)
-                }
-              />
+              <InputField name="name" control={control} />
               {errors.name?.message && (
                 <ErrorMessage message={errors.name.message} />
               )}
@@ -99,7 +107,6 @@ const ProfileScreen = () => {
               <InputLabel>Email</InputLabel>
               <InputField
                 name="email"
-                editable={false}
                 control={control}
                 value={user?.email}
                 keyboardType="email-address"
@@ -112,11 +119,6 @@ const ProfileScreen = () => {
                 name="mobile"
                 control={control}
                 keyboardType="phone-pad"
-                editable={isMobileEditable}
-                // rightIcon={<Icon name="edit" />}
-                onRightIconPress={() =>
-                  setIsMobileEditable((prev: boolean) => !prev)
-                }
               />
               {errors.mobile?.message && (
                 <ErrorMessage message={errors.mobile.message} />
@@ -125,15 +127,7 @@ const ProfileScreen = () => {
 
             <InputGroup style={styles.inputGroup}>
               <InputLabel>Password</InputLabel>
-              <InputField
-                name="password"
-                control={control}
-                editable={isPasswordEditable}
-                // rightIcon={<Icon name="edit" />}
-                onRightIconPress={() =>
-                  setIsPasswordEditable((prev: boolean) => !prev)
-                }
-              />
+              <InputField name="password" control={control} secureTextEntry />
               {errors.password?.message && (
                 <ErrorMessage message={errors.password.message} />
               )}
@@ -141,16 +135,15 @@ const ProfileScreen = () => {
           </View>
         </KeyboardAvoidingView>
 
-        {isLoading ? (
-          <Loader />
-        ) : (
-          <Button
-            style={styles.button}
-            onPress={handleSubmit(updateProfileHandler)}
-          >
-            <Text style={theme.buttonTextDefaultStyle}>Save</Text>
-          </Button>
-        )}
+        <Button
+          style={styles.button}
+          onPress={handleSubmit(updateProfileHandler)}
+          isLoading={isSubmitting}
+        >
+          <Text style={theme.buttonTextDefaultStyle}>
+            {isSubmitting ? "Submitting" : "Save"}
+          </Text>
+        </Button>
       </View>
     </ScrollView>
   );
