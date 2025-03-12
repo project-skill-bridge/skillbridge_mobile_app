@@ -10,6 +10,7 @@ import {
   Animated,
   TouchableOpacity,
   Easing,
+  ScrollView,
 } from 'react-native';
 import * as Speech from 'expo-speech';
 
@@ -28,7 +29,7 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
   onComplete = () => {},
   language = 'en-US',
   speed = 'normal',
-  voiceType = 'child',
+  voiceType = 'child', 
 }) => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isComplete, setIsComplete] = useState<boolean>(false);
@@ -39,60 +40,19 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
   const bounceAnim = useRef(new Animated.Value(0)).current;
   const buttonAnim = useRef(new Animated.Value(0)).current;
 
-  // Voice settings based on type
+  // Voice settings based on type - adjusted for more natural sound
   const voiceSettings: Record<string, { pitch: number, rate: number }> = {
-    child: { pitch: 1.2, rate: 0.8 },
-    adult: { pitch: 1.0, rate: 1.0 },
-    robot: { pitch: 0.8, rate: 0.9 }
+    child: { pitch: 1.1, rate: 0.9 },
+    adult: { pitch: 1.0, rate: 0.85 },
+    robot: { pitch: 0.8, rate: 0.8 }
   };
 
-  // Speed settings
+  // Speed settings - FIXED: now higher number = slower speech
   const speedSettings: Record<string, number> = {
-    slow: 1.5,
-    normal: 1,
-    fast: 0.5
+    slow: 0.7,    
+    normal: 1.0,  
+    fast: 1.3     
   };
-
-  // Format text into multiple lines for display
-  const formatTextIntoLines = (text: string, maxLines: number = 6): string => {
-    const words = text.split(' ');
-    const approxCharsPerLine = Math.ceil(text.length / maxLines) + 10;
-    let lines = [];
-    let currentLine = '';
-    
-    for (const word of words) {
-      if ((currentLine + word).length <= approxCharsPerLine || currentLine === '') {
-        currentLine += (currentLine ? ' ' : '') + word;
-      } else {
-        lines.push(currentLine);
-        currentLine = word;
-        
-        if (lines.length >= maxLines - 1) {
-          break;
-        }
-      }
-    }
-    
-    if (currentLine) {
-      lines.push(currentLine);
-    }
-    
-    // If we haven't filled all lines, add remaining words to the last line
-    if (lines.length < maxLines) {
-      const remainingWords = words.slice(
-        words.indexOf(lines[lines.length - 1].split(' ')[0]) + 
-        lines[lines.length - 1].split(' ').length
-      );
-      
-      if (remainingWords.length > 0) {
-        lines[lines.length - 1] += ' ' + remainingWords.join(' ');
-      }
-    }
-    
-    return lines.join('\n');
-  };
-
-  const formattedIntroText = formatTextIntoLines(introText);
 
   // Check if it's the first visit
   const checkFirstVisit = async () => {
@@ -124,7 +84,7 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
     const speedMultiplier = speedSettings[speed];
     
     // Start the speech
-    Speech.speak(formattedIntroText, {
+    Speech.speak(introText, {
       language,
       rate: rate * speedMultiplier,
       pitch,
@@ -193,11 +153,12 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
     const scale = width / baseWidth;
     
     return {
-      containerHeight: Math.min(120 * scale, 190),
+      containerHeight: Math.min(140 * scale, 220), 
       characterSize: Math.min(100 * scale, 150),
       fontSize: Math.min(16 * scale, 20),
       bubblePadding: Math.min(15 * scale, 22),
-      buttonSize: Math.min(120 * scale, 160)
+      buttonSize: Math.min(120 * scale, 160),
+      bubbleMaxHeight: Math.min(180 * scale, 260) 
     };
   };
   
@@ -246,12 +207,19 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
               styles.thoughtBubble, 
               { padding: responsiveSizes.bubblePadding }
             ]}>
-              <Text style={[
-                styles.thoughtText, 
-                { fontSize: responsiveSizes.fontSize }
-              ]}>
-                {formattedIntroText}
-              </Text>
+              <ScrollView 
+                style={{ 
+                  maxHeight: responsiveSizes.bubbleMaxHeight,
+                }}
+                showsVerticalScrollIndicator={false}
+              >
+                <Text style={[
+                  styles.thoughtText, 
+                  { fontSize: responsiveSizes.fontSize }
+                ]}>
+                  {introText}
+                </Text>
+              </ScrollView>
               
               <TouchableOpacity 
                 onPress={handleClose}
