@@ -6,6 +6,7 @@ import {
   Dimensions,
   Animated
 } from 'react-native';
+import { useFonts } from 'expo-font';
 import { Image } from "expo-image";
 
 const { width } = Dimensions.get('window');
@@ -14,6 +15,11 @@ const ElementsSection: React.FC = () => {
   const [message, setMessage] = useState("");
   const bounceAnim = useRef(new Animated.Value(0)).current;
   
+  // Load custom font
+  const [fontsLoaded] = useFonts({
+    'Bubblegum': require('./assets/Baloo-Regular.ttf'),
+  });
+
   // Time-based message function
   const getTimeBasedMessage = (): string => {
     const hour = new Date().getHours();
@@ -70,7 +76,7 @@ const ElementsSection: React.FC = () => {
     
     return {
       containerHeight: Math.min(120 * scale, 180), 
-      characterSize: Math.min(100 * scale, 150),   
+      characterSize: Math.min(100 * scale, 150),  
       fontSize: Math.min(18 * scale, 24),          
       bubblePadding: Math.min(15 * scale, 25)      
     };
@@ -83,6 +89,10 @@ const ElementsSection: React.FC = () => {
     inputRange: [0, 0.5, 1],
     outputRange: [0, -8, 0]
   });
+
+  if (!fontsLoaded) {
+    return <View style={styles.container} />;
+  }
 
   return (
     <View style={[styles.container, { height: responsiveSizes.containerHeight }]}>
@@ -160,7 +170,7 @@ const styles = StyleSheet.create({
   thoughtBubble: {
     backgroundColor: '#87CEFA',
     borderRadius: 20,
-    borderTopLeftRadius: 4, 
+    borderTopLeftRadius: 4,
     marginRight: 5,
   },
   thoughtText: {
