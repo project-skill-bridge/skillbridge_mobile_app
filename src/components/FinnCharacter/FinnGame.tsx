@@ -45,7 +45,7 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
   // Voice settings based on type - adjusted for more natural sound
   const voiceSettings: Record<string, { pitch: number, rate: number }> = {
     child: { pitch: 1.1, rate: 0.95 },
-    adult: { pitch: 1.0, rate: 0.9 },  // Slightly faster than before
+    adult: { pitch: 1.0, rate: 0.9 },  
     robot: { pitch: 0.8, rate: 0.9 }
   };
 
@@ -60,7 +60,7 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
     async function loadFonts() {
       try {
         await Font.loadAsync({
-          'Baloo': require('../components/assets/Baloo-Regular.ttf'),  
+          'Baloo': require('./assets/Baloo-Regular.ttf'),  
         });
         setFontsLoaded(true);
       } catch (error) {
@@ -245,7 +245,7 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
                   styles.thoughtText, 
                   { 
                     fontSize: responsiveSizes.fontSize,
-                    fontFamily: 'Baloo'  // Use Baloo font for the speech bubble text
+                    fontFamily: 'Baloo' 
                   }
                 ]}>
                   {introText}
