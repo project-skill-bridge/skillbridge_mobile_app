@@ -13,6 +13,7 @@ import {
   ScrollView,
 } from 'react-native';
 import * as Speech from 'expo-speech';
+import * as Font from 'expo-font';
 
 const { width } = Dimensions.get('window');
 
@@ -29,7 +30,7 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
   onComplete = () => {},
   language = 'en-US',
   speed = 'normal',
-  voiceType = 'child', 
+  voiceType = 'adult',
 }) => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isComplete, setIsComplete] = useState<boolean>(false);
@@ -37,22 +38,39 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
   const [isTalking, setIsTalking] = useState<boolean>(false);
   const [showBubble, setShowBubble] = useState<boolean>(true);
   const [showButton, setShowButton] = useState<boolean>(false);
+  const [fontsLoaded, setFontsLoaded] = useState<boolean>(false);
   const bounceAnim = useRef(new Animated.Value(0)).current;
   const buttonAnim = useRef(new Animated.Value(0)).current;
 
   // Voice settings based on type - adjusted for more natural sound
   const voiceSettings: Record<string, { pitch: number, rate: number }> = {
-    child: { pitch: 1.1, rate: 0.9 },
-    adult: { pitch: 1.0, rate: 0.85 },
-    robot: { pitch: 0.8, rate: 0.8 }
+    child: { pitch: 1.1, rate: 0.95 },
+    adult: { pitch: 1.0, rate: 0.9 },  // Slightly faster than before
+    robot: { pitch: 0.8, rate: 0.9 }
   };
 
-  // Speed settings - FIXED: now higher number = slower speech
+  // Speed settings - adjusted for slightly faster speech
   const speedSettings: Record<string, number> = {
-    slow: 0.7,    
-    normal: 1.0,  
-    fast: 1.3     
+    slow: 0.8,   
+    normal: 1.1,  
+    fast: 1.4     
   };
+
+  useEffect(() => {
+    async function loadFonts() {
+      try {
+        await Font.loadAsync({
+          'Baloo': require('../components/assets/Baloo-Regular.ttf'),  
+        });
+        setFontsLoaded(true);
+      } catch (error) {
+        console.error('Error loading fonts:', error);
+        setFontsLoaded(true);
+      }
+    }
+    
+    loadFonts();
+  }, []);
 
   // Check if it's the first visit
   const checkFirstVisit = async () => {
@@ -153,12 +171,12 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
     const scale = width / baseWidth;
     
     return {
-      containerHeight: Math.min(140 * scale, 220), 
+      containerHeight: Math.min(140 * scale, 220),
       characterSize: Math.min(100 * scale, 150),
       fontSize: Math.min(16 * scale, 20),
       bubblePadding: Math.min(15 * scale, 22),
       buttonSize: Math.min(120 * scale, 160),
-      bubbleMaxHeight: Math.min(180 * scale, 260) 
+      bubbleMaxHeight: Math.min(180 * scale, 260)
     };
   };
   
@@ -184,18 +202,28 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
 
   // Effects on component mount
   useEffect(() => {
-    checkFirstVisit().then(() => {
-      if (isFirstVisit) {
-        startIntro();
-      }
-    });
-    
-    startBounceAnimation();
+    if (fontsLoaded) {
+      checkFirstVisit().then(() => {
+        if (isFirstVisit) {
+          startIntro();
+        }
+      });
+      
+      startBounceAnimation();
+    }
     
     return () => {
       Speech.stop();
     };
-  }, []);
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={[styles.container, { height: responsiveSizes.containerHeight }]}>
@@ -215,7 +243,10 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
               >
                 <Text style={[
                   styles.thoughtText, 
-                  { fontSize: responsiveSizes.fontSize }
+                  { 
+                    fontSize: responsiveSizes.fontSize,
+                    fontFamily: 'Baloo'  // Use Baloo font for the speech bubble text
+                  }
                 ]}>
                   {introText}
                 </Text>
@@ -298,6 +329,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 15,
     position: 'relative',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   messageSection: {
     flex: 1,
