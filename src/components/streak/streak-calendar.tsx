@@ -22,3 +22,8 @@ interface StreakCalendarProps {
   onResetWeek: () => void
   showConfetti: boolean
 }
+const StreakCalendar = ({ onStreakUpdate, onWeekCompleted, onResetWeek, showConfetti }: StreakCalendarProps) => {
+  const [streakDays, setStreakDays] = React.useState<StreakDay[]>([])
+  const [currentStreak, setCurrentStreak] = React.useState(0)
+  const [longestStreak, setLongestStreak] = React.useState(0)
+  const confettiRef = React.useRef<ConfettiCannon>(null)
