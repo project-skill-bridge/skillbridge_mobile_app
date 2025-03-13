@@ -64,3 +64,25 @@ const StreakScreen = () => {
     </ScrollView>
   )
 }
+export default StreakScreen
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#FFF",
+    paddingHorizontal: wp(6),
+    paddingVertical: hp(4),
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: hp(4),
+  },
+  headerText: {
+    fontSize: hp(3),
+    fontWeight: "bold",
+    color: theme.colors.primaryText,
+    marginBottom: hp(3),
+  },
+})
