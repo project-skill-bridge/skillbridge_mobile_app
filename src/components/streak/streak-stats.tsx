@@ -20,3 +20,11 @@ const StreakStats = ({ currentStreak, longestStreak }: StreakStatsProps) => {
     </View>
   )
 }
+export default StreakStats
+
+const styles = StyleSheet.create({
+  streakInfoContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginBottom: hp(3),
+  },
