@@ -27,3 +27,28 @@ const StreakCalendar = ({ onStreakUpdate, onWeekCompleted, onResetWeek, showConf
   const [currentStreak, setCurrentStreak] = React.useState(0)
   const [longestStreak, setLongestStreak] = React.useState(0)
   const confettiRef = React.useRef<ConfettiCannon>(null)
+
+   // Initialize streak days
+   React.useEffect(() => {
+    const loadStreakData = async () => {
+      try {
+        // Try to load saved streak data
+        const savedData = await AsyncStorage.getItem("streak-data")
+        if (savedData) {
+          const { days, currentStreak, longestStreak } = JSON.parse(savedData)
+          setStreakDays(days)
+          setCurrentStreak(currentStreak)
+          setLongestStreak(longestStreak)
+          onStreakUpdate(currentStreak, longestStreak)
+        } else {
+          // Initialize with current week if no saved data
+          initializeWeek()
+        }
+      } catch (error) {
+        console.error("Error loading streak data:", error)
+        initializeWeek()
+      }
+    }
+
+    loadStreakData()
+  }, [])
