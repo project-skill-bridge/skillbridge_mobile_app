@@ -36,3 +36,14 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     width: wp(40),
   },
+  streakValue: {
+    fontSize: hp(4),
+    fontFamily: "Coiny",
+    color: theme.colors.primary,
+  },
+  streakLabel: {
+    fontSize: hp(1.8),
+    color: theme.colors.secondaryText,
+    marginTop: hp(0.5),
+  },
+})
