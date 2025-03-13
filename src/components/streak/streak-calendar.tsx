@@ -131,3 +131,13 @@ const StreakCalendar = ({ onStreakUpdate, onWeekCompleted, onResetWeek, showConf
         onWeekCompleted()
       }
     }
+    const resetWeek = () => {
+      const newDays = streakDays.map((day) => ({
+        ...day,
+        completed: false,
+      }))
+  
+      setStreakDays(newDays)
+      saveStreakData(newDays, 0, longestStreak)
+      onResetWeek()
+    }
