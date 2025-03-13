@@ -50,3 +50,17 @@ const StreakScreen = () => {
               <Icons.ChevronLeft size={24} color="black" />
             </Button>
           </View>
+
+          <StreakStats currentStreak={currentStreak} longestStreak={longestStreak} />
+
+      <StreakCalendar
+        onStreakUpdate={handleStreakUpdate}
+        onWeekCompleted={handleWeekCompleted}
+        onResetWeek={handleResetWeek}
+        showConfetti={showConfetti}
+      />
+
+      <StreakMessage currentStreak={currentStreak} />
+    </ScrollView>
+  )
+}
