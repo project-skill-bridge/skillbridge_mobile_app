@@ -64,3 +64,19 @@ const StreakCalendar = ({ onStreakUpdate, onWeekCompleted, onResetWeek, showConf
     const today = new Date()
     const dayOfWeek = today.getDay() // 0 is Sunday, 6 is Saturday
     const days = []
+      // Create array for the current week (Sunday to Saturday)
+      for (let i = 0; i < 7; i++) {
+        const date = new Date(today)
+        date.setDate(today.getDate() - dayOfWeek + i)
+  
+        days.push({
+          day: getDayName(i),
+          shortName: getShortDayName(i),
+          completed: false,
+          date: date.getDate(),
+        })
+      }
+  
+      setStreakDays(days)
+      saveStreakData(days, 0, 0)
+    }
