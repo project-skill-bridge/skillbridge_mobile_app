@@ -35,3 +35,10 @@ const StreakScreen = () => {
       const handleResetWeek = () => {
         setShowConfetti(false)
       }
+      if (!fontsLoaded) {
+        return (
+          <View style={styles.container}>
+            <Text>Loading...</Text>
+          </View>
+        )
+      }
