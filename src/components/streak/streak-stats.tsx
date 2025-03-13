@@ -28,3 +28,11 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     marginBottom: hp(3),
   },
+  streakInfo: {
+    alignItems: "center",
+    backgroundColor: theme.colors.lightGray,
+    paddingVertical: hp(2),
+    paddingHorizontal: wp(6),
+    borderRadius: 16,
+    width: wp(40),
+  },
