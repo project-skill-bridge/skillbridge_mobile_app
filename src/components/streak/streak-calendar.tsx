@@ -9,3 +9,16 @@ import { theme } from "@/src/constants/Theme"
 import { Icons } from "@/src/constants/Icons"
 import Button from "@/src/components/ui/button"
 
+interface StreakDay {
+  day: string
+  shortName: string
+  completed: boolean
+  date: number
+}
+
+interface StreakCalendarProps {
+  onStreakUpdate: (currentStreak: number, longestStreak: number) => void
+  onWeekCompleted: () => void
+  onResetWeek: () => void
+  showConfetti: boolean
+}
