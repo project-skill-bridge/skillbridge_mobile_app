@@ -5,3 +5,8 @@ import { theme } from "@/src/constants/Theme"
 interface StreakMessageProps {
   currentStreak: number
 }
+const StreakMessage = ({ currentStreak }: StreakMessageProps) => {
+  return (
+    
+  )
+}
