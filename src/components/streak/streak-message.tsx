@@ -16,3 +16,12 @@ const StreakMessage = ({ currentStreak }: StreakMessageProps) => {
     </View>
   )
 }
+export default StreakMessage
+  
+  const styles = StyleSheet.create({
+    messageContainer: {
+      backgroundColor: theme.colors.primary,
+      borderRadius: 16,
+      padding: wp(4),
+      marginBottom: hp(3),
+    },
