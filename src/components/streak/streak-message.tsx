@@ -25,3 +25,10 @@ export default StreakMessage
       padding: wp(4),
       marginBottom: hp(3),
     },
+    messageText: {
+      fontSize: hp(2),
+      fontFamily: "Coiny",
+      color: "white",
+      textAlign: "center",
+    },
+  })
