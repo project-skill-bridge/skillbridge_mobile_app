@@ -17,3 +17,12 @@ const TabBarButton = ({ onPress, routeName, onLongPress }: TabBarButtonProps) =>
     </Pressable>
   )
 }
+export default TabBarButton
+
+const styles = StyleSheet.create({
+  tabBarItem: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+})
