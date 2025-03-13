@@ -12,3 +12,13 @@ import StreakMessage from "@/src/components/streak/streak-message"
 import { useRouter } from "expo-router"
 import { Icons } from "@/src/constants/Icons"
 import Button from "@/src/components/ui/button"
+
+const StreakScreen = () => {
+    const router = useRouter()
+    const [currentStreak, setCurrentStreak] = React.useState(0)
+    const [longestStreak, setLongestStreak] = React.useState(0)
+    const [showConfetti, setShowConfetti] = React.useState(false)
+  
+    const [fontsLoaded] = useFonts({
+      Coiny: Fonts.Coiny,
+    })
