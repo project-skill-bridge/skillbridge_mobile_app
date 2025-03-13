@@ -42,3 +42,11 @@ const StreakScreen = () => {
           </View>
         )
       }
+      return (
+        <ScrollView style={styles.container}>
+          <View style={styles.header}>
+            <Text style={styles.headerText}>Your Streak</Text>
+            <Button onPress={() => router.back()} variant="icon">
+              <Icons.ChevronLeft size={24} color="black" />
+            </Button>
+          </View>
