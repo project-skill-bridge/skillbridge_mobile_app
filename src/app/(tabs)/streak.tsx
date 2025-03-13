@@ -22,3 +22,16 @@ const StreakScreen = () => {
     const [fontsLoaded] = useFonts({
       Coiny: Fonts.Coiny,
     })
+
+    const handleStreakUpdate = (current: number, longest: number) => {
+        setCurrentStreak(current)
+        setLongestStreak(longest)
+      }
+    
+      const handleWeekCompleted = () => {
+        setShowConfetti(true)
+      }
+    
+      const handleResetWeek = () => {
+        setShowConfetti(false)
+      }
