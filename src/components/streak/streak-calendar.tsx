@@ -186,4 +186,71 @@ const StreakCalendar = ({ onStreakUpdate, onWeekCompleted, onResetWeek, showConf
       </View>
     )
   }
+  export default StreakCalendar
+
+const styles = StyleSheet.create({
+  weekContainer: {
+    backgroundColor: "#F8F8F8",
+    borderRadius: 16,
+    padding: wp(4),
+    marginBottom: hp(3),
+  },
+  weekTitle: {
+    fontSize: hp(2.2),
+    fontFamily: "Coiny",
+    color: theme.colors.primaryText,
+    marginBottom: hp(2),
+  },
+  daysContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    flexWrap: "wrap",
+  },
+  dayItem: {
+    width: wp(11),
+    alignItems: "center",
+    marginBottom: hp(2),
+  },
+  completedDay: {
+    opacity: 1,
+  },
+  dayName: {
+    fontSize: hp(1.6),
+    color: theme.colors.secondaryText,
+    marginBottom: hp(0.5),
+  },
+  dayDate: {
+    fontSize: hp(1.8),
+    fontWeight: "bold",
+    color: theme.colors.primaryText,
+    marginBottom: hp(1),
+  },
+  checkCircle: {
+    width: wp(8),
+    height: wp(8),
+    borderRadius: wp(4),
+    backgroundColor: theme.colors.secondary,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  emptyCircle: {
+    width: wp(8),
+    height: wp(8),
+    borderRadius: wp(4),
+    borderWidth: 2,
+    borderColor: "#DDD",
+    backgroundColor: "white",
+  },
+  resetButton: {
+    backgroundColor: theme.colors.secondary,
+    marginBottom: hp(4),
+  },
+  resetButtonText: {
+    fontSize: hp(2),
+    fontFamily: "Coiny",
+    color: "white",
+  },
+})
+
+
   
