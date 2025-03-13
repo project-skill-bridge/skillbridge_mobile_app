@@ -52,3 +52,11 @@ const StreakCalendar = ({ onStreakUpdate, onWeekCompleted, onResetWeek, showConf
 
     loadStreakData()
   }, [])
+  // Trigger confetti when showConfetti changes to true
+  React.useEffect(() => {
+    if (showConfetti && confettiRef.current) {
+      setTimeout(() => {
+        confettiRef.current?.start()
+      }, 100)
+    }
+  }, [showConfetti])
