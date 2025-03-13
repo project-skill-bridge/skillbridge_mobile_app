@@ -60,3 +60,7 @@ const StreakCalendar = ({ onStreakUpdate, onWeekCompleted, onResetWeek, showConf
       }, 100)
     }
   }, [showConfetti])
+  const initializeWeek = () => {
+    const today = new Date()
+    const dayOfWeek = today.getDay() // 0 is Sunday, 6 is Saturday
+    const days = []
