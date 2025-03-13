@@ -6,3 +6,17 @@ interface StreakStatsProps {
   currentStreak: number
   longestStreak: number
 }
+const StreakStats = ({ currentStreak, longestStreak }: StreakStatsProps) => {
+  return (
+    <View style={styles.streakInfoContainer}>
+      <View style={styles.streakInfo}>
+        <Text style={styles.streakValue}>{currentStreak}</Text>
+        <Text style={styles.streakLabel}>Current Streak</Text>
+      </View>
+      <View style={styles.streakInfo}>
+        <Text style={styles.streakValue}>{longestStreak}</Text>
+        <Text style={styles.streakLabel}>Longest Streak</Text>
+      </View>
+    </View>
+  )
+}
