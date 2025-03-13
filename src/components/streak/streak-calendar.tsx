@@ -80,3 +80,54 @@ const StreakCalendar = ({ onStreakUpdate, onWeekCompleted, onResetWeek, showConf
       setStreakDays(days)
       saveStreakData(days, 0, 0)
     }
+    const getDayName = (dayIndex: number): string => {
+      const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+      return days[dayIndex]
+    }
+  
+    const getShortDayName = (dayIndex: number): string => {
+      const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+      return days[dayIndex]
+    }
+    const saveStreakData = async (days: StreakDay[], current: number, longest: number) => {
+      try {
+        await AsyncStorage.setItem(
+          "streak-data",
+          JSON.stringify({
+            days,
+            currentStreak: current,
+            longestStreak: longest,
+          }),
+        )
+        onStreakUpdate(current, longest)
+      } catch (error) {
+        console.error("Error saving streak data:", error)
+      }
+    }
+    const handleDayComplete = (index: number) => {
+      const newDays = [...streakDays]
+      newDays[index].completed = !newDays[index].completed
+      setStreakDays(newDays)
+  
+      // Calculate current streak
+      let streak = 0
+      for (const day of newDays) {
+        if (day.completed) {
+          streak++
+        } else {
+          break
+        }
+      }
+      const newCurrentStreak = streak
+    const newLongestStreak = Math.max(longestStreak, newCurrentStreak)
+
+    setCurrentStreak(newCurrentStreak)
+    setLongestStreak(newLongestStreak)
+
+    saveStreakData(newDays, newCurrentStreak, newLongestStreak)
+      // Check if all days are completed
+      const allCompleted = newDays.every((day) => day.completed)
+      if (allCompleted) {
+        onWeekCompleted()
+      }
+    }
