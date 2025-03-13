@@ -141,3 +141,49 @@ const StreakCalendar = ({ onStreakUpdate, onWeekCompleted, onResetWeek, showConf
       saveStreakData(newDays, 0, longestStreak)
       onResetWeek()
     }
+    return (
+      <View>
+        <View style={styles.weekContainer}>
+          <Text style={styles.weekTitle}>This Week</Text>
+          <View style={styles.daysContainer}>
+            {streakDays.map((day, index) => (
+              <TouchableOpacity
+                key={index}
+                style={[styles.dayItem, day.completed && styles.completedDay]}
+                onPress={() => handleDayComplete(index)}
+              >
+                <Text style={styles.dayName}>{day.shortName}</Text>
+                <Text style={styles.dayDate}>{day.date}</Text>
+                {day.completed ? (
+                  <View style={styles.checkCircle}>
+                    <Icons.Check size={20} color="white" />
+                  </View>
+                ) : (
+                  <View style={styles.emptyCircle} />
+                )}
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+  
+        {currentStreak === 7 && (
+          <Button onPress={resetWeek} style={styles.resetButton}>
+            <Text style={styles.resetButtonText}>Start New Week</Text>
+          </Button>
+        )}
+  
+        {showConfetti && (
+          <ConfettiCannon
+            ref={confettiRef}
+            count={200}
+            origin={{ x: wp(50), y: 0 }}
+            autoStart={false}
+            fadeOut
+            explosionSpeed={350}
+            fallSpeed={3000}
+          />
+        )}
+      </View>
+    )
+  }
+  
