@@ -1,7 +1,6 @@
 import * as React from "react";
 
 import {
-  Alert,
   Image,
   KeyboardAvoidingView,
   Platform,
@@ -25,7 +24,8 @@ import { UpdateProfileSchema, UpdateProfileType } from "@/src/schema";
 import Button from "@/src/components/ui/button";
 import { useUserStore } from "@/src/store/user-store";
 import { Icons } from "@/src/constants/Icons";
-import { User } from "@/src/types/type";
+import { ModalState, User } from "@/src/types/type";
+import Modal from "@/src/components/ui/modal";
 
 const ProfileScreen = () => {
   const { user, setUser } = useUserStore();
@@ -43,6 +43,12 @@ const ProfileScreen = () => {
       password: "******",
     },
     mode: "all",
+  });
+
+  const [isVisible, setIsVisible] = React.useState<ModalState>({
+    visible: false,
+    message: "",
+    type: "",
   });
 
   const logOutHandler = async () => {
@@ -67,7 +73,11 @@ const ProfileScreen = () => {
 
       setUser({ ...user, name, mobile } as User);
     } catch {
-      Alert.alert("Error updating profile");
+      setIsVisible({
+        visible: true,
+        message: "An error occurred. Please try again.",
+        type: "error",
+      });
     }
   };
 
@@ -144,6 +154,16 @@ const ProfileScreen = () => {
             {isSubmitting ? "Submitting" : "Save"}
           </Text>
         </Button>
+
+        {/*Modal */}
+        <Modal
+          type={isVisible.type}
+          isVisible={isVisible.visible}
+          setCloseModel={() =>
+            setIsVisible({ visible: false, message: "", type: "" })
+          }
+          message={isVisible.message}
+        />
       </View>
     </ScrollView>
   );

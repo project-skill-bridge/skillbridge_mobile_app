@@ -23,12 +23,7 @@ import { LoginFormType, LoginSchema } from "@/src/schema";
 import Button from "@/src/components/ui/button";
 import { Icons } from "@/src/constants/Icons";
 import Modal from "@/src/components/ui/modal";
-
-interface ModalState {
-  visible: boolean;
-  message: string;
-  type: "success" | "error" | "";
-}
+import { ModalState } from "@/src/types/type";
 
 const SignInScreen = () => {
   const {
@@ -58,9 +53,17 @@ const SignInScreen = () => {
       await auth().signInWithEmailAndPassword(email, password);
     } catch (error) {
       if (error instanceof Error) {
-        alert(error.message);
+        setIsVisible({
+          visible: true,
+          message: "Invalid email or password",
+          type: "error",
+        });
       } else {
-        alert("An unknown error occurred");
+        setIsVisible({
+          visible: true,
+          message: "An error occurred. Please try again.",
+          type: "error",
+        });
       }
     }
   };

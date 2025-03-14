@@ -43,3 +43,9 @@ declare interface ModalProps {
   type: "success" | "error" | "";
   setCloseModel: () => void;
 }
+
+declare interface ModalState {
+  visible: boolean;
+  message: string;
+  type: "success" | "error" | "";
+}
