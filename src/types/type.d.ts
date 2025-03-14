@@ -40,12 +40,12 @@ declare interface User {
 declare interface ModalProps {
   isVisible: boolean;
   message: string;
-  type: "success" | "error" | "";
+  type: "success" | "error" | null;
   setCloseModel: () => void;
 }
 
 declare interface ModalState {
   visible: boolean;
   message: string;
-  type: "success" | "error" | "";
+  type: "success" | "error" | null;
 }

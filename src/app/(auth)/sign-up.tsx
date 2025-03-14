@@ -45,7 +45,7 @@ const SignUpScreen = () => {
   const [isVisible, setIsVisible] = React.useState<ModalState>({
     visible: false,
     message: "",
-    type: "",
+    type: null,
   });
 
   const signUpHandler = async (formData: RegisterFormType) => {
@@ -55,7 +55,7 @@ const SignUpScreen = () => {
         email,
         password
       );
-      // await user.sendEmailVerification();
+      await user.sendEmailVerification();
 
       await firestore().collection("users").doc(user.uid).set({
         name: formData.name,
@@ -189,7 +189,7 @@ const SignUpScreen = () => {
           type={isVisible.type}
           isVisible={isVisible.visible}
           setCloseModel={() =>
-            setIsVisible({ visible: false, message: "", type: "" })
+            setIsVisible({ visible: false, message: "", type: null })
           }
           message={isVisible.message}
         />

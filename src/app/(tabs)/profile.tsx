@@ -4,6 +4,7 @@ import {
   Image,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -30,6 +31,25 @@ import Modal from "@/src/components/ui/modal";
 const ProfileScreen = () => {
   const { user, setUser } = useUserStore();
 
+  const [isVerified, setIsVerified] = React.useState(false);
+  const [isVisible, setIsVisible] = React.useState<ModalState>({
+    visible: false,
+    message: "",
+    type: null,
+  });
+
+  React.useEffect(() => {
+    (async () => {
+      const user = auth().currentUser;
+
+      if (user?.emailVerified) {
+        setIsVerified(true);
+      } else {
+        setIsVerified(false);
+      }
+    })();
+  }, []);
+
   const {
     control,
     handleSubmit,
@@ -43,12 +63,6 @@ const ProfileScreen = () => {
       password: "******",
     },
     mode: "all",
-  });
-
-  const [isVisible, setIsVisible] = React.useState<ModalState>({
-    visible: false,
-    message: "",
-    type: "",
   });
 
   const logOutHandler = async () => {
@@ -72,6 +86,32 @@ const ProfileScreen = () => {
       }
 
       setUser({ ...user, name, mobile } as User);
+    } catch {
+      setIsVisible({
+        visible: true,
+        message: "An error occurred. Please try again.",
+        type: "error",
+      });
+    }
+  };
+
+  const sendVerificationEmail = async () => {
+    try {
+      const user = auth().currentUser;
+
+      if (user?.emailVerified) return;
+
+      user?.sendEmailVerification();
+
+      setIsVisible({
+        visible: true,
+        message: "Verification email sent! Please check your inbox.",
+        type: "success",
+      });
+
+      setTimeout(async () => {
+        await auth().signOut();
+      }, 5000);
     } catch {
       setIsVisible({
         visible: true,
@@ -120,6 +160,12 @@ const ProfileScreen = () => {
                 control={control}
                 value={user?.email}
                 keyboardType="email-address"
+                icon={
+                  <Icons.BadgeCheck
+                    size={22}
+                    color={isVerified ? "green" : "red"}
+                  />
+                }
               />
             </InputGroup>
 
@@ -145,6 +191,21 @@ const ProfileScreen = () => {
           </View>
         </KeyboardAvoidingView>
 
+        {!isVerified && (
+          <Pressable
+            onPress={sendVerificationEmail}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 5,
+              alignSelf: "flex-end",
+            }}
+          >
+            <Icons.BadgeCheck size={15} color="red" />
+            <Text style={styles.verifyText}>Verify your Email</Text>
+          </Pressable>
+        )}
+
         <Button
           style={styles.button}
           onPress={handleSubmit(updateProfileHandler)}
@@ -160,7 +221,7 @@ const ProfileScreen = () => {
           type={isVisible.type}
           isVisible={isVisible.visible}
           setCloseModel={() =>
-            setIsVisible({ visible: false, message: "", type: "" })
+            setIsVisible({ visible: false, message: "", type: null })
           }
           message={isVisible.message}
         />
@@ -208,7 +269,7 @@ const styles = StyleSheet.create({
   userInforContainer: {
     gap: hp(2),
     backgroundColor: "white",
-    paddingHorizontal: wp(5),
+    paddingHorizontal: wp(3),
     paddingVertical: hp(2),
     borderRadius: 16,
   },
@@ -220,5 +281,9 @@ const styles = StyleSheet.create({
   },
   button: {
     borderRadius: 10,
+  },
+  verifyText: {
+    color: "red",
+    fontWeight: theme.fontWeights.bold,
   },
 });

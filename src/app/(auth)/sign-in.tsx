@@ -44,7 +44,7 @@ const SignInScreen = () => {
   const [isVisible, setIsVisible] = React.useState<ModalState>({
     visible: false,
     message: "",
-    type: "",
+    type: null,
   });
 
   const signInHandler = async (formData: LoginFormType) => {
@@ -185,7 +185,7 @@ const SignInScreen = () => {
           type={isVisible.type}
           isVisible={isVisible.visible}
           setCloseModel={() =>
-            setIsVisible({ visible: false, message: "", type: "" })
+            setIsVisible({ visible: false, message: "", type: null })
           }
           message={isVisible.message}
         />

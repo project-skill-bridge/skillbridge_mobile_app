@@ -58,15 +58,14 @@ const RootLayout = () => {
 
         const user = doc.data();
 
-        if (user) {
-          setUser({
-            id: userSession.uid,
-            name: user.name,
-            email: user.email,
-            mobile: user.mobile,
-            image: user.image,
-          });
-        }
+        setUser({
+          id: userSession.uid,
+          name: user?.name,
+          email: user?.email,
+          mobile: user?.mobile,
+          image: user?.image,
+        });
+
         router.replace("/(tabs)/home");
       } else if ((!userSession && isRootGroup) || isOnboarding) {
         setUser(null);

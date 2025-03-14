@@ -27,11 +27,11 @@ const Modal = ({
       <View style={styles.modelContainer}>
         <View style={styles.titleContainer}>
           <Text style={styles.modelTitle}>
-            {type === "success" ? "Success" : "Error"}
+            {type && type === "success" ? "Success" : "Error"}
           </Text>
           <Text>
             {" "}
-            {type === "success" ? (
+            {type && type === "success" ? (
               <Icons.Check color="green" size={24} />
             ) : (
               <Icons.X color="red" size={25} />
