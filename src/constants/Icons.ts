@@ -21,6 +21,7 @@ import {
   User,
   Volume2,
   X,
+  BadgeCheck,
 } from "lucide-react-native";
 
 export const Icons = {
@@ -46,7 +47,7 @@ export const Icons = {
   Repeat,
   ArrowBigRight,
   X,
-  
+  BadgeCheck,
 };
 
 export type Icon = keyof typeof Icons;
