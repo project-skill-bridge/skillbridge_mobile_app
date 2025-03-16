@@ -1,9 +1,8 @@
-// src/app/(tabs)/settings.tsx
-
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, View, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import ProfileSection from '../../components/settings/profile-section';
 import SettingsSection from '../../components/settings/settings-section';
 import SettingsItem from '../../components/settings/settings-item';
 import { hp, wp } from '@/src/utils/common';
@@ -16,12 +15,13 @@ export default function SettingsScreen() {
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [hapticFeedbackEnabled, setHapticFeedbackEnabled] = useState(true);
 
-
-
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
         <Text style={styles.heading}>Settings</Text>
+        
+        {/* Profile Section */}
+        <ProfileSection />
         
         {/* App Settings */}
         <SettingsSection title="App Settings">
@@ -37,8 +37,7 @@ export default function SettingsScreen() {
             type="toggle"
             value={soundEnabled}
             onToggle={setSoundEnabled}
-            // Check if you have a Volume icon in your Icons object
-            // If not, you can leave IconComponent prop out
+            IconComponent={<Icons.Volume2 size={22} color="#6277bf" />}
           />
           <SettingsItem
             title="Haptic Feedback"
@@ -49,7 +48,6 @@ export default function SettingsScreen() {
           />
         </SettingsSection>
         
-        
         {/* Bottom padding for scrolling */}
         <View style={styles.bottomPadding} />
       </ScrollView>
@@ -57,6 +55,7 @@ export default function SettingsScreen() {
   );
 }
 
+// Keep existing styles
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,

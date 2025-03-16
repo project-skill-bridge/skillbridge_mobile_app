@@ -1,4 +1,3 @@
-// src/components/settings/settings-item.tsx
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Switch } from 'react-native';
 import { hp, wp } from '@/src/utils/common';
@@ -71,8 +70,7 @@ const SettingsItem: React.FC<SettingsItemProps> = ({
       )}
       
       {type === 'navigate' && (
-        // Use a simple Text component as a fallback instead of an undefined icon
-        <Text style={{ color: '#999999', fontSize: 16 }}>›</Text>
+        <Icons.ChevronLeft size={20} color="#999999" style={{ transform: [{ scaleX: -1 }] }} />
       )}
     </TouchableOpacity>
   );

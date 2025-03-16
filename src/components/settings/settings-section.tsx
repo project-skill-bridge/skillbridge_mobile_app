@@ -1,4 +1,3 @@
-// src/components/settings/settings-section.tsx
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { hp } from '@/src/utils/common';
