@@ -1,19 +1,22 @@
-// Update src/app/(tabs)/settings.tsx to add the support and about section
+// src/app/(tabs)/settings.tsx
 
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, View, Text, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import auth from '@react-native-firebase/auth';
+
 import ProfileSection from '../../components/settings/profile-section';
 import SettingsSection from '../../components/settings/settings-section';
 import SettingsItem from '../../components/settings/settings-item';
 import { hp, wp } from '@/src/utils/common';
 import { theme } from '@/src/constants/Theme';
 import { Icons } from '@/src/constants/Icons';
+import auth from '@react-native-firebase/auth';
 
 export default function SettingsScreen() {
   const router = useRouter();
+  
+  // App settings state
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [hapticFeedbackEnabled, setHapticFeedbackEnabled] = useState(true);
@@ -31,13 +34,14 @@ export default function SettingsScreen() {
   };
   
   const handleHelpSupport = () => {
-    Alert.alert("Help & Support", "Need help? Contact us at skillbridge.sl@gmail.com");
+    Alert.alert("Help & Support", "Need help? Contact us at support@skillbridge.com");
   };
   
   const handleAbout = () => {
     Alert.alert(
       "About Skill-Bridge", 
-      "Version 1.0.0\n\nSkillBridge is designed to help children with special needs develop essential life skills. Guided by Finn, we offer interactive learning experiences focused on daily routines and simple vocational skills.")
+      "Version 1.0.0\n\nSkill-Bridge is an educational gaming platform designed to help children with special needs learn essential life skills through interactive games."
+    );
   };
   
   const handleTerms = () => {
@@ -46,7 +50,7 @@ export default function SettingsScreen() {
       "By using Skill-Bridge, you agree to our terms of service which can be found on our website."
     );
   };
-  // New logout handler
+  
   const handleLogout = async () => {
     Alert.alert(
       "Logout",
@@ -62,7 +66,6 @@ export default function SettingsScreen() {
           onPress: async () => {
             try {
               await auth().signOut();
-              // Navigate to sign-in screen after logout
               router.replace('/sign-in');
             } catch (error) {
               console.error('Logout error:', error);
@@ -74,16 +77,13 @@ export default function SettingsScreen() {
     );
   };
 
-
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
         <Text style={styles.heading}>Settings</Text>
         
-        {/* Profile Section */}
         <ProfileSection />
         
-        {/* App Settings */}
         <SettingsSection title="App Settings">
           <SettingsItem
             title="Notifications"
@@ -108,7 +108,6 @@ export default function SettingsScreen() {
           />
         </SettingsSection>
         
-        {/* Preferences */}
         <SettingsSection title="Preferences">
           <SettingsItem
             title="Language"
@@ -119,7 +118,6 @@ export default function SettingsScreen() {
           />
         </SettingsSection>
         
-        {/* Game Stats */}
         <SettingsSection title="Game Stats">
           <SettingsItem
             title="Game History"
@@ -136,7 +134,6 @@ export default function SettingsScreen() {
           />
         </SettingsSection>
         
-        {/* Support & About */}
         <SettingsSection title="Support & About">
           <SettingsItem
             title="Help & Support"
@@ -154,10 +151,9 @@ export default function SettingsScreen() {
             onPress={handleTerms}
             isLast={true}
           />
-
         </SettingsSection>
-               {/* Logout Section */}
-               <SettingsSection title="">
+        
+        <SettingsSection title="">
           <SettingsItem
             title="Logout"
             type="action"
@@ -168,15 +164,12 @@ export default function SettingsScreen() {
           />
         </SettingsSection>
         
-        {/* Bottom padding for scrolling */}
         <View style={styles.bottomPadding} />
       </ScrollView>
     </SafeAreaView>
   );
 }
 
-// Keep existing styles
-//styles!!
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
