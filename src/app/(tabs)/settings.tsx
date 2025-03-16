@@ -1,4 +1,4 @@
-// Update src/app/(tabs)/settings.tsx with a refined account section
+// Update src/app/(tabs)/settings.tsx to add the support and about section
 
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, View, Text, Alert } from 'react-native';
@@ -23,13 +23,28 @@ export default function SettingsScreen() {
   };
   
   const handleGameHistory = () => {
-    // This would navigate to a game history screen
     Alert.alert("Game History", "View your previous games and performance.");
   };
   
   const handleAchievements = () => {
-    // This would navigate to achievements screen
     Alert.alert("Achievements", "View your unlocked achievements and badges.");
+  };
+  
+  const handleHelpSupport = () => {
+    Alert.alert("Help & Support", "Need help? Contact us at skillbridge.sl@gmail.com");
+  };
+  
+  const handleAbout = () => {
+    Alert.alert(
+      "About Skill-Bridge", 
+      "Version 1.0.0\n\nSkillBridge is designed to help children with special needs develop essential life skills. Guided by Finn, we offer interactive learning experiences focused on daily routines and simple vocational skills.")
+  };
+  
+  const handleTerms = () => {
+    Alert.alert(
+      "Terms of Service",
+      "By using Skill-Bridge, you agree to our terms of service which can be found on our website."
+    );
   };
 
   return (
@@ -93,6 +108,26 @@ export default function SettingsScreen() {
           />
         </SettingsSection>
         
+        {/* Support & About */}
+        <SettingsSection title="Support & About">
+          <SettingsItem
+            title="Help & Support"
+            type="navigate"
+            onPress={handleHelpSupport}
+          />
+          <SettingsItem
+            title="About Skill-Bridge"
+            type="navigate"
+            onPress={handleAbout}
+          />
+          <SettingsItem
+            title="Terms of Service"
+            type="navigate"
+            onPress={handleTerms}
+            isLast={true}
+          />
+        </SettingsSection>
+        
         {/* Bottom padding for scrolling */}
         <View style={styles.bottomPadding} />
       </ScrollView>
@@ -100,6 +135,7 @@ export default function SettingsScreen() {
   );
 }
 
+// Keep existing styles
 //styles!!
 const styles = StyleSheet.create({
   safeArea: {
