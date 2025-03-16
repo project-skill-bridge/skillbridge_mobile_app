@@ -8,7 +8,7 @@ import { Images } from "@/src/constants/Images";
 
 const { width } = Dimensions.get("window");
 
-const ElementsSection: React.FC = () => {
+const FinnCharacter: React.FC = () => {
   const [message, setMessage] = useState("");
   const bounceAnim = useRef(new Animated.Value(0)).current;
 
@@ -225,4 +225,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ElementsSection;
+export default FinnCharacter;
