@@ -1,12 +1,12 @@
-// Create src/components/settings/settings-item.tsx
+// src/components/settings/settings-item.tsx
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Switch } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { hp, wp } from '@/src/utils/common';
+import { Icons } from '@/src/constants/Icons';
 
 type SettingsItemType = 'toggle' | 'navigate' | 'action';
 
 interface SettingsItemProps {
-  icon?: string;
   title: string;
   subtitle?: string;
   type: SettingsItemType;
@@ -15,10 +15,10 @@ interface SettingsItemProps {
   onToggle?: (value: boolean) => void;
   isDestructive?: boolean;
   isLast?: boolean;
+  IconComponent?: React.ReactNode;
 }
 
 const SettingsItem: React.FC<SettingsItemProps> = ({ 
-  icon, 
   title, 
   subtitle, 
   type, 
@@ -26,7 +26,8 @@ const SettingsItem: React.FC<SettingsItemProps> = ({
   onPress, 
   onToggle,
   isDestructive = false,
-  isLast = false
+  isLast = false,
+  IconComponent
 }) => {
   const handlePress = () => {
     if (type !== 'toggle' && onPress) {
@@ -43,13 +44,9 @@ const SettingsItem: React.FC<SettingsItemProps> = ({
       onPress={handlePress}
       activeOpacity={0.7}
     >
-      {icon && (
+      {IconComponent && (
         <View style={styles.iconContainer}>
-          <Ionicons 
-            name={icon as any} 
-            size={22} 
-            color={isDestructive ? '#e85454' : '#6277bf'} 
-          />
+          {IconComponent}
         </View>
       )}
       
@@ -74,11 +71,8 @@ const SettingsItem: React.FC<SettingsItemProps> = ({
       )}
       
       {type === 'navigate' && (
-        <Ionicons 
-          name="chevron-forward" 
-          size={20} 
-          color="#999999" 
-        />
+        // Use a simple Text component as a fallback instead of an undefined icon
+        <Text style={{ color: '#999999', fontSize: 16 }}>›</Text>
       )}
     </TouchableOpacity>
   );
@@ -88,8 +82,8 @@ const styles = StyleSheet.create({
   item: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 14,
-    paddingHorizontal: 16,
+    paddingVertical: hp(1.5),
+    paddingHorizontal: wp(4),
     backgroundColor: '#ffffff',
   },
   itemBorder: {
@@ -97,15 +91,15 @@ const styles = StyleSheet.create({
     borderBottomColor: '#cad3ed',
   },
   iconContainer: {
-    width: 28,
+    width: wp(7),
     alignItems: 'center',
-    marginRight: 12,
+    marginRight: wp(3),
   },
   textContainer: {
     flex: 1,
   },
   title: {
-    fontSize: 16,
+    fontSize: hp(2),
     color: '#000000',
     fontWeight: '500',
   },
@@ -113,9 +107,9 @@ const styles = StyleSheet.create({
     color: '#e85454',
   },
   subtitle: {
-    fontSize: 14,
+    fontSize: hp(1.5),
     color: '#666666',
-    marginTop: 2,
+    marginTop: hp(0.3),
   },
 });
 
