@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { ScrollView, StyleSheet, View, Text, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-
+import auth from '@react-native-firebase/auth';
 import ProfileSection from '../../components/settings/profile-section';
 import SettingsSection from '../../components/settings/settings-section';
 import SettingsItem from '../../components/settings/settings-item';
@@ -46,6 +46,34 @@ export default function SettingsScreen() {
       "By using Skill-Bridge, you agree to our terms of service which can be found on our website."
     );
   };
+  // New logout handler
+  const handleLogout = async () => {
+    Alert.alert(
+      "Logout",
+      "Are you sure you want to logout?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        {
+          text: "Logout",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await auth().signOut();
+              // Navigate to sign-in screen after logout
+              router.replace('/sign-in');
+            } catch (error) {
+              console.error('Logout error:', error);
+              Alert.alert("Error", "Failed to logout. Please try again.");
+            }
+          }
+        }
+      ]
+    );
+  };
+
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
@@ -124,6 +152,18 @@ export default function SettingsScreen() {
             title="Terms of Service"
             type="navigate"
             onPress={handleTerms}
+            isLast={true}
+          />
+
+        </SettingsSection>
+               {/* Logout Section */}
+               <SettingsSection title="">
+          <SettingsItem
+            title="Logout"
+            type="action"
+            onPress={handleLogout}
+            isDestructive={true}
+            IconComponent={<Icons.LogOut size={22} color="#e85454" />}
             isLast={true}
           />
         </SettingsSection>
