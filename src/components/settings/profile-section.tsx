@@ -1,41 +1,38 @@
 // src/components/settings/profile-section.tsx
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { useRouter } from 'expo-router';
-import AnimatedAvatar from '../animated-avatar';
-import { useUserStore } from '../../store/user-store';
-import { Ionicons } from '@expo/vector-icons';
+import { useUserStore } from '@/src/store/user-store';
+import { Images } from '@/src/constants/Images';
+import { hp, wp } from '@/src/utils/common';
+import { theme } from '@/src/constants/Theme';
 
 const ProfileSection: React.FC = () => {
   const router = useRouter();
   const { user } = useUserStore();
   
   const handleEditProfile = () => {
-    // Navigate to edit profile screen
-    router.push('/profile/edit');
+    // Navigate to the existing profile tab
+    router.push('/(tabs)/profile');
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.profileHeader}>
         <View style={styles.avatarContainer}>
-          <AnimatedAvatar size={80} />
+          <Image 
+            source={user?.image || Images.avatar} 
+            style={styles.avatar}
+            resizeMode="contain" 
+          />
         </View>
         <View style={styles.userInfoContainer}>
-          <Text style={styles.userName}>{user?.displayName || 'User'}</Text>
+          <Text style={styles.userName}>{user?.name || 'User'}</Text>
           <Text style={styles.userEmail}>{user?.email || 'No email provided'}</Text>
           
-          <View style={styles.statsContainer}>
-            <View style={styles.statItem}>
-              <Text style={styles.statValue}>{user?.gamesPlayed || 0}</Text>
-              <Text style={styles.statLabel}>Games</Text>
-            </View>
-            <View style={styles.statDivider} />
-            <View style={styles.statItem}>
-              <Text style={styles.statValue}>{user?.level || 1}</Text>
-              <Text style={styles.statLabel}>Level</Text>
-            </View>
-          </View>
+          {user?.mobile && (
+            <Text style={styles.userMobile}>{user.mobile}</Text>
+          )}
         </View>
       </View>
       
@@ -43,7 +40,6 @@ const ProfileSection: React.FC = () => {
         style={styles.editButton} 
         onPress={handleEditProfile}
       >
-        <Ionicons name="pencil" size={16} color="#ffffff" />
         <Text style={styles.editButtonText}>Edit Profile</Text>
       </TouchableOpacity>
     </View>
@@ -70,43 +66,28 @@ const styles = StyleSheet.create({
   avatarContainer: {
     marginRight: 16,
   },
+  avatar: {
+    width: wp(20),
+    height: wp(20),
+    borderRadius: wp(10),
+  },
   userInfoContainer: {
     flex: 1,
   },
   userName: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: hp(2.5),
+    fontWeight: theme.fontWeights.bold,
     color: '#000000',
     marginBottom: 4,
   },
   userEmail: {
-    fontSize: 14,
+    fontSize: hp(1.8),
     color: '#666666',
-    marginBottom: 8,
+    marginBottom: 4,
   },
-  statsContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 4,
-  },
-  statItem: {
-    alignItems: 'center',
-    flex: 1,
-  },
-  statValue: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#6277bf',
-  },
-  statLabel: {
-    fontSize: 12,
+  userMobile: {
+    fontSize: hp(1.8),
     color: '#666666',
-  },
-  statDivider: {
-    width: 1,
-    height: 24,
-    backgroundColor: '#cad3ed',
-    marginHorizontal: 8,
   },
   editButton: {
     backgroundColor: '#6277bf',
@@ -122,7 +103,6 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 14,
     fontWeight: '600',
-    marginLeft: 6,
   },
 });
 
