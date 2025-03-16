@@ -15,5 +15,6 @@ export const Images = {
   level2Badge: require("@/assets/images/games/tap-and-type/level-2-badge.png"),
   level3Badge: require("@/assets/images/games/tap-and-type/level-3-badge.png"),
   level4Badge: require("@/assets/images/games/tap-and-type/level-4-badge.png"),
-  blakboard: require("@/assets/images/black-board.png"),
+  blakboard: require("@/assets/images/games/tap-and-type/black-board.png"),
+  mindMatchMainScreen: require("@/assets/images/games/mind-match/main-background.jpg"),
 } as const;

@@ -10,5 +10,10 @@ export const gameInfo = [
     id: 2,
     path: "/circle-burst/game-screen",
     image: Images.game2,
-  }
+  },
+  {
+    id: 3,
+    path: "/mind-match/main-screen",
+    image: Images.game2,
+  },
 ] as const;
