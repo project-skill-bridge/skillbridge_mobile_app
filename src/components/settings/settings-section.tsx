@@ -1,6 +1,8 @@
-// Create src/components/settings/settings-section.tsx
+// src/components/settings/settings-section.tsx
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { hp } from '@/src/utils/common';
+import { theme } from '@/src/constants/Theme';
 
 interface SettingsSectionProps {
   title: string;
@@ -20,13 +22,13 @@ const SettingsSection: React.FC<SettingsSectionProps> = ({ title, children }) =>
 
 const styles = StyleSheet.create({
   section: {
-    marginBottom: 20,
+    marginBottom: hp(2),
   },
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: hp(2),
+    fontWeight: theme.fontWeights.bold,
     color: '#6277bf',
-    marginBottom: 8,
+    marginBottom: hp(1),
     paddingHorizontal: 4,
   },
   sectionContent: {
