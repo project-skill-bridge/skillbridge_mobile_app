@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Image} from 'expo-image';
-
-import { 
-  StyleSheet, 
-  View, 
+import React, { useState, useEffect, useRef } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Image } from "expo-image";
+import {
+  StyleSheet,
+  View,
   Text,
   Dimensions,
   Animated,
@@ -12,27 +11,29 @@ import {
   Easing,
   ScrollView,
   TouchableWithoutFeedback,
-} from 'react-native';
-import * as Speech from 'expo-speech';
-import * as Font from 'expo-font';
+} from "react-native";
+import * as Speech from "expo-speech";
+import * as Font from "expo-font";
+import { Fonts } from "@/src/constants/Fonts";
+import { Images } from "@/src/constants/Images";
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 interface FinnVoiceIntroProps {
   introText: string;
   onComplete?: () => void;
   language?: string;
-  speed?: 'slow' | 'normal' | 'fast';
-  voiceType?: 'child' | 'adult' | 'robot';
+  speed?: "slow" | "normal" | "fast";
+  voiceType?: "child" | "adult" | "robot";
   autoPlay?: boolean;
 }
 
-const FinnVoiceAllGames: React.FC<FinnVoiceIntroProps> = ({ 
+const FinnVoiceIntroAllGames: React.FC<FinnVoiceIntroProps> = ({
   introText = "Hi, I'm Finn! Welcome to our adventure!",
   onComplete = () => {},
-  language = 'en-US',
-  speed = 'normal',
-  voiceType = 'adult',
+  language = "en-US",
+  speed = "normal",
+  voiceType = "adult",
   autoPlay = false,
 }) => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -45,46 +46,46 @@ const FinnVoiceAllGames: React.FC<FinnVoiceIntroProps> = ({
   const bounceAnim = useRef(new Animated.Value(0)).current;
   const buttonAnim = useRef(new Animated.Value(0)).current;
 
-  const voiceSettings: Record<string, { pitch: number, rate: number }> = {
+  const voiceSettings: Record<string, { pitch: number; rate: number }> = {
     child: { pitch: 1.1, rate: 0.95 },
-    adult: { pitch: 1.0, rate: 0.9 },  
-    robot: { pitch: 0.8, rate: 0.9 }
+    adult: { pitch: 1.0, rate: 0.9 },
+    robot: { pitch: 0.8, rate: 0.9 },
   };
 
   const speedSettings: Record<string, number> = {
-    slow: 0.8,   
-    normal: 1.1,  
-    fast: 1.4     
+    slow: 0.8,
+    normal: 1.1,
+    fast: 1.4,
   };
 
   useEffect(() => {
     async function loadFonts() {
       try {
         await Font.loadAsync({
-          'Baloo': require('../assets/Baloo-Regular.ttf'),  
+          Baloo: Fonts.Baloo,
         });
         setFontsLoaded(true);
       } catch (error) {
-        console.error('Error loading fonts:', error);
+        console.error("Error loading fonts:", error);
         setFontsLoaded(true);
       }
     }
-    
+
     loadFonts();
   }, []);
 
   const checkFirstVisit = async () => {
     try {
-      const hasVisited = await AsyncStorage.getItem('hasVisitedBefore');
+      const hasVisited = await AsyncStorage.getItem("hasVisitedBefore");
       if (hasVisited !== null) {
         setIsFirstVisit(false);
         setShowBubble(false);
       } else {
-        await AsyncStorage.setItem('hasVisitedBefore', 'true');
+        await AsyncStorage.setItem("hasVisitedBefore", "true");
         setShowBubble(true);
       }
     } catch (error) {
-      console.error('Error checking first visit:', error);
+      console.error("Error checking first visit:", error);
     }
   };
 
@@ -93,12 +94,12 @@ const FinnVoiceAllGames: React.FC<FinnVoiceIntroProps> = ({
     setIsTalking(true);
     setShowBubble(true);
     setShowButton(false);
-    
+
     setIsComplete(false);
-    
+
     const { pitch, rate } = voiceSettings[voiceType];
     const speedMultiplier = speedSettings[speed];
-    
+
     Speech.speak(introText, {
       language,
       rate: rate * speedMultiplier,
@@ -117,13 +118,13 @@ const FinnVoiceAllGames: React.FC<FinnVoiceIntroProps> = ({
       Animated.timing(bounceAnim, {
         toValue: 1,
         duration: 300,
-        useNativeDriver: true
+        useNativeDriver: true,
       }),
       Animated.timing(bounceAnim, {
         toValue: 0,
         duration: 300,
-        useNativeDriver: true
-      })
+        useNativeDriver: true,
+      }),
     ]).start(() => {
       if (!isTalking) {
         setTimeout(startBounceAnimation, Math.random() * 5000 + 5000);
@@ -144,7 +145,7 @@ const FinnVoiceAllGames: React.FC<FinnVoiceIntroProps> = ({
       toValue: show ? 1 : 0,
       duration: 800,
       easing: Easing.bezier(0.16, 1, 0.3, 1),
-      useNativeDriver: true
+      useNativeDriver: true,
     }).start();
   };
 
@@ -173,25 +174,25 @@ const FinnVoiceAllGames: React.FC<FinnVoiceIntroProps> = ({
       fontSize: Math.min(16 * scale, 20),
       bubblePadding: Math.min(15 * scale, 22),
       buttonSize: Math.min(120 * scale, 160),
-      bubbleMaxHeight: Math.min(180 * scale, 260)
+      bubbleMaxHeight: Math.min(180 * scale, 260),
     };
   };
-  
+
   const responsiveSizes = getResponsiveSizes();
-  
+
   const bounceTransform = bounceAnim.interpolate({
     inputRange: [0, 0.5, 1],
-    outputRange: [0, -8, 0]
+    outputRange: [0, -8, 0],
   });
 
   const buttonTransform = buttonAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [40, -30]
+    outputRange: [40, -30],
   });
 
   const buttonScale = buttonAnim.interpolate({
     inputRange: [0, 0.7, 1],
-    outputRange: [0.5, 1.1, 1]
+    outputRange: [0.5, 1.1, 1],
   });
 
   const buttonOpacity = buttonAnim;
@@ -203,14 +204,13 @@ const FinnVoiceAllGames: React.FC<FinnVoiceIntroProps> = ({
           startIntro();
         }
       });
-      
+
       startBounceAnimation();
     }
-    
+
     return () => {
       Speech.stop();
     };
-  }, [fontsLoaded, introText, autoPlay]);
 
   if (!fontsLoaded) {
     return (
@@ -227,11 +227,12 @@ const FinnVoiceAllGames: React.FC<FinnVoiceIntroProps> = ({
           {showBubble && (
             <View style={styles.bubbleContainer}>
               <View style={[
-                styles.thoughtBubble, 
-                { padding: responsiveSizes.bubblePadding }
-              ]}>
-                <ScrollView 
-                  style={{ 
+                  styles.thoughtBubble,
+                  { padding: responsiveSizes.bubblePadding },
+                ]}
+              >
+                <ScrollView
+                  style={{
                     maxHeight: responsiveSizes.bubbleMaxHeight,
                   }}
                   showsVerticalScrollIndicator={false}
@@ -276,6 +277,7 @@ const FinnVoiceAllGames: React.FC<FinnVoiceIntroProps> = ({
                 opacity: buttonOpacity,
                 width: responsiveSizes.buttonSize
               }
+                width: responsiveSizes.buttonSize,
             ]}
           >
             {showButton && (
@@ -296,17 +298,17 @@ const FinnVoiceAllGames: React.FC<FinnVoiceIntroProps> = ({
           >
             <Animated.View 
               style={[
-                styles.characterContainer, 
-                { 
-                  width: responsiveSizes.characterSize, 
+                styles.characterContainer,
+                {
+                  width: responsiveSizes.characterSize,
                   height: responsiveSizes.characterSize,
-                  transform: [{ translateY: bounceTransform }]
-                }
+                  transform: [{ translateY: bounceTransform }],
+                },
               ]}
             >
-              <Image 
-                source={isTalking ? require('../assets/Talking-Finn.gif') : require('../assets/Normal-Finn.gif')} 
-                contentFit='contain'
+              <Image
+                source={isTalking ? Images.talkingFinn : Images.normalFinn}
+                contentFit="contain"
                 style={styles.character}
               />
             </Animated.View>
@@ -319,64 +321,64 @@ const FinnVoiceAllGames: React.FC<FinnVoiceIntroProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
     paddingHorizontal: 15,
-    position: 'relative',
+    position: "relative",
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   messageSection: {
     flex: 1,
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
+    alignItems: "flex-start",
+    justifyContent: "flex-start",
     paddingTop: 10,
   },
   characterSection: {
-    justifyContent: 'flex-end',
-    alignItems: 'flex-end',
+    justifyContent: "flex-end",
+    alignItems: "flex-end",
     paddingBottom: 5,
-    position: 'relative',
+    position: "relative",
   },
   bubbleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    maxWidth: '95%',
+    flexDirection: "row",
+    alignItems: "center",
+    maxWidth: "95%",
   },
   thoughtBubble: {
-    backgroundColor: '#87CEFA',
+    backgroundColor: "#87CEFA",
     borderRadius: 20,
     borderTopLeftRadius: 4,
     marginRight: 5,
-    position: 'relative',
-    maxWidth: '95%',
+    position: "relative",
+    maxWidth: "95%",
   },
   thoughtText: {
-    color: '#000',
-    fontWeight: '500',
+    color: "#000",
+    fontWeight: "500",
     lineHeight: 26,
   },
   bubbleDots: {
-    flexDirection: 'column',
-    justifyContent: 'center',
+    flexDirection: "column",
+    justifyContent: "center",
     height: 40,
   },
   dot1: {
     width: 12,
     height: 12,
     borderRadius: 6,
-    backgroundColor: '#87CEFA',
+    backgroundColor: "#87CEFA",
     marginBottom: 3,
   },
   dot2: {
     width: 9,
     height: 9,
     borderRadius: 4.5,
-    backgroundColor: '#87CEFA',
+    backgroundColor: "#87CEFA",
     marginBottom: 3,
     marginLeft: 3,
   },
@@ -384,7 +386,7 @@ const styles = StyleSheet.create({
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: '#87CEFA',
+    backgroundColor: "#87CEFA",
     marginBottom: 2,
     marginLeft: 6,
   },
@@ -392,59 +394,59 @@ const styles = StyleSheet.create({
     width: 4,
     height: 4,
     borderRadius: 2,
-    backgroundColor: '#87CEFA',
+    backgroundColor: "#87CEFA",
     marginLeft: 8,
   },
   characterContainer: {
   },
   character: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'contain',
+    width: "100%",
+    height: "100%",
+    resizeMode: "contain",
   },
   closeButton: {
-    position: 'absolute',
+    position: "absolute",
     top: 5,
     right: 5,
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: 'rgba(0,0,0,0.2)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0,0,0,0.2)",
+    justifyContent: "center",
+    alignItems: "center",
   },
   closeButtonText: {
-    color: 'white',
+    color: "white",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   buttonContainer: {
-    position: 'absolute',
+    position: "absolute",
     top: -60,
-    alignSelf: 'center',
+    alignSelf: "center",
     zIndex: 10,
   },
   voiceButton: {
-    backgroundColor: 'rgba(66, 133, 244, 0.9)',
+    backgroundColor: "rgba(66, 133, 244, 0.9)",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 24,
     elevation: 4,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.5)',
+    borderColor: "rgba(255,255,255,0.5)",
   },
   voiceButtonText: {
-    color: 'white',
-    fontWeight: '600',
+    color: "white",
+    fontWeight: "600",
     fontSize: 16,
-    textAlign: 'center',
-  }
+    textAlign: "center",
+  },
 });
 
-export default FinnVoiceAllGames;
+export default FinnVoiceIntroAllGames;
