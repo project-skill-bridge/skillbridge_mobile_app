@@ -39,7 +39,7 @@ const ProfileSection: React.FC = () => {
         style={styles.editButton} 
         onPress={handleEditProfile}
       >
-        <Text style={styles.editButtonText}>Edit Profile</Text>
+        <Text style={styles.editButtonText}>Edit Profile </Text>
       </TouchableOpacity>
     </View>
   );
