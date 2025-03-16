@@ -1,6 +1,9 @@
+// Update src/app/(tabs)/settings.tsx to add the preferences section
+
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet, View, Text } from 'react-native';
+import { ScrollView, StyleSheet, View, Text, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 
 import ProfileSection from '../../components/settings/profile-section';
 import SettingsSection from '../../components/settings/settings-section';
@@ -10,10 +13,14 @@ import { theme } from '@/src/constants/Theme';
 import { Icons } from '@/src/constants/Icons';
 
 export default function SettingsScreen() {
-  // Settings state
+  const router = useRouter();
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [hapticFeedbackEnabled, setHapticFeedbackEnabled] = useState(true);
+  
+  const handleLanguageChange = () => {
+    Alert.alert("Coming Soon", "Language settings will be available soon!");
+  };
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
@@ -48,6 +55,17 @@ export default function SettingsScreen() {
           />
         </SettingsSection>
         
+        {/* Preferences */}
+        <SettingsSection title="Preferences">
+          <SettingsItem
+            title="Language"
+            subtitle="English"
+            type="navigate"
+            onPress={handleLanguageChange}
+            isLast={true}
+          />
+        </SettingsSection>
+        
         {/* Bottom padding for scrolling */}
         <View style={styles.bottomPadding} />
       </ScrollView>
@@ -55,7 +73,6 @@ export default function SettingsScreen() {
   );
 }
 
-// Keep existing styles
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
