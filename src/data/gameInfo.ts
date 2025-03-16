@@ -8,7 +8,7 @@ export const gameInfo = [
   },
   {
     id: 2,
-    path: "/eye-contact/game-screen",
+    path: "/see-me/test",
     image: Images.game2,
   },
   {

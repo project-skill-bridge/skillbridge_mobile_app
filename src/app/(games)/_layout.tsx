@@ -17,6 +17,10 @@ const GamesLayout = () => {
         name="circle-burst/game-screen"
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+        name="see-me/test"
+        options={{ headerShown: false }}
+      />
     </Stack>
   );
 };
