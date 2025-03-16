@@ -167,7 +167,7 @@ const FinnVoiceIntroAllGames: React.FC<FinnVoiceIntroProps> = ({
   const getResponsiveSizes = () => {
     const baseWidth = 375;
     const scale = width / baseWidth;
-    
+
     return {
       containerHeight: Math.min(140 * scale, 220),
       characterSize: Math.min(100 * scale, 150),
@@ -211,6 +211,7 @@ const FinnVoiceIntroAllGames: React.FC<FinnVoiceIntroProps> = ({
     return () => {
       Speech.stop();
     };
+  }, [fontsLoaded ,introText, autoPlay]);
 
   if (!fontsLoaded) {
     return (
@@ -238,17 +239,18 @@ const FinnVoiceIntroAllGames: React.FC<FinnVoiceIntroProps> = ({
                   showsVerticalScrollIndicator={false}
                 >
                   <Text style={[
-                    styles.thoughtText, 
-                    { 
-                      fontSize: responsiveSizes.fontSize,
-                      fontFamily: 'Baloo' 
-                    }
-                  ]}>
+                      styles.thoughtText,
+                      {
+                        fontSize: responsiveSizes.fontSize,
+                        fontFamily: "Baloo",
+                      },
+                    ]}
+                  >
                     {introText}
                   </Text>
                 </ScrollView>
-                
-                <TouchableOpacity 
+
+                <TouchableOpacity
                   onPress={handleClose}
                   style={styles.closeButton}
                 >
@@ -266,37 +268,28 @@ const FinnVoiceIntroAllGames: React.FC<FinnVoiceIntroProps> = ({
         </View>
 
         <View style={styles.characterSection}>
-          <Animated.View 
+          <Animated.View
             style={[
               styles.buttonContainer,
               {
                 transform: [
                   { translateY: buttonTransform },
-                  { scale: buttonScale }
+                  { scale: buttonScale },
                 ],
                 opacity: buttonOpacity,
-                width: responsiveSizes.buttonSize
-              }
                 width: responsiveSizes.buttonSize,
+              },
             ]}
           >
             {showButton && (
-              <TouchableOpacity 
-                style={styles.voiceButton}
-                onPress={startIntro}
-                onPressIn={(e) => e.stopPropagation()}
-              >
+              <TouchableOpacity style={styles.voiceButton} onPress={startIntro} onPressIn={(e) => e.stopPropagation()}>
                 <Text style={styles.voiceButtonText}>Voice Intro</Text>
               </TouchableOpacity>
             )}
           </Animated.View>
 
-          <TouchableOpacity 
-            onPress={handleFinnPress}
-            activeOpacity={0.8}
-            onPressIn={(e) => e.stopPropagation()}
-          >
-            <Animated.View 
+          <TouchableOpacity onPress={handleFinnPress} activeOpacity={0.8} onPressIn={(e) => e.stopPropagation()}>
+            <Animated.View
               style={[
                 styles.characterContainer,
                 {
