@@ -1,4 +1,4 @@
-// Update src/app/(tabs)/settings.tsx to add the preferences section
+// Update src/app/(tabs)/settings.tsx with a refined account section
 
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, View, Text, Alert } from 'react-native';
@@ -20,6 +20,16 @@ export default function SettingsScreen() {
   
   const handleLanguageChange = () => {
     Alert.alert("Coming Soon", "Language settings will be available soon!");
+  };
+  
+  const handleGameHistory = () => {
+    // This would navigate to a game history screen
+    Alert.alert("Game History", "View your previous games and performance.");
+  };
+  
+  const handleAchievements = () => {
+    // This would navigate to achievements screen
+    Alert.alert("Achievements", "View your unlocked achievements and badges.");
   };
 
   return (
@@ -66,6 +76,23 @@ export default function SettingsScreen() {
           />
         </SettingsSection>
         
+        {/* Game Stats */}
+        <SettingsSection title="Game Stats">
+          <SettingsItem
+            title="Game History"
+            type="navigate"
+            onPress={handleGameHistory}
+            IconComponent={<Icons.ChartLine size={22} color="#6277bf" />}
+          />
+          <SettingsItem
+            title="Achievements"
+            type="navigate"
+            onPress={handleAchievements}
+            IconComponent={<Icons.Star size={22} color="#6277bf" />}
+            isLast={true}
+          />
+        </SettingsSection>
+        
         {/* Bottom padding for scrolling */}
         <View style={styles.bottomPadding} />
       </ScrollView>
@@ -73,6 +100,7 @@ export default function SettingsScreen() {
   );
 }
 
+//styles!!
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
