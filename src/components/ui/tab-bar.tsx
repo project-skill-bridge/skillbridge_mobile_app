@@ -15,7 +15,7 @@ const TabBar = ({ state, navigation }: BottomTabBarProps) => {
   const [dimensions, setDimensions] = React.useState({ height: 20, width: 10 });
   const [isTabBarVisible, setIsTabBarVisible] = React.useState(true);
   const [isKeyboardVisible, setKeyboardVisible] = React.useState(false);
-  
+
   const buttonWidth = dimensions.width / state.routes.length;
   const tabPositionX = useSharedValue(0);
 
@@ -56,7 +56,7 @@ const TabBar = ({ state, navigation }: BottomTabBarProps) => {
     };
   }, []);
 
-  if (isKeyboardVisible) {
+   if (!isTabBarVisible || isKeyboardVisible) {
     return null;
   }
 
