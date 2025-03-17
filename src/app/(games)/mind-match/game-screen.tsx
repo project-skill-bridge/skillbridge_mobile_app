@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+
 import {
   View,
   Text,
@@ -44,6 +45,21 @@ const icons = [
   "Tv",
 ];
 
+interface Deck {
+  id: number;
+  icon: string;
+  isFlipped: boolean;
+  isMatched: boolean;
+  fadeAnim: Animated.Value;
+}
+
+interface CardProps {
+  card: Deck;
+  onPress: () => void;
+  disabled: boolean;
+  level: number;
+}
+
 const pairsPerLevel = [6, 8, 10, 12];
 const levelColors = ["#6200ee", "#388e3c", "#f44336", "#ff9800"];
 
@@ -60,21 +76,6 @@ const generateDeck = (numPairs: number) => {
     fadeAnim: new Animated.Value(1),
   }));
 };
-
-interface Deck {
-  id: number;
-  icon: string;
-  isFlipped: boolean;
-  isMatched: boolean;
-  fadeAnim: Animated.Value;
-}
-
-interface CardProps {
-  card: Deck;
-  onPress: () => void;
-  disabled: boolean;
-  level: number;
-}
 
 const Card = ({ card, onPress, disabled, level }: CardProps) => {
   const flipAnim = useRef(new Animated.Value(0)).current;
@@ -115,11 +116,10 @@ const Card = ({ card, onPress, disabled, level }: CardProps) => {
           styles.cardFlipContainer,
           {
             transform: [{ perspective: 1000 }, { rotateY }],
-            opacity: card.fadeAnim, // Add fade animation here
+            opacity: card.fadeAnim,
           },
         ]}
       >
-        {/* Back Face (Question Mark) */}
         <Animated.View
           style={[styles.cardFace, styles.cardBack, { opacity: backOpacity }]}
         >
@@ -132,8 +132,6 @@ const Card = ({ card, onPress, disabled, level }: CardProps) => {
             <Icons.CircleHelp size={30} color="#fff" />
           </View>
         </Animated.View>
-
-        {/* Front Face (Icon) */}
         <Animated.View
           style={[styles.cardFace, styles.cardFront, { opacity: frontOpacity }]}
         >
@@ -147,10 +145,7 @@ const Card = ({ card, onPress, disabled, level }: CardProps) => {
 };
 
 const MindMatchGame = () => {
-  const [fontsLoaded] = useFonts({
-    Coiny: Fonts.Coiny,
-  });
-
+  const [fontsLoaded] = useFonts({ Coiny: Fonts.Coiny });
   const [currentLevel, setCurrentLevel] = useState(1);
   const [deck, setDeck] = useState(generateDeck(pairsPerLevel[0]));
   const [flippedCards, setFlippedCards] = useState<number[]>([]);
@@ -160,40 +155,11 @@ const MindMatchGame = () => {
   const [isChecking, setIsChecking] = useState(false);
   const [isGameExiting, setIsGameExiting] = useState(false);
   const [isGameLoading, setIsGameLoading] = useState(true);
-
-  const gameStateRef = useRef({
-    currentLevel,
-    score,
-    deck,
-    flippedCards,
-    flipCount,
-    totalFlips,
-    isChecking,
-  });
+  const [levelComplete, setLevelComplete] = useState<boolean>(false);
 
   const successSoundRef = useRef<Audio.Sound | null>(null);
   const backgroundSoundRef = useRef<Audio.Sound | null>(null);
   const cardFlipSoundRef = useRef<Audio.Sound | null>(null);
-
-  useEffect(() => {
-    gameStateRef.current = {
-      currentLevel,
-      score,
-      deck,
-      flippedCards,
-      flipCount,
-      totalFlips,
-      isChecking,
-    };
-  }, [
-    currentLevel,
-    score,
-    deck,
-    flippedCards,
-    flipCount,
-    totalFlips,
-    isChecking,
-  ]);
 
   useEffect(() => {
     (async () => {
@@ -225,38 +191,6 @@ const MindMatchGame = () => {
   }, []);
 
   useEffect(() => {
-    return () => {
-      const saveOnUnmount = async () => {
-        try {
-          const gameState = gameStateRef.current;
-          await AsyncStorage.setItem(
-            "mind-match-game",
-            JSON.stringify({
-              currentLevel: gameState.currentLevel,
-              score: gameState.score,
-              deck: gameState.deck.map(
-                ({ id, icon, isFlipped, isMatched }) => ({
-                  id,
-                  icon,
-                  isFlipped,
-                  isMatched,
-                })
-              ),
-              flippedCards: gameState.flippedCards,
-              flipCount: gameState.flipCount,
-              totalFlips: gameState.totalFlips,
-              isChecking: gameState.isChecking,
-            })
-          );
-        } catch (error) {
-          console.log("Error saving game state on unmount:", error);
-        }
-      };
-      saveOnUnmount();
-    };
-  }, []);
-
-  useEffect(() => {
     const loadSound = async () => {
       const isMusicOn = JSON.parse(
         (await AsyncStorage.getItem("music")) || "true"
@@ -276,37 +210,36 @@ const MindMatchGame = () => {
       successSoundRef.current = loadedSuccessSound;
       cardFlipSoundRef.current = cardFlip;
       backgroundSoundRef.current = background;
-      startBackgroundMusic();
+      await background.setVolumeAsync(0.4);
+      await background.playAsync();
     };
 
     loadSound();
     return () => {
       successSoundRef.current?.unloadAsync();
       cardFlipSoundRef.current?.unloadAsync();
-      stopBackgroundMusic();
+      backgroundSoundRef.current?.stopAsync();
+      backgroundSoundRef.current?.unloadAsync();
     };
   }, []);
 
   const saveGameState = async () => {
     try {
-      const gameState = gameStateRef.current;
-      await AsyncStorage.setItem(
-        "mind-match-game",
-        JSON.stringify({
-          currentLevel: gameState.currentLevel,
-          score: gameState.score,
-          deck: gameState.deck.map(({ id, icon, isFlipped, isMatched }) => ({
-            id,
-            icon,
-            isFlipped,
-            isMatched,
-          })),
-          flippedCards: gameState.flippedCards,
-          flipCount: gameState.flipCount,
-          totalFlips: gameState.totalFlips,
-          isChecking: gameState.isChecking,
-        })
-      );
+      const gameState = {
+        currentLevel,
+        score,
+        deck: deck.map(({ id, icon, isFlipped, isMatched }) => ({
+          id,
+          icon,
+          isFlipped,
+          isMatched,
+        })),
+        flippedCards,
+        flipCount,
+        totalFlips,
+        isChecking,
+      };
+      await AsyncStorage.setItem("mind-match-game", JSON.stringify(gameState));
 
       const user = auth().currentUser;
       if (user) {
@@ -316,7 +249,7 @@ const MindMatchGame = () => {
           .collection("games")
           .doc("mind-match")
           .set({
-            progress: { level: gameState.currentLevel, score: gameState.score },
+            progress: { level: currentLevel, score },
             timestamp: firestore.FieldValue.serverTimestamp(),
           });
       }
@@ -326,72 +259,29 @@ const MindMatchGame = () => {
   };
 
   useEffect(() => {
-    if (!isChecking) {
+    if (!isChecking && flippedCards.length === 0) {
       saveGameState();
     }
-  }, [isChecking]);
+  }, [isChecking, flippedCards]);
 
-  useEffect(() => {
-    if (isChecking && flippedCards.length === 2) {
-      setTimeout(() => checkForMatch(flippedCards), 1000);
-    }
-  }, [isChecking, flippedCards, deck]);
-
-  // start the background music
-  const startBackgroundMusic = async () => {
-    if (backgroundSoundRef.current) {
-      try {
-        await backgroundSoundRef.current.setVolumeAsync(0.4);
-        await backgroundSoundRef.current.playAsync();
-      } catch {
-        console.log("Error playing background music");
-      }
+  const playSound = async (
+    soundRef: React.MutableRefObject<Audio.Sound | null>
+  ) => {
+    try {
+      await soundRef.current?.replayAsync();
+    } catch (error) {
+      console.log("Error playing sound:", error);
     }
   };
 
-  // stop the background music
-  const stopBackgroundMusic = async () => {
-    if (backgroundSoundRef.current) {
-      try {
-        await backgroundSoundRef.current.stopAsync();
-        await backgroundSoundRef.current.unloadAsync();
-        backgroundSoundRef.current = null;
-      } catch (error) {
-        console.log("Error stopping background music", error);
-      }
-    }
-  };
-
-  const playSuccessSound = async () => {
-    if (successSoundRef.current) {
-      try {
-        await successSoundRef.current.replayAsync();
-      } catch (error) {
-        console.log("Error playing success sound:", error);
-      }
-    }
-  };
-
-  const playCardFlipSound = async () => {
-    if (cardFlipSoundRef.current) {
-      try {
-        await cardFlipSoundRef.current.replayAsync();
-      } catch (error) {
-        console.log("Error playing card flip sound:", error);
-      }
-    }
-  };
-
-  // Update the handleCardPress to use functional updates
   const handleCardPress = (index: number) => {
     if (isChecking || deck[index].isFlipped || deck[index].isMatched) return;
 
-    playCardFlipSound();
+    playSound(cardFlipSoundRef);
 
-    // Use functional update to ensure latest state
     setDeck((prevDeck) => {
       const newDeck = [...prevDeck];
-      newDeck[index].isFlipped = true;
+      newDeck[index] = { ...newDeck[index], isFlipped: true };
       return newDeck;
     });
 
@@ -399,7 +289,6 @@ const MindMatchGame = () => {
     setFlippedCards((prev) => {
       const newFlipped = [...prev, index];
       if (newFlipped.length === 2) {
-        setIsChecking(true);
         setTimeout(() => checkForMatch(newFlipped), 1000);
       }
       return newFlipped;
@@ -407,18 +296,18 @@ const MindMatchGame = () => {
   };
 
   const checkForMatch = (flippedIndices: number[]) => {
-    const [firstIndex, secondIndex] = flippedIndices;
-
-    // Use functional update to get latest deck state
+    setIsChecking(true);
     setDeck((prevDeck) => {
       const newDeck = [...prevDeck];
+      const [firstIndex, secondIndex] = flippedIndices;
       const firstCard = newDeck[firstIndex];
       const secondCard = newDeck[secondIndex];
 
       if (firstCard.icon === secondCard.icon) {
-        newDeck[firstIndex].isMatched = true;
-        newDeck[secondIndex].isMatched = true;
-        playSuccessSound();
+        newDeck[firstIndex] = { ...firstCard, isMatched: true };
+        newDeck[secondIndex] = { ...secondCard, isMatched: true };
+
+        playSound(successSoundRef);
         setScore((prev) => prev + 10);
 
         Animated.parallel([
@@ -432,39 +321,37 @@ const MindMatchGame = () => {
             duration: 500,
             useNativeDriver: true,
           }),
-        ]).start();
-
-        // Check if all matches are done using current state
-        const allMatched = newDeck.every((card) => card.isMatched);
-        if (allMatched) {
-          const nextLevel = currentLevel + 1;
-          if (nextLevel > 4) {
-            const finalTotalFlips = totalFlips + flipCount;
-            Alert.alert(
-              "Congratulations!",
-              `You've completed all levels!\nTotal Score: ${score}\nTotal Flips: ${finalTotalFlips}`,
-              [{ text: "OK", onPress: resetGame }]
-            );
-          } else {
-            setTotalFlips((prev) => prev + flipCount);
-            setCurrentLevel(nextLevel);
-            setDeck(generateDeck(pairsPerLevel[nextLevel - 1]));
-            setFlippedCards([]);
-            setFlipCount(0);
+        ]).start(() => {
+          const allMatched = newDeck.every((card) => card.isMatched);
+          if (allMatched) {
+            setLevelComplete(true);
+            const nextLevel = currentLevel + 1;
+            if (nextLevel > 4) {
+              Alert.alert(
+                "Congratulations!",
+                `You've completed all levels!\nTotal Score: ${
+                  score + 10
+                }\nTotal Flips: ${totalFlips + flipCount}`,
+                [{ text: "OK", onPress: resetGame }]
+              );
+            } else {
+              setTotalFlips((prev) => prev + flipCount);
+              setCurrentLevel(nextLevel);
+              setDeck(generateDeck(pairsPerLevel[nextLevel - 1]));
+              setFlipCount(0);
+            }
           }
-        }
+          setFlippedCards([]);
+          setIsChecking(false);
+        });
       } else {
-        newDeck[firstIndex].isFlipped = false;
-        newDeck[secondIndex].isFlipped = false;
+        newDeck[firstIndex] = { ...firstCard, isFlipped: false };
+        newDeck[secondIndex] = { ...secondCard, isFlipped: false };
+        setFlippedCards([]);
+        setIsChecking(false);
       }
-
-      // Return the updated deck immediately
       return newDeck;
     });
-
-    // Reset these states using functional updates
-    setFlippedCards([]);
-    setIsChecking(false);
   };
 
   const resetGame = () => {
@@ -519,14 +406,7 @@ const MindMatchGame = () => {
           <View style={[styles.progressBar, { width: `${progress * 100}%` }]} />
         </View>
       </View>
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          flexDirection: "row",
-        }}
-      >
+      <View style={styles.gridContainer}>
         <FlatList
           data={deck}
           renderItem={renderItem}
@@ -570,11 +450,35 @@ const MindMatchGame = () => {
           </View>
         </View>
       )}
+
+      {/* Level Complete Modal */}
+      {levelComplete && (
+        <View style={styles.modelWrapper}>
+          <View
+            style={styles.modelOverlay}
+            onTouchEnd={() => setLevelComplete(false)}
+          />
+          <View style={styles.modal}>
+            <Text style={styles.modalText}>Congratulation</Text>
+            <Text style={styles.message}>
+              Level {currentLevel - 1} Completed!
+            </Text>
+            <View style={styles.buttonContainer}>
+              <Button
+                onPress={() => setLevelComplete(false)}
+                style={styles.button}
+              >
+                <Icons.ArrowBigRight size={40} color="black" />
+                <Text style={styles.buttonText}>Next Level</Text>
+              </Button>
+            </View>
+          </View>
+        </View>
+      )}
     </View>
   );
 };
 
-// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -628,13 +532,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#4caf50",
     borderRadius: 5,
   },
+  gridContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+  },
   grid: {
     alignItems: "center",
-  },
-  cardWrapper: {
-    width: 80,
-    height: 80,
-    margin: 5,
   },
   cardContainer: {
     width: 80,
@@ -652,18 +557,14 @@ const styles = StyleSheet.create({
     height: "100%",
     justifyContent: "center",
     alignItems: "center",
-    backfaceVisibility: "hidden", // Ensures proper flipping
+    backfaceVisibility: "hidden",
   },
   cardBack: {
     backgroundColor: "#ddd",
-    justifyContent: "center",
-    alignItems: "center",
     borderRadius: 10,
   },
   cardFront: {
     backgroundColor: "#fff",
-    justifyContent: "center",
-    alignItems: "center",
     borderRadius: 10,
   },
   cardBackContent: {
@@ -719,9 +620,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: wp(5),
     borderRadius: 10,
     alignItems: "center",
-    position: "relative",
     width: "90%",
-    display: "flex",
     borderWidth: 6,
     borderColor: "#9a5f31",
   },
@@ -734,9 +633,16 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     position: "absolute",
     top: -30,
+    textAlign: "center",
   },
   exitButton: {
     backgroundColor: "#f44336",
+  },
+  message: {
+    fontSize: 20,
+    fontFamily: "Coiny",
+    color: "#333",
+    marginBottom: 10,
   },
 });
 
