@@ -178,7 +178,7 @@ const TapAndTypeScreen = () => {
             .collection("users")
             .doc(user.uid)
             .collection("games")
-            .doc("tap-and-type")
+            .doc("tap-and-type-game")
             .set({
               progress: firebaseData,
               timestamp: firestore.FieldValue.serverTimestamp(),
@@ -195,9 +195,7 @@ const TapAndTypeScreen = () => {
   // Check if a cooldown is already active (e.g. after app restart)
   useEffect(() => {
     const checkCooldown = async () => {
-      const storedTime = await AsyncStorage.getItem(
-        "tap-and-type-cool-down-time"
-      );
+      const storedTime = await AsyncStorage.getItem("cooldownEndTime");
       if (storedTime) {
         const cooldownEnd = parseInt(storedTime, 10);
         const now = Date.now();
@@ -205,7 +203,7 @@ const TapAndTypeScreen = () => {
           const remaining = Math.ceil((cooldownEnd - now) / 1000);
           setCooldownTimeLeft(remaining);
         } else {
-          await AsyncStorage.removeItem("tap-and-type-cool-down-time");
+          await AsyncStorage.removeItem("cooldownEndTime");
           setCooldownTimeLeft(0);
         }
       }
@@ -245,7 +243,7 @@ const TapAndTypeScreen = () => {
           else {
             if (cooldownIntervalRef.current)
               clearInterval(cooldownIntervalRef.current);
-            AsyncStorage.removeItem("tap-and-type-cool-down-time");
+            AsyncStorage.removeItem("cooldownEndTime");
             handleHeartsRefill();
             return 0;
           }
@@ -373,11 +371,8 @@ const TapAndTypeScreen = () => {
   const startCooldown = async (): Promise<void> => {
     // Set cooldown state and store the end time in AsyncStorage
     setCooldownTimeLeft(COOLDOWN_TIME);
-    const coolDownEndTime = Date.now() + COOLDOWN_TIME * 1000;
-    await AsyncStorage.setItem(
-      "tap-and-type-cool-down-time",
-      coolDownEndTime.toString()
-    );
+    const cooldownEndTime = Date.now() + COOLDOWN_TIME * 1000;
+    await AsyncStorage.setItem("cooldownEndTime", cooldownEndTime.toString());
   };
 
   // Handle key presses (letters or words)
@@ -454,7 +449,7 @@ const TapAndTypeScreen = () => {
     setCooldownTimeLeft(0);
     setLevelComplete(false);
     setHearts(INITIAL_HEARTS);
-    await AsyncStorage.removeItem("tap-and-type-cool-down-time");
+    await AsyncStorage.removeItem("cooldownEndTime");
     startNewRound();
   };
 
@@ -849,14 +844,16 @@ const styles = StyleSheet.create({
   modal: {
     backgroundColor: "#fff2b2",
     paddingVertical: hp(5),
+    paddingHorizontal: wp(10),
     borderRadius: 10,
     alignItems: "center",
     position: "relative",
-    width: '50%',
+    width: wp(130),
     display: "flex",
     justifyContent: "space-between",
     borderWidth: 6,
     borderColor: "#9a5f31",
+    gap: hp(2),
   },
   modelOverlay: {
     position: "absolute",

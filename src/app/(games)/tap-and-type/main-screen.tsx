@@ -27,7 +27,6 @@ import { Icons } from "@/src/constants/Icons";
 import { theme } from "@/src/constants/Theme";
 import { Fonts } from "@/src/constants/Fonts";
 import Loader from "@/src/components/ui/loader";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 type ImageKeys = `level${1 | 2 | 3 | 4}Badge`;
 
@@ -90,9 +89,7 @@ const MainScreen = () => {
   useFocusEffect(
     useCallback(() => {
       const checkCooldown = async () => {
-        const storedTime = await AsyncStorage.getItem(
-          "tap-and-type-cool-down-time"
-        );
+        const storedTime = await AsyncStorage.getItem("cooldownEndTime");
         if (storedTime) {
           const cooldownEnd = parseInt(storedTime, 10);
           const now = Date.now();
@@ -100,7 +97,7 @@ const MainScreen = () => {
             const remaining = Math.ceil((cooldownEnd - now) / 1000);
             setCooldownTimeLeft(remaining);
           } else {
-            await AsyncStorage.removeItem("tap-and-type-cool-down-time");
+            await AsyncStorage.removeItem("cooldownEndTime");
             setCooldownTimeLeft(0);
           }
         }
@@ -147,7 +144,7 @@ const MainScreen = () => {
             if (cooldownIntervalRef.current)
               clearInterval(cooldownIntervalRef.current);
             handleHeartRefill();
-            AsyncStorage.removeItem("tap-and-type-cool-down-time");
+            AsyncStorage.removeItem("cooldownEndTime");
             return 0;
           }
         });
@@ -220,7 +217,7 @@ const MainScreen = () => {
       style={styles.background}
       resizeMode="cover"
     >
-      <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
         <View style={styles.topRaw}>
           <Button variant="icon" onPress={() => router.back()}>
             <Icons.ChevronLeft color="black" />
@@ -230,75 +227,70 @@ const MainScreen = () => {
           </Button>
         </View>
 
-        <View style={{ flex: 1, justifyContent: "center", gap: hp(2) }}>
-          <Text style={styles.headingText}>Tap & Type</Text>
+        <Text style={styles.headingText}>Tap & Type</Text>
 
-          <Animated.View style={[styles.badgeContainer, animatedStyle]}>
-            <Image
-              source={Images[`level${currentLevel}Badge` as ImageKeys]}
-              style={styles.badge}
-              resizeMode="contain"
-            />
-          </Animated.View>
+        <Animated.View style={[styles.badgeContainer, animatedStyle]}>
+          <Image
+            source={Images[`level${currentLevel}Badge` as ImageKeys]}
+            style={styles.badge}
+            resizeMode="contain"
+          />
+        </Animated.View>
 
-          <View style={styles.border}>
-            <View style={styles.scoreCard}>
-              <Text style={styles.level}>{`Level ${currentLevel}`}</Text>
-              <View style={styles.starContainer}>
-                {[...Array(3)].map((_, index) => (
-                  <Icons.Star
-                    style={[
-                      styles.star,
-                      index === 0 && { left: 0, bottom: 0 },
-                      index === 1 && { top: -10, right: "34%" },
-                      index === 2 && { right: 0, bottom: 0 },
-                    ]}
-                    key={index}
-                    size={50}
-                    fill="#FFD700"
-                    stroke="#b87d2d"
-                    strokeWidth={1}
-                  />
-                ))}
-              </View>
-              <View style={styles.scoreContainer}>
-                <Text style={styles.scoreText}>YOUR SCORE:</Text>
-                <Text style={styles.score}>{score}</Text>
-              </View>
-              <View style={styles.heartsContainer}>
-                {cooldownTimeLeft > 0 ? (
-                  <Text style={styles.scoreText}>
-                    {`${Math.floor(cooldownTimeLeft / 60)
-                      .toString()
-                      .padStart(2, "0")}:${(cooldownTimeLeft % 60)
-                      .toString()
-                      .padStart(2, "0")}`}
-                  </Text>
-                ) : null}
-                {hearts > 0 ? (
-                  <Icons.Heart
-                    size={40}
-                    fill="red"
-                    stroke="black"
-                    strokeWidth={1}
-                  />
-                ) : (
-                  <Icons.HeartCrack
-                    size={40}
-                    fill="red"
-                    stroke="black"
-                    strokeWidth={1}
-                  />
-                )}
+        <View style={styles.border}>
+          <View style={styles.scoreCard}>
+            <Text style={styles.header}>Congratulation !</Text>
+            <Text style={styles.level}>{`Level ${currentLevel}`}</Text>
+            <View style={styles.starContainer}>
+              {[...Array(3)].map((_, index) => (
+                <Icons.Star
+                  style={[
+                    styles.star,
+                    index === 0 && { left: 0, bottom: 0 },
+                    index === 1 && { top: -10, right: "34%" },
+                    index === 2 && { right: 0, bottom: 0 },
+                  ]}
+                  key={index}
+                  size={50}
+                  fill="#FFD700"
+                  stroke="#b87d2d"
+                  strokeWidth={1}
+                />
+              ))}
+            </View>
+            <View style={styles.scoreContainer}>
+              <Text style={styles.scoreText}>YOUR SCORE:</Text>
+              <Text style={styles.score}>{score}</Text>
+            </View>
+            <View style={styles.heartsContainer}>
+              {cooldownTimeLeft > 0 ? (
+                <Text style={styles.scoreText}>
+                  {`${Math.floor(cooldownTimeLeft / 60)
+                    .toString()
+                    .padStart(2, "0")}:${(cooldownTimeLeft % 60)
+                    .toString()
+                    .padStart(2, "0")}`}
+                </Text>
+              ) : null}
+              {hearts > 0 ? (
+                <Icons.Heart
+                  size={40}
+                  fill="red"
+                  stroke="black"
+                  strokeWidth={1}
+                />
+              ) : (
+                <Icons.HeartCrack
+                  size={40}
+                  fill="red"
+                  stroke="black"
+                  strokeWidth={1}
+                />
+              )}
 
-                <Text style={styles.hearts}>{hearts}</Text>
-              </View>
+              <Text style={styles.hearts}>{hearts}</Text>
             </View>
           </View>
-
-          <Button variant="secondary" showShadow onPress={handlePlayNow}>
-            <Text style={theme.buttonTextDefaultStyle}>Play Now</Text>
-          </Button>
         </View>
 
         {cooldownTimeLeft > 0 && isModalVisible && (
@@ -351,7 +343,11 @@ const MainScreen = () => {
             </View>
           </View>
         )}
-      </SafeAreaView>
+
+        <Button variant="secondary" showShadow onPress={handlePlayNow}>
+          <Text style={theme.buttonTextDefaultStyle}>Play Now</Text>
+        </Button>
+      </View>
     </ImageBackground>
   );
 };
@@ -426,6 +422,7 @@ const styles = StyleSheet.create({
     height: hp(20),
     alignItems: "center",
     justifyContent: "center",
+    marginBottom: hp(1),
   },
   badge: {
     width: wp(35),
@@ -436,11 +433,23 @@ const styles = StyleSheet.create({
     borderWidth: 10,
     borderRadius: 15,
     backgroundColor: "#a2622f",
+    marginBottom: hp(3),
   },
   scoreCard: {
     backgroundColor: "#fff2b3",
     alignItems: "center",
     borderRadius: 10,
+  },
+  header: {
+    fontFamily: "Coiny",
+    fontSize: hp(3.5),
+    color: "white",
+    backgroundColor: theme.colors.secondary,
+    paddingHorizontal: wp(5),
+    paddingVertical: hp(1),
+    borderTopLeftRadius: 10,
+    borderBottomRightRadius: 10,
+    marginTop: hp(1),
   },
   starContainer: {
     position: "relative",
