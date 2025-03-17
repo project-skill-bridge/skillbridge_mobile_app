@@ -56,6 +56,19 @@ const TabBar = ({ state, navigation }: BottomTabBarProps) => {
     };
   }, []);
 
+  React.useEffect(() => {
+    if (["progress", "forum", "settings"].includes(state.routes[state.index].name)) {
+      const timer = setTimeout(() => {
+        setIsTabBarVisible(false);
+      }, 2000);
+      return () => clearTimeout(timer);
+    } else {
+      setIsTabBarVisible(true);
+    }
+  }, [state.index]);
+
+
+
    if (!isTabBarVisible || isKeyboardVisible) {
     return null;
   }
