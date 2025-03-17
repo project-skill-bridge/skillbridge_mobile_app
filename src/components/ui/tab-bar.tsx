@@ -68,6 +68,19 @@ const TabBar = ({ state, navigation }: BottomTabBarProps) => {
   }, [state.index]);
 
 
+  React.useEffect(() => {
+    const handleBackPress = () => {
+      setIsTabBarVisible(true);
+      return false; 
+    };
+
+    BackHandler.addEventListener("hardwareBackPress", handleBackPress);
+    return () => {
+      BackHandler.removeEventListener("hardwareBackPress", handleBackPress);
+    };
+  }, []);
+
+
 
    if (!isTabBarVisible || isKeyboardVisible) {
     return null;
