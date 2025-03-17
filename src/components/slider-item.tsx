@@ -1,34 +1,29 @@
 import * as React from "react";
 
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  useWindowDimensions,
-  ImageSourcePropType,
-} from "react-native";
+import { View, Text, StyleSheet, useWindowDimensions } from "react-native";
 import { theme } from "../constants/Theme";
 import { hp, wp } from "../utils/common";
 import { Icons } from "../constants/Icons";
+import LottieView, { LottieViewProps } from "lottie-react-native";
 
 export interface SliderItemProps {
   id: number;
   title: string;
   description: string;
-  image?: ImageSourcePropType;
+  src: LottieViewProps["source"];
 }
 
-const SliderItem = ({ id, title, description, image }: SliderItemProps) => {
+const SliderItem = ({ id, title, description, src }: SliderItemProps) => {
   const { width } = useWindowDimensions();
 
   return (
     <View style={[styles.container, { width }]}>
       {/* Onboarding Image */}
-      <Image
-        source={image}
+      <LottieView
+        source={src}
+        autoPlay
+        style={[styles.lottie, { width: width - wp(20) }]}
         resizeMode="contain"
-        style={[styles.onboardingImage, { width }]}
       />
 
       {/* Title and Description */}
@@ -89,7 +84,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: hp(3.5),
   },
-  onboardingImage: {
+  lottie: {
     flex: 0.7,
     justifyContent: "center",
   },

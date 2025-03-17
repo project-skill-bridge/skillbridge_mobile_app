@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-
 import {
   View,
   Text,
@@ -9,19 +8,24 @@ import {
   StyleSheet,
   Alert,
 } from "react-native";
-import { Icons } from "@/src/constants/Icons";
+import { Lotties } from "@/src/constants/Lottie";
 import { useFonts } from "expo-font";
-import { Fonts } from "@/src/constants/Fonts";
-import Loader from "@/src/components/ui/loader";
-import { hp, wp } from "@/src/utils/common";
-import Button from "@/src/components/ui/button";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Sounds } from "@/src/constants/Sounds";
 import { Audio } from "expo-av";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import { router } from "expo-router";
+import LottieView from "lottie-react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
+import { Icons } from "@/src/constants/Icons";
+import { Fonts } from "@/src/constants/Fonts";
+import Loader from "@/src/components/ui/loader";
+import { hp, wp } from "@/src/utils/common";
+import Button from "@/src/components/ui/button";
+import { Sounds } from "@/src/constants/Sounds";
+
+// Icons
 const icons = [
   "Heart",
   "Star",
@@ -60,9 +64,12 @@ interface CardProps {
   level: number;
 }
 
-const pairsPerLevel = [6, 8, 10, 12];
+// Game Constants
+const pairsPerLevel = [4, 6, 8, 10];
 const levelColors = ["#6200ee", "#388e3c", "#f44336", "#ff9800"];
+const MAX_SCORE = 280;
 
+// Generate a deck of cards
 const generateDeck = (numPairs: number) => {
   const shuffledIcons = [...icons].sort(() => Math.random() - 0.5);
   const selectedIcons = shuffledIcons.slice(0, numPairs);
@@ -145,6 +152,7 @@ const Card = ({ card, onPress, disabled, level }: CardProps) => {
 };
 
 const MindMatchGame = () => {
+  // Game State
   const [fontsLoaded] = useFonts({ Coiny: Fonts.Coiny });
   const [currentLevel, setCurrentLevel] = useState(1);
   const [deck, setDeck] = useState(generateDeck(pairsPerLevel[0]));
@@ -157,10 +165,12 @@ const MindMatchGame = () => {
   const [isGameLoading, setIsGameLoading] = useState(true);
   const [levelComplete, setLevelComplete] = useState<boolean>(false);
 
+  // Sounds
   const successSoundRef = useRef<Audio.Sound | null>(null);
   const backgroundSoundRef = useRef<Audio.Sound | null>(null);
   const cardFlipSoundRef = useRef<Audio.Sound | null>(null);
 
+  // Load Game State
   useEffect(() => {
     (async () => {
       try {
@@ -181,8 +191,8 @@ const MindMatchGame = () => {
         } else {
           setDeck(generateDeck(pairsPerLevel[0]));
         }
-      } catch (error) {
-        console.log("Error loading game state:", error);
+      } catch {
+        handleGameError("Error", "Error Loading Game State. Please try again.");
         setDeck(generateDeck(pairsPerLevel[0]));
       } finally {
         setIsGameLoading(false);
@@ -190,31 +200,35 @@ const MindMatchGame = () => {
     })();
   }, []);
 
+  // Load Sounds
   useEffect(() => {
-    const loadSound = async () => {
-      const isMusicOn = JSON.parse(
-        (await AsyncStorage.getItem("music")) || "true"
-      );
-      if (!isMusicOn) return;
+    (async () => {
+      try {
+        const isMusicOn = JSON.parse(
+          (await AsyncStorage.getItem("music")) || "true"
+        );
+        if (!isMusicOn) return;
 
-      const { sound: loadedSuccessSound } = await Audio.Sound.createAsync(
-        Sounds.successSound2
-      );
-      const { sound: cardFlip } = await Audio.Sound.createAsync(
-        Sounds.cardFlip
-      );
-      const { sound: background } = await Audio.Sound.createAsync(
-        Sounds.backgroundMusic2,
-        { isLooping: true }
-      );
-      successSoundRef.current = loadedSuccessSound;
-      cardFlipSoundRef.current = cardFlip;
-      backgroundSoundRef.current = background;
-      await background.setVolumeAsync(0.4);
-      await background.playAsync();
-    };
+        const { sound: loadedSuccessSound } = await Audio.Sound.createAsync(
+          Sounds.successSound2
+        );
+        const { sound: cardFlip } = await Audio.Sound.createAsync(
+          Sounds.cardFlip
+        );
+        const { sound: background } = await Audio.Sound.createAsync(
+          Sounds.backgroundMusic2,
+          { isLooping: true }
+        );
+        successSoundRef.current = loadedSuccessSound;
+        cardFlipSoundRef.current = cardFlip;
+        backgroundSoundRef.current = background;
+        await background.setVolumeAsync(0.4);
+        await background.playAsync();
+      } catch {
+        handleGameError("Error", "Error Loading Sounds. Please try again.");
+      }
+    })();
 
-    loadSound();
     return () => {
       successSoundRef.current?.unloadAsync();
       cardFlipSoundRef.current?.unloadAsync();
@@ -223,6 +237,7 @@ const MindMatchGame = () => {
     };
   }, []);
 
+  // Save Game State
   const saveGameState = async () => {
     try {
       const gameState = {
@@ -253,27 +268,30 @@ const MindMatchGame = () => {
             timestamp: firestore.FieldValue.serverTimestamp(),
           });
       }
-    } catch (error) {
-      console.log("Error saving game state:", error);
+    } catch {
+      handleGameError("Error", "Error Saving Game State. Please try again.");
     }
   };
 
+  // Save Game State when checking and flipped the cards
   useEffect(() => {
     if (!isChecking && flippedCards.length === 0) {
       saveGameState();
     }
   }, [isChecking, flippedCards]);
 
+  // Play Sound
   const playSound = async (
     soundRef: React.MutableRefObject<Audio.Sound | null>
   ) => {
     try {
       await soundRef.current?.replayAsync();
-    } catch (error) {
-      console.log("Error playing sound:", error);
+    } catch {
+      handleGameError("Error", "Error Playing Sound. Please try again.");
     }
   };
 
+  // Handle Card Press
   const handleCardPress = (index: number) => {
     if (isChecking || deck[index].isFlipped || deck[index].isMatched) return;
 
@@ -295,6 +313,7 @@ const MindMatchGame = () => {
     });
   };
 
+  // check for match cards
   const checkForMatch = (flippedIndices: number[]) => {
     setIsChecking(true);
     setDeck((prevDeck) => {
@@ -323,24 +342,19 @@ const MindMatchGame = () => {
           }),
         ]).start(() => {
           const allMatched = newDeck.every((card) => card.isMatched);
+
           if (allMatched) {
             setLevelComplete(true);
             const nextLevel = currentLevel + 1;
-            if (nextLevel > 4) {
-              Alert.alert(
-                "Congratulations!",
-                `You've completed all levels!\nTotal Score: ${
-                  score + 10
-                }\nTotal Flips: ${totalFlips + flipCount}`,
-                [{ text: "OK", onPress: resetGame }]
-              );
-            } else {
+
+            if (nextLevel < 5) {
               setTotalFlips((prev) => prev + flipCount);
               setCurrentLevel(nextLevel);
               setDeck(generateDeck(pairsPerLevel[nextLevel - 1]));
               setFlipCount(0);
             }
           }
+
           setFlippedCards([]);
           setIsChecking(false);
         });
@@ -354,6 +368,7 @@ const MindMatchGame = () => {
     });
   };
 
+  // Reset Game
   const resetGame = () => {
     setCurrentLevel(1);
     setDeck(generateDeck(pairsPerLevel[0]));
@@ -365,11 +380,25 @@ const MindMatchGame = () => {
     saveGameState();
   };
 
+  // Handle Back Button Press
   const handleBackButtonPress = async () => {
     await saveGameState();
     router.back();
   };
 
+  // Handle game error
+  const handleGameError = (title: string, message: string) => {
+    Alert.alert(title, message, [
+      {
+        text: "Exit",
+        onPress: async () => {
+          router.back();
+        },
+      },
+    ]);
+  };
+
+  // Render card item
   const renderItem = ({ item, index }: { item: Deck; index: number }) => (
     <Card
       card={item}
@@ -392,9 +421,12 @@ const MindMatchGame = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      {/* Game Header and Stats*/}
       <View style={styles.header}>
-        <Text style={styles.headerText}>Mind Match - Level {currentLevel}</Text>
+        <Text style={styles.headerText}>
+          Mind Match - Level {currentLevel < 4 ? currentLevel : 4}
+        </Text>
         <View style={styles.statsContainer}>
           <Text style={styles.stats}>Score: {score}</Text>
           <Text style={styles.progressText}>
@@ -406,6 +438,8 @@ const MindMatchGame = () => {
           <View style={[styles.progressBar, { width: `${progress * 100}%` }]} />
         </View>
       </View>
+
+      {/* Game Grid */}
       <View style={styles.gridContainer}>
         <FlatList
           data={deck}
@@ -415,6 +449,8 @@ const MindMatchGame = () => {
           contentContainerStyle={styles.grid}
         />
       </View>
+
+      {/* Game Controls */}
       <View style={styles.buttonContainer}>
         <Button onPress={resetGame} style={styles.button}>
           <Icons.Repeat size={20} color="#fff" />
@@ -426,6 +462,7 @@ const MindMatchGame = () => {
         </Button>
       </View>
 
+      {/* Exit Game Modal */}
       {isGameExiting && (
         <View style={styles.modelWrapper}>
           <View style={styles.modelOverlay} />
@@ -452,7 +489,7 @@ const MindMatchGame = () => {
       )}
 
       {/* Level Complete Modal */}
-      {levelComplete && (
+      {(levelComplete || score === MAX_SCORE) && (
         <View style={styles.modelWrapper}>
           <View
             style={styles.modelOverlay}
@@ -460,22 +497,65 @@ const MindMatchGame = () => {
           />
           <View style={styles.modal}>
             <Text style={styles.modalText}>Congratulation</Text>
-            <Text style={styles.message}>
-              Level {currentLevel - 1} Completed!
-            </Text>
-            <View style={styles.buttonContainer}>
-              <Button
-                onPress={() => setLevelComplete(false)}
-                style={styles.button}
-              >
-                <Icons.ArrowBigRight size={40} color="black" />
-                <Text style={styles.buttonText}>Next Level</Text>
-              </Button>
-            </View>
+            {score !== MAX_SCORE ? (
+              <View>
+                <Text style={styles.message}>
+                  Level {currentLevel - 1} Completed!
+                </Text>
+                <Button
+                  onPress={() => setLevelComplete(false)}
+                  style={styles.button}
+                >
+                  <Icons.ArrowBigRight size={40} color="black" />
+                  <Text style={styles.buttonText}>Next Level</Text>
+                </Button>
+              </View>
+            ) : (
+              <View>
+                <View style={{ flexDirection: "row" }}>
+                  <LottieView
+                    source={Lotties.congratulation2}
+                    autoPlay
+                    style={{ flex: 1, height: hp(15) }}
+                    resizeMode="cover"
+                  />
+                  <LottieView
+                    source={Lotties.congratulation2}
+                    autoPlay
+                    style={{ flex: 1, transform: [{ rotateY: "180deg" }] }}
+                    resizeMode="cover"
+                  />
+                </View>
+                <Text style={styles.message}>
+                  You have completed all levels!
+                </Text>
+
+                <View style={styles.buttonContainer}>
+                  <Button onPress={handleBackButtonPress} style={styles.button}>
+                    <Icons.LogOut size={40} color="black" />
+                    <Text style={styles.buttonText}>EXIT</Text>
+                  </Button>
+                  <Button
+                    onPress={resetGame}
+                    style={[styles.button, styles.exitButton]}
+                  >
+                    <Icons.Repeat size={40} color="black" />
+                    <Text style={styles.buttonText}>REPLAY</Text>
+                  </Button>
+                </View>
+              </View>
+            )}
           </View>
+          <LottieView
+            source={Lotties.congratulation}
+            loop={false}
+            autoPlay
+            style={styles.lottie}
+            resizeMode="cover"
+          />
         </View>
       )}
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -605,7 +685,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "rgba(0,0,0,0.4)",
     position: "absolute",
-    zIndex: 1,
+    zIndex: 4,
   },
   modelOverlay: {
     position: "absolute",
@@ -613,6 +693,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
+    zIndex: 4,
   },
   modal: {
     backgroundColor: "#fff2b2",
@@ -623,6 +704,7 @@ const styles = StyleSheet.create({
     width: "90%",
     borderWidth: 6,
     borderColor: "#9a5f31",
+    zIndex: 10,
   },
   modalText: {
     fontSize: hp(4),
@@ -642,7 +724,16 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: "Coiny",
     color: "#333",
-    marginBottom: 10,
+    marginBottom: 20,
+  },
+  lottie: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    pointerEvents: "none",
+    zIndex: 1,
   },
 });
 

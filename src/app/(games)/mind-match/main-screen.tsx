@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useCallback } from "react";
-
 import {
   Alert,
   Image,
@@ -19,6 +18,8 @@ import Animated, {
   withRepeat,
   withTiming,
 } from "react-native-reanimated";
+import { SafeAreaView } from "react-native-safe-area-context";
+
 import Button from "@/src/components/ui/button";
 import { Images } from "@/src/constants/Images";
 import { hp, wp } from "@/src/utils/common";
@@ -26,7 +27,6 @@ import { Icons } from "@/src/constants/Icons";
 import { theme } from "@/src/constants/Theme";
 import { Fonts } from "@/src/constants/Fonts";
 import Loader from "@/src/components/ui/loader";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 type ImageKeys = `level${1 | 2 | 3 | 4}Badge`;
 
@@ -46,14 +46,13 @@ const MainScreen = () => {
 
   // Load settings from AsyncStorage
   useEffect(() => {
-    const loadSettingsSound = async () => {
+    (async () => {
       const sound = await AsyncStorage.getItem("sound");
       const music = await AsyncStorage.getItem("music");
 
       if (sound !== null) setIsSoundOn(JSON.parse(sound) === true);
       if (music !== null) setIsMusicOn(JSON.parse(music) === true);
-    };
-    loadSettingsSound();
+    })();
   }, []);
 
   const scale = useSharedValue(0.9);
@@ -80,7 +79,7 @@ const MainScreen = () => {
   // Check for active cooldown on mount and load game data
   useFocusEffect(
     useCallback(() => {
-      const loadGameData = async () => {
+      (async () => {
         try {
           const savedData = await AsyncStorage.getItem("mind-match-game");
           if (savedData) {
@@ -96,9 +95,7 @@ const MainScreen = () => {
             "An error occurred while loading the game data."
           );
         }
-      };
-
-      loadGameData();
+      })();
     }, [])
   );
 
@@ -147,6 +144,7 @@ const MainScreen = () => {
       resizeMode="cover"
     >
       <SafeAreaView style={styles.container}>
+        {/* Settings */}
         <View style={styles.topRaw}>
           <Button variant="icon" onPress={() => router.back()}>
             <Icons.ChevronLeft color="black" />
@@ -156,9 +154,12 @@ const MainScreen = () => {
           </Button>
         </View>
 
+        {/* Main content */}
         <View style={{ flex: 1, justifyContent: "center", gap: hp(2) }}>
+          {/* Game title */}
           <Text style={styles.headingText}>Mind Match</Text>
 
+          {/* Badge */}
           <Animated.View style={[styles.badgeContainer, animatedStyle]}>
             <Image
               source={Images[`level${currentLevel}Badge` as ImageKeys]}
@@ -167,6 +168,7 @@ const MainScreen = () => {
             />
           </Animated.View>
 
+          {/* Score card */}
           <View style={styles.border}>
             <View style={styles.scoreCard}>
               <Text style={styles.level}>{`Level ${currentLevel}`}</Text>
@@ -194,11 +196,13 @@ const MainScreen = () => {
             </View>
           </View>
 
+          {/* Play Button */}
           <Button variant="secondary" showShadow onPress={handlePlayNow}>
             <Text style={theme.buttonTextDefaultStyle}>Play Now</Text>
           </Button>
         </View>
 
+        {/* Settings Modal */}
         {isSettingsOpen && (
           <View style={styles.modelWrapper}>
             <View
