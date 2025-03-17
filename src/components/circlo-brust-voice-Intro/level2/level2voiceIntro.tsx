@@ -28,7 +28,7 @@ interface FinnVoiceIntroProps {
   voiceType?: "child" | "adult" | "robot";
 }
 
-const level1voiceIntro: React.FC<FinnVoiceIntroProps> = ({
+const level2voiceIntro: React.FC<FinnVoiceIntroProps> = ({
   introText = "Hi, I'm Finn! Welcome to our adventure!",
   onComplete = () => {},
   language = "en-US",
@@ -456,4 +456,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default level1voiceIntro;
+export default level2voiceIntro;
