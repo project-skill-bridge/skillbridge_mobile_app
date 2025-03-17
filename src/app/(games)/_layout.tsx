@@ -17,14 +17,6 @@ const GamesLayout = () => {
         name="circle-burst/game-screen"
         options={{ headerShown: false }}
       />
-      <Stack.Screen
-        name="mind-match/main-screen"
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="mind-match/game-screen"
-        options={{ headerShown: false }}
-      />
     </Stack>
   );
 };

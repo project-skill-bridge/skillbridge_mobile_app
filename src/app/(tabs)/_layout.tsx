@@ -23,9 +23,9 @@ const TabsLayout = () => {
       />
 
       <Tabs.Screen
-        name="forum"
+        name="profile"
         options={{
-          title: "forum",
+          title: "Profile",
           headerShown: false,
         }}
       />

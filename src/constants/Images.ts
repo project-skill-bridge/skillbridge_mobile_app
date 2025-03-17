@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 export const Images = {
+  onboarding1: require("@/assets/images/onboarding1.png"),
+  onboarding2: require("@/assets/images/onboarding1.png"),
+  onboarding3: require("@/assets/images/onboarding1.png"),
   google: require("@/assets/images/google.png"),
   avatar: require("@/assets/images/avatar.png"),
   editImage: require("@/assets/images/gallery-edit.png"),
@@ -12,8 +15,5 @@ export const Images = {
   level2Badge: require("@/assets/images/games/tap-and-type/level-2-badge.png"),
   level3Badge: require("@/assets/images/games/tap-and-type/level-3-badge.png"),
   level4Badge: require("@/assets/images/games/tap-and-type/level-4-badge.png"),
-  blakboard: require("@/assets/images/games/tap-and-type/black-board.png"),
-  talkingFinn: require("@/assets/gif/Talking-Finn.gif"),
-  normalFinn: require("@/assets/gif/Normal-Finn.gif"),
-  mindMatchMainScreen: require("@/assets/images/games/mind-match/main-background.jpg"),
+  blakboard: require("@/assets/images/black-board.png"),
 } as const;

@@ -31,7 +31,6 @@
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="myapp"/>
         <data android:scheme="com.skillbridge.app"/>
-        <data android:scheme="exp+skillbridge"/>
       </intent-filter>
     </activity>
   </application>
