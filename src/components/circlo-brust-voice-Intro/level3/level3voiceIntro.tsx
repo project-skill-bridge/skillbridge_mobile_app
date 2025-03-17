@@ -21,6 +21,7 @@ const { width } = Dimensions.get("window");
 
 interface FinnVoiceIntroProps {
   introText: string;
+  displayText: string;
   onComplete?: () => void;
   language?: string;
   speed?: "slow" | "normal" | "fast";
@@ -256,7 +257,7 @@ const level1voiceIntro: React.FC<FinnVoiceIntroProps> = ({
                     },
                   ]}
                 >
-                  {introText}
+                  {displayText}
                 </Text>
               </ScrollView>
 
