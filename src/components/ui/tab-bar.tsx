@@ -17,7 +17,7 @@ const TabBar = ({ state, navigation }: BottomTabBarProps) => {
   const [isKeyboardVisible, setKeyboardVisible] = React.useState(false);
   const buttonWidth = dimensions.width / state.routes.length;
   const tabPositionX = useSharedValue(0);
-  
+
   const onTabBarLayout = (e: LayoutChangeEvent) => {
     setDimensions({
       height: e.nativeEvent.layout.height,
@@ -25,7 +25,7 @@ const TabBar = ({ state, navigation }: BottomTabBarProps) => {
     });
   };
 
-  const tabPositionX = useSharedValue(0);
+  
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
