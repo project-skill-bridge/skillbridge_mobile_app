@@ -29,10 +29,6 @@ export default function SettingsScreen() {
     Alert.alert("Game History", "View your previous games and performance.");
   };
   
-  const handleAchievements = () => {
-    Alert.alert("Achievements", "View your unlocked achievements and badges.");
-  };
-  
   const handleHelpSupport = () => {
     Alert.alert("Help & Support", "Need help? Contact us at support@skillbridge.com");
   };
@@ -124,13 +120,6 @@ export default function SettingsScreen() {
             type="navigate"
             onPress={handleGameHistory}
             IconComponent={<Icons.ChartLine size={22} color="#6277bf" />}
-          />
-          <SettingsItem
-            title="Achievements"
-            type="navigate"
-            onPress={handleAchievements}
-            IconComponent={<Icons.Star size={22} color="#6277bf" />}
-            isLast={true}
           />
         </SettingsSection>
         
