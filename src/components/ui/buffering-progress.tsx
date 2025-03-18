@@ -59,6 +59,31 @@ const BufferingProgress = () => {
         inputRange: [0, 1],
         outputRange: ['0deg', '360deg'],
       });
+
+      return (
+        <View style={styles.container}>
+          {/* Rotating Spinner */}
+          <Animated.View style={[styles.spinner, { transform: [{ rotate: spin }] }]}>
+            <View style={styles.spinnerInner} />
+          </Animated.View>
+    
+          {/* Pulsing Dots */}
+          <View style={styles.dotsContainer}>
+            {dotAnimations.map((dot, index) => (
+              <Animated.View
+                key={index}
+                style={[
+                  styles.dot,
+                  {
+                    transform: [{ scale: dot.scale }],
+                    opacity: dot.opacity,
+                  },
+                ]}
+              />
+            ))}
+          </View>
+        </View>
+      );
     
   
 };
