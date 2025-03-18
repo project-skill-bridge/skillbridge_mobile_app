@@ -25,8 +25,6 @@ const TabBar = ({ state, navigation }: BottomTabBarProps) => {
     });
   };
 
-  
-
   const animatedStyle = useAnimatedStyle(() => {
     return {
       transform: [{ translateX: tabPositionX.value }],
@@ -38,8 +36,6 @@ const TabBar = ({ state, navigation }: BottomTabBarProps) => {
       duration: 1500,
     });
   }, [state.index]);
-
-  
 
   React.useEffect(() => {
     const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
@@ -56,7 +52,9 @@ const TabBar = ({ state, navigation }: BottomTabBarProps) => {
   }, []);
 
   React.useEffect(() => {
-    if (["progress", "forum", "settings"].includes(state.routes[state.index].name)) {
+    if (
+      ["progress", "forum", "settings"].includes(state.routes[state.index].name)
+    ) {
       const timer = setTimeout(() => {
         setIsTabBarVisible(false);
       }, 2000);
@@ -66,11 +64,10 @@ const TabBar = ({ state, navigation }: BottomTabBarProps) => {
     }
   }, [state.index]);
 
-
   React.useEffect(() => {
     const handleBackPress = () => {
       setIsTabBarVisible(true);
-      return false; 
+      return false;
     };
 
     BackHandler.addEventListener("hardwareBackPress", handleBackPress);
@@ -79,9 +76,7 @@ const TabBar = ({ state, navigation }: BottomTabBarProps) => {
     };
   }, []);
 
-
-
-   if (!isTabBarVisible || isKeyboardVisible) {
+  if (!isTabBarVisible || isKeyboardVisible) {
     return null;
   }
 
