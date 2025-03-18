@@ -29,7 +29,8 @@ interface FinnVoiceIntroProps {
 }
 
 const level1voiceIntro: React.FC<FinnVoiceIntroProps> = ({
-  introText = "Hi, I'm Finn! Welcome to our adventure!",
+  introText = "Let's Play! Circlobrust",
+  displayText = "Let's Play! Circlobrust",
   onComplete = () => {},
   language = "en-US",
   speed = "normal",
