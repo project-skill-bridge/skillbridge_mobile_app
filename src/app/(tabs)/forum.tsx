@@ -1,14 +1,14 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import * as React from "react";
+import { StyleSheet, Text, View } from "react-native";
 
-const forum = () => {
+const forumScreen = () => {
   return (
     <View>
-      <Text>forum</Text>
+      <Text>forumnScreen</Text>
     </View>
-  )
-}
+  );
+};
 
-export default forum
+export default forumScreen;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});
