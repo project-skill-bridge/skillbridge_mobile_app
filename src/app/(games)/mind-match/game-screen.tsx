@@ -264,7 +264,9 @@ const MindMatchGame = () => {
           .collection("games")
           .doc("mind-match")
           .set({
-            progress: { level: currentLevel, score },
+            level: currentLevel,
+            score,
+            totalGameProgressPercentage: calculateProgress(),
             timestamp: firestore.FieldValue.serverTimestamp(),
           });
       }
@@ -377,6 +379,7 @@ const MindMatchGame = () => {
     setFlipCount(0);
     setTotalFlips(0);
     setIsChecking(false);
+    setLevelComplete(false);
     saveGameState();
   };
 
@@ -407,6 +410,10 @@ const MindMatchGame = () => {
       level={currentLevel}
     />
   );
+
+  const calculateProgress = () => {
+    return Math.round((score / MAX_SCORE) * 100);
+  };
 
   const foundPairs = deck.filter((card) => card.isMatched).length / 2;
   const totalPairs = pairsPerLevel[currentLevel - 1];
