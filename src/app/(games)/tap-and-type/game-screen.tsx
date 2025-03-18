@@ -284,7 +284,7 @@ const TapAndTypeScreen = () => {
         await backgroundMusicRef.current.setVolumeAsync(0.2);
         await backgroundMusicRef.current.playAsync();
       } catch {
-        console.log("Error playing background music");
+        handleGameError("Error", "Failed to start background music");
       }
     }
   };
@@ -296,8 +296,8 @@ const TapAndTypeScreen = () => {
         await backgroundMusicRef.current.stopAsync();
         await backgroundMusicRef.current.unloadAsync();
         backgroundMusicRef.current = null;
-      } catch (error) {
-        console.log("Error stopping background music", error);
+      } catch {
+        handleGameError("Error", "Failed to stop background music");
       }
     }
   };
@@ -307,8 +307,8 @@ const TapAndTypeScreen = () => {
     if (successSoundRef.current) {
       try {
         await successSoundRef.current.replayAsync();
-      } catch (error) {
-        console.log("Error playing success sound", error);
+      } catch {
+        handleGameError("Error", "Failed to play success sound");
       }
     }
   };
@@ -318,8 +318,8 @@ const TapAndTypeScreen = () => {
     if (failureSoundRef.current) {
       try {
         await failureSoundRef.current.replayAsync();
-      } catch (error) {
-        console.log("Error playing failure sound", error);
+      } catch {
+        handleGameError("Error", "Failed to play failure sound");
       }
     }
   };

@@ -170,6 +170,46 @@ const MindMatchGame = () => {
   const backgroundSoundRef = useRef<Audio.Sound | null>(null);
   const cardFlipSoundRef = useRef<Audio.Sound | null>(null);
 
+  // Load Sounds
+  useEffect(() => {
+    (async () => {
+      try {
+        const isMusicOn = JSON.parse(
+          (await AsyncStorage.getItem("music")) as string
+        );
+        if (!isMusicOn) return;
+
+        const { sound: loadedSuccessSound } = await Audio.Sound.createAsync(
+          Sounds.successSound2
+        );
+        const { sound: cardFlip } = await Audio.Sound.createAsync(
+          Sounds.cardFlip
+        );
+        const { sound: background } = await Audio.Sound.createAsync(
+          Sounds.backgroundMusic2,
+          { isLooping: true }
+        );
+        successSoundRef.current = loadedSuccessSound;
+        cardFlipSoundRef.current = cardFlip;
+        backgroundSoundRef.current = background;
+        await background.setVolumeAsync(0.4);
+        await background.playAsync();
+      } catch {
+        handleGameError("Error", "Error Loading Sounds. Please try again.");
+      }
+    })();
+
+    return () => {
+      (async () => {
+        await backgroundSoundRef.current?.stopAsync();
+        await backgroundSoundRef.current?.unloadAsync();
+        backgroundSoundRef.current = null;
+        successSoundRef.current?.unloadAsync();
+        cardFlipSoundRef.current?.unloadAsync();
+      })();
+    };
+  }, []);
+
   // Load Game State
   useEffect(() => {
     (async () => {
@@ -198,43 +238,6 @@ const MindMatchGame = () => {
         setIsGameLoading(false);
       }
     })();
-  }, []);
-
-  // Load Sounds
-  useEffect(() => {
-    (async () => {
-      try {
-        const isMusicOn = JSON.parse(
-          (await AsyncStorage.getItem("music")) || "true"
-        );
-        if (!isMusicOn) return;
-
-        const { sound: loadedSuccessSound } = await Audio.Sound.createAsync(
-          Sounds.successSound2
-        );
-        const { sound: cardFlip } = await Audio.Sound.createAsync(
-          Sounds.cardFlip
-        );
-        const { sound: background } = await Audio.Sound.createAsync(
-          Sounds.backgroundMusic2,
-          { isLooping: true }
-        );
-        successSoundRef.current = loadedSuccessSound;
-        cardFlipSoundRef.current = cardFlip;
-        backgroundSoundRef.current = background;
-        await background.setVolumeAsync(0.4);
-        await background.playAsync();
-      } catch {
-        handleGameError("Error", "Error Loading Sounds. Please try again.");
-      }
-    })();
-
-    return () => {
-      successSoundRef.current?.unloadAsync();
-      cardFlipSoundRef.current?.unloadAsync();
-      backgroundSoundRef.current?.stopAsync();
-      backgroundSoundRef.current?.unloadAsync();
-    };
   }, []);
 
   // Save Game State
@@ -463,7 +466,10 @@ const MindMatchGame = () => {
           <Icons.Repeat size={20} color="#fff" />
           <Text style={styles.buttonText}>Reset</Text>
         </Button>
-        <Button onPress={() => setIsGameExiting(true)} style={styles.button}>
+        <Button
+          onPress={() => setIsGameExiting(true)}
+          style={[styles.button, styles.exitButton]}
+        >
           <Icons.LogOut size={20} color="#fff" />
           <Text style={styles.buttonText}>Exit</Text>
         </Button>
