@@ -88,4 +88,38 @@ const BufferingProgress = () => {
   
 };
 
+
+const styles = StyleSheet.create({
+    container: {
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    spinner: {
+      width: 50,
+      height: 50,
+      borderRadius: 25,
+      borderWidth: 3,
+      borderColor: '#e0e0e0',
+      borderTopColor: '#2196F3',
+      marginBottom: 20,
+    },
+    dotsContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    dot: {
+      width: 10,
+      height: 10,
+      borderRadius: 5,
+      backgroundColor: '#2196F3',
+      marginHorizontal: 5,
+    },
+    spinnerInner: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+  });
+
 export default BufferingProgress;
