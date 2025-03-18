@@ -12,7 +12,7 @@ const ProfileSection: React.FC = () => {
   
   const handleEditProfile = () => {
     // Navigate to the existing profile tab
-    router.push('/(tabs)/profile');
+    router.push('/profilePage/profile');
   };
 
   return (

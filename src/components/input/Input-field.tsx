@@ -21,6 +21,8 @@ const InputField = ({
   value: inputValue,
   icon: Icon,
   secureTextEntry = false,
+  onRightIconPress,
+  rightIcon: RightIcon,
   ...props
 }: InputFieldProps) => {
   const [showPassword, setShowPassword] = React.useState(secureTextEntry);
@@ -64,6 +66,13 @@ const InputField = ({
             ) : (
               <Icons.Eye color={theme.colors.primaryText} />
             )}
+          </Pressable>
+        )}
+
+        {/* Add support for custom right icon with press handler */}
+        {RightIcon && onRightIconPress && (
+          <Pressable onPress={onRightIconPress}>
+            {RightIcon}
           </Pressable>
         )}
       </View>
