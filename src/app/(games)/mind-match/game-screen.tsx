@@ -170,6 +170,46 @@ const MindMatchGame = () => {
   const backgroundSoundRef = useRef<Audio.Sound | null>(null);
   const cardFlipSoundRef = useRef<Audio.Sound | null>(null);
 
+  // Load Sounds
+  useEffect(() => {
+    (async () => {
+      try {
+        const isMusicOn = JSON.parse(
+          (await AsyncStorage.getItem("music")) as string
+        );
+        if (!isMusicOn) return;
+
+        const { sound: loadedSuccessSound } = await Audio.Sound.createAsync(
+          Sounds.successSound2
+        );
+        const { sound: cardFlip } = await Audio.Sound.createAsync(
+          Sounds.cardFlip
+        );
+        const { sound: background } = await Audio.Sound.createAsync(
+          Sounds.backgroundMusic2,
+          { isLooping: true }
+        );
+        successSoundRef.current = loadedSuccessSound;
+        cardFlipSoundRef.current = cardFlip;
+        backgroundSoundRef.current = background;
+        await background.setVolumeAsync(0.4);
+        await background.playAsync();
+      } catch {
+        handleGameError("Error", "Error Loading Sounds. Please try again.");
+      }
+    })();
+
+    return () => {
+      (async () => {
+        await backgroundSoundRef.current?.stopAsync();
+        await backgroundSoundRef.current?.unloadAsync();
+        backgroundSoundRef.current = null;
+        successSoundRef.current?.unloadAsync();
+        cardFlipSoundRef.current?.unloadAsync();
+      })();
+    };
+  }, []);
+
   // Load Game State
   useEffect(() => {
     (async () => {
@@ -200,43 +240,6 @@ const MindMatchGame = () => {
     })();
   }, []);
 
-  // Load Sounds
-  useEffect(() => {
-    (async () => {
-      try {
-        const isMusicOn = JSON.parse(
-          (await AsyncStorage.getItem("music")) || "true"
-        );
-        if (!isMusicOn) return;
-
-        const { sound: loadedSuccessSound } = await Audio.Sound.createAsync(
-          Sounds.successSound2
-        );
-        const { sound: cardFlip } = await Audio.Sound.createAsync(
-          Sounds.cardFlip
-        );
-        const { sound: background } = await Audio.Sound.createAsync(
-          Sounds.backgroundMusic2,
-          { isLooping: true }
-        );
-        successSoundRef.current = loadedSuccessSound;
-        cardFlipSoundRef.current = cardFlip;
-        backgroundSoundRef.current = background;
-        await background.setVolumeAsync(0.4);
-        await background.playAsync();
-      } catch {
-        handleGameError("Error", "Error Loading Sounds. Please try again.");
-      }
-    })();
-
-    return () => {
-      successSoundRef.current?.unloadAsync();
-      cardFlipSoundRef.current?.unloadAsync();
-      backgroundSoundRef.current?.stopAsync();
-      backgroundSoundRef.current?.unloadAsync();
-    };
-  }, []);
-
   // Save Game State
   const saveGameState = async () => {
     try {
@@ -264,7 +267,9 @@ const MindMatchGame = () => {
           .collection("games")
           .doc("mind-match")
           .set({
-            progress: { level: currentLevel, score },
+            level: currentLevel,
+            score,
+            totalGameProgressPercentage: calculateProgress(),
             timestamp: firestore.FieldValue.serverTimestamp(),
           });
       }
@@ -377,6 +382,7 @@ const MindMatchGame = () => {
     setFlipCount(0);
     setTotalFlips(0);
     setIsChecking(false);
+    setLevelComplete(false);
     saveGameState();
   };
 
@@ -407,6 +413,10 @@ const MindMatchGame = () => {
       level={currentLevel}
     />
   );
+
+  const calculateProgress = () => {
+    return Math.round((score / MAX_SCORE) * 100);
+  };
 
   const foundPairs = deck.filter((card) => card.isMatched).length / 2;
   const totalPairs = pairsPerLevel[currentLevel - 1];
@@ -456,7 +466,10 @@ const MindMatchGame = () => {
           <Icons.Repeat size={20} color="#fff" />
           <Text style={styles.buttonText}>Reset</Text>
         </Button>
-        <Button onPress={() => setIsGameExiting(true)} style={styles.button}>
+        <Button
+          onPress={() => setIsGameExiting(true)}
+          style={[styles.button, styles.exitButton]}
+        >
           <Icons.LogOut size={20} color="#fff" />
           <Text style={styles.buttonText}>Exit</Text>
         </Button>

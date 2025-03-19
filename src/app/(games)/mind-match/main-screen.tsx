@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import {
   Alert,
-  Image,
   ImageBackground,
   StyleSheet,
   Switch,
@@ -11,14 +10,8 @@ import {
 import { useFocusEffect, useRouter } from "expo-router";
 import { useFonts } from "expo-font";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Animated, {
-  Easing,
-  useAnimatedStyle,
-  useSharedValue,
-  withRepeat,
-  withTiming,
-} from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
+import LottieView from "lottie-react-native";
 
 import Button from "@/src/components/ui/button";
 import { Images } from "@/src/constants/Images";
@@ -27,6 +20,7 @@ import { Icons } from "@/src/constants/Icons";
 import { theme } from "@/src/constants/Theme";
 import { Fonts } from "@/src/constants/Fonts";
 import Loader from "@/src/components/ui/loader";
+import { Lotties } from "@/src/constants/Lottie";
 
 type ImageKeys = `level${1 | 2 | 3 | 4}Badge`;
 
@@ -55,26 +49,10 @@ const MainScreen = () => {
     })();
   }, []);
 
-  const scale = useSharedValue(0.9);
-
   // Load the custom font
   const [fontsLoaded] = useFonts({
     Coiny: Fonts.Coiny,
   });
-
-  // Animation effect for badge
-  useEffect(() => {
-    scale.value = withRepeat(
-      withTiming(1.1, { duration: 1000, easing: Easing.inOut(Easing.ease) }),
-      -1, // Infinite loop
-      true // Reverse animation
-    );
-  }, []);
-
-  // Animated style for badge
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
-  }));
 
   // Check for active cooldown on mount and load game data
   useFocusEffect(
@@ -155,18 +133,20 @@ const MainScreen = () => {
         </View>
 
         {/* Main content */}
-        <View style={{ flex: 1, justifyContent: "center", gap: hp(2) }}>
+        <View>
           {/* Game title */}
           <Text style={styles.headingText}>Mind Match</Text>
 
           {/* Badge */}
-          <Animated.View style={[styles.badgeContainer, animatedStyle]}>
-            <Image
-              source={Images[`level${currentLevel}Badge` as ImageKeys]}
+          <View style={styles.badgeContainer}>
+            <LottieView
+              source={Lotties[`level${currentLevel}Badge` as ImageKeys]}
+              autoPlay
+              loop
               style={styles.badge}
-              resizeMode="contain"
+              resizeMode="cover"
             />
-          </Animated.View>
+          </View>
 
           {/* Score card */}
           <View style={styles.border}>
@@ -283,20 +263,12 @@ const styles = StyleSheet.create({
     fontSize: hp(2),
     fontWeight: "900",
   },
-  badgeContainer: {
-    height: hp(18),
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  badge: {
-    width: wp(35),
-    height: "100%",
-  },
   border: {
     borderColor: "#a2622f",
     borderWidth: 10,
     borderRadius: 15,
     backgroundColor: "#a2622f",
+    marginBottom: hp(2),
   },
   scoreCard: {
     backgroundColor: "#fff2b3",
@@ -381,5 +353,16 @@ const styles = StyleSheet.create({
     fontSize: hp(3),
     color: "rgba(255, 255, 255, 0.8)",
     fontFamily: "Coiny",
+  },
+  badgeContainer: {
+    position: "relative",
+    width: "100%",
+    height: hp(25),
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  badge: {
+    width: "50%",
+    height: "100%",
   },
 });

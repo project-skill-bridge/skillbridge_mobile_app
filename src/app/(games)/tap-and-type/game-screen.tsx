@@ -35,9 +35,12 @@ import { SIMPLE_WORDS } from "@/src/data/words";
 const ALPHABETS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 const TIME_LIMIT = 120;
-const TARGET_SCORE = 100;
 const INITIAL_HEARTS = 10;
 const COOLDOWN_TIME = 180;
+
+const MAX_LEVEL = 4;
+const MAX_SCORE = 100;
+const TOTAL_PROGRESS = MAX_LEVEL * MAX_SCORE;
 
 const TapAndTypeScreen = () => {
   // Game state
@@ -180,7 +183,8 @@ const TapAndTypeScreen = () => {
             .collection("games")
             .doc("tap-and-type")
             .set({
-              progress: firebaseData,
+              ...firebaseData,
+              totalGameProgressPercentage: calculateProgress(),
               timestamp: firestore.FieldValue.serverTimestamp(),
             });
         }
@@ -258,6 +262,10 @@ const TapAndTypeScreen = () => {
     };
   }, [cooldownTimeLeft]);
 
+  const calculateProgress = () => {
+    return (((currentLevel - 1) * MAX_SCORE + score) / TOTAL_PROGRESS) * 100;
+  };
+
   const handleHeartsRefill = async () => {
     const savedData = JSON.parse(
       (await AsyncStorage.getItem("tap-and-type-game")) as string
@@ -276,7 +284,7 @@ const TapAndTypeScreen = () => {
         await backgroundMusicRef.current.setVolumeAsync(0.2);
         await backgroundMusicRef.current.playAsync();
       } catch {
-        console.log("Error playing background music");
+        handleGameError("Error", "Failed to start background music");
       }
     }
   };
@@ -288,8 +296,8 @@ const TapAndTypeScreen = () => {
         await backgroundMusicRef.current.stopAsync();
         await backgroundMusicRef.current.unloadAsync();
         backgroundMusicRef.current = null;
-      } catch (error) {
-        console.log("Error stopping background music", error);
+      } catch {
+        handleGameError("Error", "Failed to stop background music");
       }
     }
   };
@@ -299,8 +307,8 @@ const TapAndTypeScreen = () => {
     if (successSoundRef.current) {
       try {
         await successSoundRef.current.replayAsync();
-      } catch (error) {
-        console.log("Error playing success sound", error);
+      } catch {
+        handleGameError("Error", "Failed to play success sound");
       }
     }
   };
@@ -310,8 +318,8 @@ const TapAndTypeScreen = () => {
     if (failureSoundRef.current) {
       try {
         await failureSoundRef.current.replayAsync();
-      } catch (error) {
-        console.log("Error playing failure sound", error);
+      } catch {
+        handleGameError("Error", "Failed to play failure sound");
       }
     }
   };
@@ -390,7 +398,7 @@ const TapAndTypeScreen = () => {
         playSuccessSound();
         setScore((prev) => {
           const newScore = prev + 2;
-          if (newScore >= TARGET_SCORE) {
+          if (newScore >= MAX_SCORE) {
             setLevelComplete(true);
           }
           return newScore;
@@ -413,7 +421,7 @@ const TapAndTypeScreen = () => {
         if (currentCharIndex + 1 === currentWord.length) {
           setScore((prev) => {
             const newScore = prev + 2;
-            if (newScore >= TARGET_SCORE) {
+            if (newScore >= MAX_SCORE) {
               setLevelComplete(true);
             }
             return newScore;
@@ -631,7 +639,7 @@ const TapAndTypeScreen = () => {
         )}
 
         {/* Level Complete Modal */}
-        {(levelComplete || (currentLevel === 4 && score === TARGET_SCORE)) && (
+        {(levelComplete || (currentLevel === 4 && score === MAX_SCORE)) && (
           <View style={styles.modelWrapper}>
             <View style={styles.modelOverlay} />
             <View style={styles.modal}>
@@ -852,7 +860,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
     position: "relative",
-    width: '50%',
+    width: "75%",
     display: "flex",
     justifyContent: "space-between",
     borderWidth: 6,
