@@ -16,19 +16,24 @@ import * as Speech from "expo-speech";
 import * as Font from "expo-font";
 import { Fonts } from "@/src/constants/Fonts";
 import { Images } from "@/src/constants/Images";
+import BufferingProgress from "../../ui/buffering-progress";
 
 const { width } = Dimensions.get("window");
 
 interface FinnVoiceIntroProps {
-  introText: string;
+  buttonText: string;
+  IntroText: string;
+  displayText: string;
   onComplete?: () => void;
   language?: string;
   speed?: "slow" | "normal" | "fast";
   voiceType?: "child" | "adult" | "robot";
 }
 
-const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
-  introText = "Hi, I'm Finn! Welcome to our adventure!",
+const FinnVoiceTntro: React.FC<FinnVoiceIntroProps> = ({
+  buttonText = "",
+  IntroText = "",
+  displayText = "Let's Play! Circlobrust",
   onComplete = () => {},
   language = "en-US",
   speed = "normal",
@@ -104,7 +109,33 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
     const speedMultiplier = speedSettings[speed];
 
     // Start the speech
-    Speech.speak(introText, {
+    Speech.speak(IntroText, {
+      language,
+      rate: rate * speedMultiplier,
+      pitch,
+      onDone: () => {
+        setIsPlaying(false);
+        setIsTalking(false);
+        setIsComplete(true);
+        if (onComplete) onComplete();
+      },
+    });
+  };
+
+  const buttonIntro = () => {
+    setIsPlaying(true);
+    setIsTalking(true);
+    setShowBubble(true);
+    setShowButton(false);
+
+    // Reset animation values
+    setIsComplete(false);
+
+    const { pitch, rate } = voiceSettings[voiceType];
+    const speedMultiplier = speedSettings[speed];
+
+    // Start the speech
+    Speech.speak(buttonText, {
       language,
       rate: rate * speedMultiplier,
       pitch,
@@ -222,7 +253,7 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
   if (!fontsLoaded) {
     return (
       <View style={styles.loadingContainer}>
-        <Text>Loading...</Text>
+        <BufferingProgress />
       </View>
     );
   }
@@ -256,7 +287,7 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
                     },
                   ]}
                 >
-                  {introText}
+                  {displayText}
                 </Text>
               </ScrollView>
 
@@ -294,7 +325,7 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
           ]}
         >
           {showButton && (
-            <TouchableOpacity style={styles.voiceButton} onPress={startIntro}>
+            <TouchableOpacity style={styles.voiceButton} onPress={buttonIntro}>
               <Text style={styles.voiceButtonText}>Voice Intro</Text>
             </TouchableOpacity>
           )}
@@ -455,4 +486,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FinnVoiceIntro;
+export default FinnVoiceTntro;
