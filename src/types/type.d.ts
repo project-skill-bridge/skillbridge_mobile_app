@@ -49,15 +49,3 @@ declare interface ModalState {
   message: string;
   type: "success" | "error" | null;
 }
-
-export interface InputFieldProps {
-  name: string;
-  control: Control<any>;
-  placeholder?: string;
-  value?: string;
-  icon?: React.ReactNode;
-  rightIcon?: React.ReactNode; // New property for right icon
-  secureTextEntry?: boolean;
-  onRightIconPress?: () => void; // New property for right icon press handler
-  [key: string]: any; // For additional props
-}
