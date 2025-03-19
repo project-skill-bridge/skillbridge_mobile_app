@@ -16,7 +16,6 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
-    "@mediapipe/face_mesh": "^0.4.1633559619",
     "@react-native-async-storage/async-storage": "^1.24.0",
     "@react-native-firebase/app": "^20.5.0",
     "@react-native-firebase/auth": "^20.5.0",
@@ -42,6 +41,7 @@
     "expo-symbols": "~0.2.1",
     "expo-system-ui": "~4.0.7",
     "expo-web-browser": "~14.0.2",
+    "lottie-react-native": "^7.2.2",
     "lucide-react-native": "^0.475.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
@@ -54,7 +54,6 @@
     "react-native-screens": "~4.4.0",
     "react-native-svg": "15.8.0",
     "react-native-video": "^6.10.2",
-    "react-native-vision-camera": "^4.6.4",
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.5",
     "zod": "^3.24.1",

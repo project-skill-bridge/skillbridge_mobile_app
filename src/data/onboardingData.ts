@@ -1,4 +1,4 @@
-import { Images } from "../constants/Images";
+import { Lotties } from "../constants/Lottie";
 
 export const onboardingData = [
   {
@@ -6,20 +6,20 @@ export const onboardingData = [
     title: "Empowering Independence, One Skill at a Time",
     description:
       "Join us in creating a brighter future with fun, interactive learning.",
-    image: Images.onboarding1,
+    src: Lotties.onboarding1,
   },
   {
     id: 2,
     title: "Why Skill Bridge?",
     description:
       "Hands-on skill learning with gamified exercises.Real-time progress tracking and feedback.",
-    image: Images.onboarding2,
+    src: Lotties.onboarding2,
   },
   {
     id: 3,
     title: "Let’s Bridge the Gap Together!",
     description:
       "Let’s make learning fun and exciting! Start your journey toward unlocking endless possibilities.",
-    image: Images.onboarding3,
+    src: Lotties.onboarding3,
   },
 ] as const;

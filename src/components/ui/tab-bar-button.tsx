@@ -10,8 +10,8 @@ const TabBarButton = ({
 }: TabBarButtonProps) => {
   const iconMapping: Record<string, JSX.Element> = {
     home: <Icons.House color="white" />,
-    profile: <Icons.CircleUser color="white" />,
     progress: <Icons.ChartLine color="white" />,
+    forum : <Icons.MessageSquare color="white" />,
     settings: <Icons.Settings color="white" />,
   };
 

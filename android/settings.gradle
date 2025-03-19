@@ -21,7 +21,7 @@ extensions.configure(com.facebook.react.ReactSettingsExtension) { ex ->
   }
 }
 
-rootProject.name = 'skill_bridge'
+rootProject.name = 'Skill Bridge'
 
 dependencyResolutionManagement {
   versionCatalogs {

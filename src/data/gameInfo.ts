@@ -8,12 +8,12 @@ export const gameInfo = [
   },
   {
     id: 2,
-    path: "/eye-contact/game-screen",
+    path: "/circle-burst/game-screen",
     image: Images.game2,
   },
   {
     id: 3,
-    path: "/circle-burst/game-screen",
-    image: Images.game3,
-  }
+    path: "/mind-match/main-screen",
+    image: Images.game2,
+  },
 ] as const;
