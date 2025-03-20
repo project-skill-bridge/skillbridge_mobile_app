@@ -14,8 +14,8 @@ const GameSliderContainer = () => {
     ({
       viewableItems,
     }: {
-      viewableItems: Array<ViewToken>;
-      changed: Array<ViewToken>;
+      viewableItems: Array<ViewToken>
+      changed: Array<ViewToken>
     }) => {
       if (viewableItems.length > 0 && viewableItems[0].index !== null) {
         setCurrentIndex(viewableItems[0].index ?? 0);
@@ -29,13 +29,13 @@ const GameSliderContainer = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>Games to Play</Text>
+      <View style={styles.headerRow}>
+        <Text style={styles.headerText}>Games to Play</Text>
+      </View>
       <View style={styles.slider}>
         <FlatList
           data={gameInfo}
-          renderItem={({ item }) => (
-            <GameCard id={item.id} path={item.path} image={item.image} />
-          )}
+          renderItem={({ item }) => <GameCard id={item.id} path={item.path} image={item.image} />}
           horizontal
           showsHorizontalScrollIndicator={false}
           bounces={false}
@@ -48,15 +48,20 @@ const GameSliderContainer = () => {
       </View>
       <SliderActiveDot length={gameInfo.length} currentIndex={currentIndex} />
     </View>
-  );
-};
+  )
+}
 
-export default GameSliderContainer;
+export default GameSliderContainer
 
 const styles = StyleSheet.create({
   container: {
     marginBottom: hp(9),
     justifyContent: "center",
+  },
+  headerRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   slider: {
     marginTop: hp(2),
@@ -66,4 +71,4 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: theme.colors.primaryText,
   },
-});
+})

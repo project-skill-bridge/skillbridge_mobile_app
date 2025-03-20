@@ -9,4 +9,5 @@ export const Lotties = {
   level2Badge: require("@/assets/lottie/badge2.json"),
   level3Badge: require("@/assets/lottie/badge3.json"),
   level4Badge: require("@/assets/lottie/badge4.json"),
+  streakFlame: require("@/assets/lottie/flame.json"),
 } as const;

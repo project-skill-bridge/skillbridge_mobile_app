@@ -6,6 +6,7 @@ const AuthLayout = () => {
   return (
     <Stack>
       <Stack.Screen name="profile" options={{ headerShown: false }} />
+      <Stack.Screen name="streak" options={{ headerShown: false }} />
     </Stack>
   );
 };

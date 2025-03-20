@@ -8,7 +8,7 @@ import HomeProgress from "@/src/components/home-progress";
 import GameSliderContainer from "@/src/components/game/game-slider-container";
 import Modal from "@/src/components/ui/modal";
 import { ModalState } from "@/src/types/type";
-import FinnCharacter from "@/src/components/finnCharacter/FinnCharacter";
+import FinnCharacter from "@/src/components/FinnCharacter/FinnCharacter";
 
 const HomeScreen = () => {
   const { user } = useUserStore();
