@@ -76,7 +76,7 @@ const OnboardingScreen = () => {
               id={item.id}
               title={item.title}
               description={item.description}
-              image={item.image}
+              src={item.src}
             />
           )}
           horizontal

@@ -1,7 +1,6 @@
 import * as React from "react";
 
 import {
-  Image,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -18,19 +17,20 @@ import auth from "@react-native-firebase/auth";
 import Button from "@/src/components/ui/button";
 import InputField from "@/src/components/input/Input-field";
 import GoogleAuthButton from "@/src/components/ui/google-auth-provider";
-import ReactNativeModal from "react-native-modal";
 import { RegisterFormType, RegisterSchema } from "@/src/schema";
 import InputGroup from "@/src/components/input/input-group";
 import InputLabel from "@/src/components/input/input-label";
 import ErrorMessage from "@/src/components/input/error-message";
 import firestore from "@react-native-firebase/firestore";
 import { Icons } from "@/src/constants/Icons";
+import { ModalState } from "@/src/types/type";
+import Modal from "@/src/components/ui/modal";
 
 const SignUpScreen = () => {
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<RegisterFormType>({
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
@@ -41,17 +41,21 @@ const SignUpScreen = () => {
     },
     mode: "all",
   });
-  const [isLoading, setIsLoading] = React.useState(false);
+
+  const [isVisible, setIsVisible] = React.useState<ModalState>({
+    visible: false,
+    message: "",
+    type: null,
+  });
 
   const signUpHandler = async (formData: RegisterFormType) => {
-    setIsLoading(true);
     try {
       const { email, password } = formData;
       const { user } = await auth().createUserWithEmailAndPassword(
         email,
         password
       );
-      // await user.sendEmailVerification();
+      await user.sendEmailVerification();
 
       await firestore().collection("users").doc(user.uid).set({
         name: formData.name,
@@ -61,12 +65,18 @@ const SignUpScreen = () => {
       });
     } catch (error) {
       if (error instanceof Error) {
-        alert(error.message);
+        setIsVisible({
+          visible: true,
+          message: error.message,
+          type: "error",
+        });
       } else {
-        alert("An unknown error occurred");
+        setIsVisible({
+          visible: true,
+          message: "An error occurred. Please try again.",
+          type: "error",
+        });
       }
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -85,7 +95,7 @@ const SignUpScreen = () => {
                 <InputField
                   name="name"
                   control={control}
-                  leftIcon={
+                  icon={
                     <Icons.User size={22} color={theme.colors.primaryText} />
                   }
                   placeholder="Enter your name"
@@ -100,7 +110,7 @@ const SignUpScreen = () => {
                 <InputField
                   name="email"
                   control={control}
-                  leftIcon={
+                  icon={
                     <Icons.Mail size={22} color={theme.colors.primaryText} />
                   }
                   placeholder="Enter your email"
@@ -116,7 +126,7 @@ const SignUpScreen = () => {
                 <InputField
                   name="mobile"
                   control={control}
-                  leftIcon={
+                  icon={
                     <Icons.Smartphone
                       size={22}
                       color={theme.colors.primaryText}
@@ -135,7 +145,7 @@ const SignUpScreen = () => {
                 <InputField
                   name="password"
                   control={control}
-                  leftIcon={
+                  icon={
                     <Icons.LockKeyhole
                       size={24}
                       color={theme.colors.primaryText}
@@ -153,7 +163,7 @@ const SignUpScreen = () => {
 
           <Button
             onPress={handleSubmit(signUpHandler)}
-            isLoading={isLoading}
+            isLoading={isSubmitting}
             showShadow
           >
             <Text style={theme.buttonTextDefaultStyle}>Sign Up</Text>
@@ -174,63 +184,15 @@ const SignUpScreen = () => {
           </Link>
         </View>
 
-        {/* Verification Modal */}
-        <ReactNativeModal isVisible={false}>
-          <View className="bg-white px-4 py-9 rounded-2xl min-h-[300px]">
-            <Text className="text-2xl font-JakartaBold">Verification</Text>
-
-            <Text className=" text-gray-400 mb-2 font-JakartaMedium">
-              {/* We&apos;ve sent a verification code to {email} */}
-            </Text>
-
-            <InputField
-              name="Code"
-              // icon={icons.lock}
-              placeholder="123456"
-              // value={verification.code}
-              keyboardType="numeric"
-              // onChangeText={(code) =>
-              //   setVerification({ ...verification, code })
-              // }
-            />
-
-            {/* {verification.error && (
-            <Text className="text-red-500 text-sm mt-1">
-              {verification.error}
-            </Text>
-          )} */}
-
-            {/* <Button
-              title="Verify Email"
-              onPress={() => {}}
-              // bgVariant="success"
-              // className="mt-5"
-            /> */}
-          </View>
-        </ReactNativeModal>
-
-        <ReactNativeModal isVisible={false}>
-          <View className="bg-white px-4 py-9 rounded-2xl min-h-[300px]">
-            <Image
-              // source={images.check}
-              className="w-[110px] h-[110px] mx-auto my-5"
-            />
-
-            <Text className="text-3xl font-JakartaBold text-center">
-              Verified!
-            </Text>
-
-            <Text className="text-center text-gray-400 text-base mt-2 font-JakartaMedium">
-              You have successfully verified your account
-            </Text>
-
-            {/* <Button
-              title="Browse Home"
-              onPress={() => router.replace("/(tabs)/home")}
-              // className="mt-5"
-            /> */}
-          </View>
-        </ReactNativeModal>
+        {/*Modal */}
+        <Modal
+          type={isVisible.type}
+          isVisible={isVisible.visible}
+          setCloseModel={() =>
+            setIsVisible({ visible: false, message: "", type: null })
+          }
+          message={isVisible.message}
+        />
       </View>
     </ScrollView>
   );

@@ -35,9 +35,12 @@ import { SIMPLE_WORDS } from "@/src/data/words";
 const ALPHABETS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 const TIME_LIMIT = 120;
-const TARGET_SCORE = 100;
 const INITIAL_HEARTS = 10;
 const COOLDOWN_TIME = 180;
+
+const MAX_LEVEL = 4;
+const MAX_SCORE = 100;
+const TOTAL_PROGRESS = MAX_LEVEL * MAX_SCORE;
 
 const TapAndTypeScreen = () => {
   // Game state
@@ -178,9 +181,10 @@ const TapAndTypeScreen = () => {
             .collection("users")
             .doc(user.uid)
             .collection("games")
-            .doc("tap-and-type-game")
+            .doc("tap-and-type")
             .set({
-              progress: firebaseData,
+              ...firebaseData,
+              totalGameProgressPercentage: calculateProgress(),
               timestamp: firestore.FieldValue.serverTimestamp(),
             });
         }
@@ -195,7 +199,9 @@ const TapAndTypeScreen = () => {
   // Check if a cooldown is already active (e.g. after app restart)
   useEffect(() => {
     const checkCooldown = async () => {
-      const storedTime = await AsyncStorage.getItem("cooldownEndTime");
+      const storedTime = await AsyncStorage.getItem(
+        "tap-and-type-cool-down-time"
+      );
       if (storedTime) {
         const cooldownEnd = parseInt(storedTime, 10);
         const now = Date.now();
@@ -203,7 +209,7 @@ const TapAndTypeScreen = () => {
           const remaining = Math.ceil((cooldownEnd - now) / 1000);
           setCooldownTimeLeft(remaining);
         } else {
-          await AsyncStorage.removeItem("cooldownEndTime");
+          await AsyncStorage.removeItem("tap-and-type-cool-down-time");
           setCooldownTimeLeft(0);
         }
       }
@@ -243,7 +249,7 @@ const TapAndTypeScreen = () => {
           else {
             if (cooldownIntervalRef.current)
               clearInterval(cooldownIntervalRef.current);
-            AsyncStorage.removeItem("cooldownEndTime");
+            AsyncStorage.removeItem("tap-and-type-cool-down-time");
             handleHeartsRefill();
             return 0;
           }
@@ -255,6 +261,10 @@ const TapAndTypeScreen = () => {
         clearInterval(cooldownIntervalRef.current);
     };
   }, [cooldownTimeLeft]);
+
+  const calculateProgress = () => {
+    return (((currentLevel - 1) * MAX_SCORE + score) / TOTAL_PROGRESS) * 100;
+  };
 
   const handleHeartsRefill = async () => {
     const savedData = JSON.parse(
@@ -274,7 +284,7 @@ const TapAndTypeScreen = () => {
         await backgroundMusicRef.current.setVolumeAsync(0.2);
         await backgroundMusicRef.current.playAsync();
       } catch {
-        console.log("Error playing background music");
+        handleGameError("Error", "Failed to start background music");
       }
     }
   };
@@ -286,8 +296,8 @@ const TapAndTypeScreen = () => {
         await backgroundMusicRef.current.stopAsync();
         await backgroundMusicRef.current.unloadAsync();
         backgroundMusicRef.current = null;
-      } catch (error) {
-        console.log("Error stopping background music", error);
+      } catch {
+        handleGameError("Error", "Failed to stop background music");
       }
     }
   };
@@ -297,8 +307,8 @@ const TapAndTypeScreen = () => {
     if (successSoundRef.current) {
       try {
         await successSoundRef.current.replayAsync();
-      } catch (error) {
-        console.log("Error playing success sound", error);
+      } catch {
+        handleGameError("Error", "Failed to play success sound");
       }
     }
   };
@@ -308,8 +318,8 @@ const TapAndTypeScreen = () => {
     if (failureSoundRef.current) {
       try {
         await failureSoundRef.current.replayAsync();
-      } catch (error) {
-        console.log("Error playing failure sound", error);
+      } catch {
+        handleGameError("Error", "Failed to play failure sound");
       }
     }
   };
@@ -371,8 +381,11 @@ const TapAndTypeScreen = () => {
   const startCooldown = async (): Promise<void> => {
     // Set cooldown state and store the end time in AsyncStorage
     setCooldownTimeLeft(COOLDOWN_TIME);
-    const cooldownEndTime = Date.now() + COOLDOWN_TIME * 1000;
-    await AsyncStorage.setItem("cooldownEndTime", cooldownEndTime.toString());
+    const coolDownEndTime = Date.now() + COOLDOWN_TIME * 1000;
+    await AsyncStorage.setItem(
+      "tap-and-type-cool-down-time",
+      coolDownEndTime.toString()
+    );
   };
 
   // Handle key presses (letters or words)
@@ -385,7 +398,7 @@ const TapAndTypeScreen = () => {
         playSuccessSound();
         setScore((prev) => {
           const newScore = prev + 2;
-          if (newScore >= TARGET_SCORE) {
+          if (newScore >= MAX_SCORE) {
             setLevelComplete(true);
           }
           return newScore;
@@ -408,7 +421,7 @@ const TapAndTypeScreen = () => {
         if (currentCharIndex + 1 === currentWord.length) {
           setScore((prev) => {
             const newScore = prev + 2;
-            if (newScore >= TARGET_SCORE) {
+            if (newScore >= MAX_SCORE) {
               setLevelComplete(true);
             }
             return newScore;
@@ -449,7 +462,7 @@ const TapAndTypeScreen = () => {
     setCooldownTimeLeft(0);
     setLevelComplete(false);
     setHearts(INITIAL_HEARTS);
-    await AsyncStorage.removeItem("cooldownEndTime");
+    await AsyncStorage.removeItem("tap-and-type-cool-down-time");
     startNewRound();
   };
 
@@ -626,7 +639,7 @@ const TapAndTypeScreen = () => {
         )}
 
         {/* Level Complete Modal */}
-        {(levelComplete || (currentLevel === 4 && score === TARGET_SCORE)) && (
+        {(levelComplete || (currentLevel === 4 && score === MAX_SCORE)) && (
           <View style={styles.modelWrapper}>
             <View style={styles.modelOverlay} />
             <View style={styles.modal}>
@@ -844,16 +857,14 @@ const styles = StyleSheet.create({
   modal: {
     backgroundColor: "#fff2b2",
     paddingVertical: hp(5),
-    paddingHorizontal: wp(10),
     borderRadius: 10,
     alignItems: "center",
     position: "relative",
-    width: wp(130),
+    width: "75%",
     display: "flex",
     justifyContent: "space-between",
     borderWidth: 6,
     borderColor: "#9a5f31",
-    gap: hp(2),
   },
   modelOverlay: {
     position: "absolute",

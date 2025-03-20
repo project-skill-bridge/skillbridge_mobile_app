@@ -21,6 +21,26 @@ import {
   User,
   Volume2,
   X,
+  BadgeCheck,
+  CircleHelp,
+  Circle,
+  Square,
+  Triangle,
+  Zap,
+  Leaf,
+  Bell,
+  Book,
+  Camera,
+  Clock,
+  Coffee,
+  Gift,
+  Home,
+  Key,
+  Lock,
+  Map,
+  Phone,
+  Tv,
+  MessageSquare
 } from "lucide-react-native";
 
 export const Icons = {
@@ -46,7 +66,26 @@ export const Icons = {
   Repeat,
   ArrowBigRight,
   X,
-  
+  BadgeCheck,
+  CircleHelp,
+  Circle,
+  Square,
+  Triangle,
+  Zap,
+  Leaf,
+  Bell,
+  Book,
+  Camera,
+  Clock,
+  Coffee,
+  Gift,
+  Home,
+  Key,
+  Lock,
+  Map,
+  Phone,
+  Tv,
+  MessageSquare
 };
 
 export type Icon = keyof typeof Icons;

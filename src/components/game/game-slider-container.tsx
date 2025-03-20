@@ -1,24 +1,14 @@
-"use client"
+import * as React from "react";
+import { FlatList, StyleSheet, Text, View, ViewToken } from "react-native";
+import { hp } from "../../utils/common";
+import { gameInfo } from "@/src/data/gameInfo";
+import GameCard from "./game-card";
+import SliderActiveDot from "./slider-active-dot";
+import { theme } from "@/src/constants/Theme";
 
-import * as React from "react"
-
-import { FlatList, StyleSheet, Text, View } from "react-native"
-import { hp } from "../../utils/common"
-import { gameInfo } from "@/src/data/gameInfo"
-import GameCard from "./game-card"
-import SliderActiveDot from "./slider-active-dot"
-import { theme } from "@/src/constants/Theme"
-
-// Define ViewToken interface inline
-interface ViewToken {
-  item: any
-  key: string
-  index: number | null
-  isViewable: boolean
-  section?: any
-}
 const GameSliderContainer = () => {
-  const [currentIndex, setCurrentIndex] = React.useState(0)
+  const [currentIndex, setCurrentIndex] = React.useState(0);
+  const sliderRef = React.useRef<FlatList>(null);
 
   const viewableItemsChanged = React.useRef(
     ({
@@ -27,15 +17,15 @@ const GameSliderContainer = () => {
       viewableItems: Array<ViewToken>
       changed: Array<ViewToken>
     }) => {
-      setCurrentIndex(viewableItems[0].index || 0)
-    },
-  ).current
+      if (viewableItems.length > 0 && viewableItems[0].index !== null) {
+        setCurrentIndex(viewableItems[0].index ?? 0);
+      }
+    }
+  ).current;
 
   const viewConfig = React.useRef({
-    viewAreaCoveragePercentThreshold: 0,
-  }).current
-
-  const sliderRef = React.useRef<FlatList>(null)
+    viewAreaCoveragePercentThreshold: 50, // Ensures the item is at least 50% visible before updating the index
+  }).current;
 
   return (
     <View style={styles.container}>

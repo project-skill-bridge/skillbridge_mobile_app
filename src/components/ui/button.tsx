@@ -65,7 +65,7 @@ const Button = ({
     );
 
     if (hasSound && variant === "icon") {
-      await buttonClickRef.current?.setVolumeAsync(0.1);
+      await buttonClickRef.current?.setVolumeAsync(0.3);
       await buttonClickRef.current?.replayAsync();
     }
     onPress(e);
