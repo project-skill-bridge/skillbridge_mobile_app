@@ -1,18 +1,26 @@
 import * as React from "react";
-
 import { StyleSheet, Text, View } from "react-native";
 import { hp, wp } from "../utils/common";
 import CircularProgress from "./ui/circular-progress";
 import { theme } from "../constants/Theme";
 
 const HomeProgress = () => {
+  // Assuming you have 5 levels in total
+  const totalLevels = 5;
+
+  // Track the number of completed levels (this could come from your game logic or props)
+  const completedLevels = 2; // Change this dynamically based on game progress
+
+  // Calculate percentage based on completed levels
+  const progressPercentage = (completedLevels / totalLevels) * 100;
+
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Your Progress</Text>
       <CircularProgress
-        perecentage={25}
+        perecentage={progressPercentage} // Pass the calculated percentage
         color={theme.colors.primary}
-        textColor="black"
+        textColor="blue"
         radius={45}
       />
     </View>
