@@ -16,7 +16,7 @@ import * as Speech from "expo-speech";
 import * as Font from "expo-font";
 import { Fonts } from "@/src/constants/Fonts";
 import { Images } from "@/src/constants/Images";
-import BufferingProgress from "../../ui/buffering-progress";
+import BufferingProgress from "../ui/buffering-progress";
 
 const { width } = Dimensions.get("window");
 

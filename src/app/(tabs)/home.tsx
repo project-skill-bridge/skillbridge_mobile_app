@@ -6,10 +6,9 @@ import { hp, wp } from "@/src/utils/common";
 import { StyleSheet, Text, View } from "react-native";
 import HomeProgress from "@/src/components/home-progress";
 import GameSliderContainer from "@/src/components/game/game-slider-container";
-import AnimatedAvatar from "@/src/components/animated-avatar";
 import Modal from "@/src/components/ui/modal";
 import { ModalState } from "@/src/types/type";
-import FinnCharacter from "@/src/components/FinnCharacter/FinnCharacter";
+import FinnCharacter from "@/src/components/finnCharacter/FinnCharacter";
 
 const HomeScreen = () => {
   const { user } = useUserStore();
@@ -37,8 +36,7 @@ const HomeScreen = () => {
     <View style={styles.container}>
       <Text style={styles.welcomeText}>Hi {user?.name} 👋</Text>
       <HomeProgress />
-      <FinnCharacter /> 
-      <AnimatedAvatar />
+      <FinnCharacter />
       <GameSliderContainer />
       <Modal
         type={isVisible.type}

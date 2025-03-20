@@ -1,4 +1,4 @@
 package com.skillbridge.app.circlobrustGame.circlobrustLevelSuccessActivities
 
-class Level5SuccessScreenCB {
+class Level4SuccessScreenCB {
 }
