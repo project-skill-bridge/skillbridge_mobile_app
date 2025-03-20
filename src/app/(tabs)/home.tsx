@@ -9,6 +9,7 @@ import GameSliderContainer from "@/src/components/game/game-slider-container";
 import AnimatedAvatar from "@/src/components/animated-avatar";
 import Modal from "@/src/components/ui/modal";
 import { ModalState } from "@/src/types/type";
+import FinnCharacter from "@/src/components/FinnCharacter/FinnCharacter";
 
 const HomeScreen = () => {
   const { user } = useUserStore();
@@ -36,6 +37,7 @@ const HomeScreen = () => {
     <View style={styles.container}>
       <Text style={styles.welcomeText}>Hi {user?.name} 👋</Text>
       <HomeProgress />
+      <FinnCharacter /> 
       <AnimatedAvatar />
       <GameSliderContainer />
       <Modal
