@@ -4,7 +4,7 @@ import { StyleSheet, Animated, View, TextInput } from "react-native";
 import Svg, { G, Circle } from "react-native-svg";
 
 interface CircularProgressProps {
-  perecentage?: number;
+  percentage?: number;
   radius?: number;
   strokeWidth?: number;
   duration?: number;
@@ -19,7 +19,7 @@ const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 const AnimatedInput = Animated.createAnimatedComponent(TextInput);
 
 const CircularProgress = ({
-  perecentage = 50,
+  percentage = 50,
   radius = 40,
   strokeWidth = 10,
   duration = 500,
@@ -46,7 +46,7 @@ const CircularProgress = ({
   const circleCircumference = 2 * Math.PI * radius;
 
   React.useEffect(() => {
-    animation(perecentage);
+    animation(percentage);
 
     animatedValue.addListener((v) => {
       if (circleRef?.current) {
@@ -68,7 +68,7 @@ const CircularProgress = ({
     return () => {
       animatedValue.removeAllListeners();
     };
-  }, [perecentage, max, radius]);
+  }, [percentage, max, radius]);
 
   const getTextValue = (value: number) => {
     if (timer) {
@@ -82,7 +82,14 @@ const CircularProgress = ({
   };
 
   return (
-    <View>
+    <View
+      style={{
+        width: radius * 2,
+        height: radius * 2,
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
       <Svg
         width={radius * 2}
         height={radius * 2}
@@ -112,20 +119,25 @@ const CircularProgress = ({
           />
         </G>
       </Svg>
-
+  
       <AnimatedInput
         ref={inputRef}
         defaultValue="0%"
         editable={false}
         underlineColorAndroid="transparent"
         style={[
-          StyleSheet.absoluteFillObject,
           styles.text,
-          { color: textColor ?? color, fontSize: radius / 2 },
+          {
+            color: textColor ?? color,
+            fontSize: radius / 2.5,
+            position: "absolute",
+            textAlign: "center",
+          },
         ]}
       />
     </View>
   );
+  
 };
 
 export default CircularProgress;

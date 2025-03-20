@@ -3,25 +3,70 @@ import { StyleSheet, Text, View } from "react-native";
 import { hp, wp } from "../utils/common";
 import CircularProgress from "./ui/circular-progress";
 import { theme } from "../constants/Theme";
+import firebase from '../services/firebase'; // Import your firebase config
+
 
 const HomeProgress = () => {
-  // Assuming you have 5 levels in total
-  const totalLevels = 5;
 
-  // Track the number of completed levels (this could come from your game logic or props)
-  const completedLevels = 2; // Change this dynamically based on game progress
+  const [averageProgress, setAverageProgress] = React.useState<number>(0);
+  const [loading, setLoading] = React.useState<boolean>(true);
 
-  // Calculate percentage based on completed levels
-  const progressPercentage = (completedLevels / totalLevels) * 100;
+  React.useEffect(() => {
+    // Fetch data from Firestore
+    const fetchGameProgress = async () => {
+      try {
+        const gamesCollectionRef = firebase.firestore().collection('/users/338KqomFDhYMtWd8xCXWIMwtg3v1/games');
+        const snapshot = await gamesCollectionRef.get();
+        
+        if (!snapshot.empty) {
+          let totalProgress = 0;
+          let gameCount = 0;
+
+          // Loop through each document in the "games" collection
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            if (data?.totalGameProgressPercentage) {
+              totalProgress += data.totalGameProgressPercentage;
+              gameCount++;
+            }
+          });
+
+          // Calculate the average progress
+          const avgProgress = gameCount > 0 ? totalProgress / gameCount : 0;
+          setAverageProgress(avgProgress);
+        } else {
+          console.log("No games found!");
+        }
+      } catch (error) {
+        console.error("Error getting games:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchGameProgress();
+  }, []);
+
+
+  // // Total number of levels in your game
+  // const totalLevels = 5;
+
+  // // This should dynamically reflect game progress
+  // const completedLevels = 2;
+
+  // Calculate and cap progress percentage
+  //const rawPercentage = (completedLevels / totalLevels) * 100;
+ // const progressPercentage = Math.min(rawPercentage, 100); // prevent overfill
 
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Your Progress</Text>
       <CircularProgress
-        perecentage={progressPercentage} // Pass the calculated percentage
+        percentage={averageProgress}
         color={theme.colors.primary}
         textColor="blue"
         radius={45}
+
       />
     </View>
   );
@@ -42,5 +87,6 @@ const styles = StyleSheet.create({
   text: {
     fontSize: hp(2),
     fontWeight: "bold",
+    color: "#333",
   },
 });
