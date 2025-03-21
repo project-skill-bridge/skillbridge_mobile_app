@@ -1,13 +1,13 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
 import React, { useEffect, useState, useRef } from "react";
+
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   ImageBackground,
-  Alert,
   Image,
+  Alert,
 } from "react-native";
 import * as ScreenOrientation from "expo-screen-orientation";
 import Animated, {
@@ -17,63 +17,61 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { router } from "expo-router";
-import { hp, wp } from "@/src/utils/common";
-import HexagonSVG from "@/src/components/hexagon-svg";
-import { theme } from "@/src/constants/Theme";
-import { Audio } from "expo-av";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import firestore from "@react-native-firebase/firestore";
 import auth from "@react-native-firebase/auth";
+import { Audio } from "expo-av";
+import { useFonts } from "expo-font";
+import { hp, wp } from "@/src/utils/common";
 import { Images } from "@/src/constants/Images";
 import Button from "@/src/components/ui/button";
 import { Icons } from "@/src/constants/Icons";
+import { Fonts } from "@/src/constants/Fonts";
+import Loader from "@/src/components/ui/loader";
+import CircularProgress from "@/src/components/ui/circular-progress";
+import { Sounds } from "@/src/constants/Sounds";
+import { SIMPLE_WORDS } from "@/src/data/words";
 
 const ALPHABETS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-const SIMPLE_WORDS = [
-  "CAT",
-  "DOG",
-  "CAR",
-  "SUN",
-  "HAT",
-  "FOX",
-  "BEE",
-  "PEN",
-  "BOX",
-  "BALL",
-  "SHIP",
-  "TREE",
-  "FORK",
-  "STAR",
-  "MOON",
-];
 
-const TIME_LIMIT = 15; // seconds (used for timed levels 2 and 4)
-const TARGET_SCORE = 10;
-const INITIAL_HEARTS = 5;
-const COOLDOWN_TIME = 30; // seconds of cooldown when hearts reach 0
+const TIME_LIMIT = 120;
+const INITIAL_HEARTS = 10;
+const COOLDOWN_TIME = 180;
 
-const TypingGameScreen: React.FC = () => {
+const MAX_LEVEL = 4;
+const MAX_SCORE = 100;
+const TOTAL_PROGRESS = MAX_LEVEL * MAX_SCORE;
+
+const TapAndTypeScreen = () => {
   // Game state
-  const [currentLevel, setCurrentLevel] = useState<number>(1);
   const [score, setScore] = useState<number>(0);
+  const [currentLevel, setCurrentLevel] = useState<number>(1);
   const [hearts, setHearts] = useState<number>(INITIAL_HEARTS);
   const [levelComplete, setLevelComplete] = useState<boolean>(false);
-  // Sound states (if needed)
-  const [successSound, setSuccessSound] = useState<Audio.Sound | null>(null);
-  const [failureSound, setFailureSound] = useState<Audio.Sound | null>(null);
-  const [backgroundMusic, setBackgroundMusic] = useState<Audio.Sound | null>(
-    null
-  );
+
+  // Sound refs
+  const successSoundRef = useRef<Audio.Sound | null>(null);
+  const failureSoundRef = useRef<Audio.Sound | null>(null);
+  const backgroundMusicRef = useRef<Audio.Sound | null>(null);
+
+  // Load custom font
+  const [fontsLoaded] = useFonts({
+    Coiny: Fonts.Coiny,
+  });
 
   // Round state (for letter rounds and word rounds)
-  const [currentLetter, setCurrentLetter] = useState<string>("");
   const [currentWord, setCurrentWord] = useState<string>("");
+  const [currentLetter, setCurrentLetter] = useState<string>("");
   const [currentCharIndex, setCurrentCharIndex] = useState<number>(0);
-  const [timeLeft, setTimeLeft] = useState<number>(TIME_LIMIT);
+  const [correctCharCount, setCorrectCharCount] = useState<number>(0);
 
   // Cooldown state (when hearts reach 0)
-  const [cooldownTimeLeft, setCooldownTimeLeft] = useState<number | null>(null);
+  const [timeLeft, setTimeLeft] = useState<number>(TIME_LIMIT);
+  const [cooldownTimeLeft, setCooldownTimeLeft] = useState<number>(0);
   const cooldownIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Exit game state
+  const [isGameExiting, setIsGameExiting] = useState<boolean>(false);
 
   // Determine mode based on level:
   // Levels 1 & 2: letter rounds; levels 3 & 4: word rounds.
@@ -81,8 +79,16 @@ const TypingGameScreen: React.FC = () => {
   // Levels 2 & 4 have a timer
   const isTimed = currentLevel === 2 || currentLevel === 4;
 
+  // Keyboard layout (3 rows of letters)
+  const keyboardRows: string[][] = [
+    ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
+    ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
+    ["Z", "X", "C", "V", "B", "N", "M"],
+  ];
+
   // For shake animation on errors
   const shake = useSharedValue(0);
+
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: shake.value }],
   }));
@@ -94,6 +100,7 @@ const TypingGameScreen: React.FC = () => {
         ScreenOrientation.OrientationLock.LANDSCAPE
       );
     };
+
     lockOrientation();
 
     return () => {
@@ -101,11 +108,44 @@ const TypingGameScreen: React.FC = () => {
     };
   }, []);
 
-  // Load saved game data (optional)
+  // Load sounds on mount
+  useEffect(() => {
+    const loadSound = async () => {
+      const isMusicOn = JSON.parse(
+        (await AsyncStorage.getItem("music")) as string
+      );
+
+      if (!isMusicOn) return;
+
+      const { sound: loadedSuccessSound } = await Audio.Sound.createAsync(
+        Sounds.successSound
+      );
+      const { sound: loadedFailureSound } = await Audio.Sound.createAsync(
+        Sounds.failureSound
+      );
+      const { sound: loadedBackgroundMusic } = await Audio.Sound.createAsync(
+        Sounds.backgroundMusic,
+        { isLooping: true }
+      );
+      backgroundMusicRef.current = loadedBackgroundMusic;
+      successSoundRef.current = loadedSuccessSound;
+      failureSoundRef.current = loadedFailureSound;
+      startBackgroundMusic();
+    };
+
+    loadSound();
+    return () => {
+      successSoundRef.current?.unloadAsync();
+      failureSoundRef.current?.unloadAsync();
+      stopBackgroundMusic();
+    };
+  }, []);
+
+  // Load saved game data from local storage
   useEffect(() => {
     const loadGameData = async () => {
       try {
-        const savedData = await AsyncStorage.getItem("gameData");
+        const savedData = await AsyncStorage.getItem("tap-and-type-game");
         if (savedData) {
           const {
             hearts: savedHearts,
@@ -116,8 +156,8 @@ const TypingGameScreen: React.FC = () => {
           setCurrentLevel(savedLevel);
           setScore(savedScore);
         }
-      } catch (error) {
-        console.error("Error loading game data:", error);
+      } catch {
+        handleGameError("Error", "Failed to load game data");
       }
     };
 
@@ -129,7 +169,10 @@ const TypingGameScreen: React.FC = () => {
     const saveGameData = async () => {
       try {
         const localData = { hearts, currentLevel, score };
-        await AsyncStorage.setItem("gameData", JSON.stringify(localData));
+        await AsyncStorage.setItem(
+          "tap-and-type-game",
+          JSON.stringify(localData)
+        );
 
         const firebaseData = { level: currentLevel, score };
         const user = auth().currentUser;
@@ -138,24 +181,46 @@ const TypingGameScreen: React.FC = () => {
             .collection("users")
             .doc(user.uid)
             .collection("games")
-            .doc("typing-game")
+            .doc("tap-and-type")
             .set({
-              progress: firebaseData,
+              ...firebaseData,
+              totalGameProgressPercentage: calculateProgress(),
               timestamp: firestore.FieldValue.serverTimestamp(),
             });
         }
-      } catch (error) {
-        console.error("Error saving game data:", error);
+      } catch {
+        handleGameError("Error", "Failed to save game data");
       }
     };
 
     saveGameData();
   }, [hearts, currentLevel, score]);
 
+  // Check if a cooldown is already active (e.g. after app restart)
+  useEffect(() => {
+    const checkCooldown = async () => {
+      const storedTime = await AsyncStorage.getItem(
+        "tap-and-type-cool-down-time"
+      );
+      if (storedTime) {
+        const cooldownEnd = parseInt(storedTime, 10);
+        const now = Date.now();
+        if (cooldownEnd > now) {
+          const remaining = Math.ceil((cooldownEnd - now) / 1000);
+          setCooldownTimeLeft(remaining);
+        } else {
+          await AsyncStorage.removeItem("tap-and-type-cool-down-time");
+          setCooldownTimeLeft(0);
+        }
+      }
+    };
+    checkCooldown();
+  }, []);
+
   // Timer for timed rounds
   useEffect(() => {
     let timerId: number | null = null;
-    if (isTimed && cooldownTimeLeft === null && !levelComplete) {
+    if (isTimed && cooldownTimeLeft === 0 && !levelComplete) {
       if (timeLeft > 0) {
         timerId = setTimeout(() => {
           setTimeLeft(timeLeft - 1);
@@ -175,35 +240,17 @@ const TypingGameScreen: React.FC = () => {
     startNewRound();
   }, [currentLevel]);
 
-  // Check if a cooldown is already active (e.g. after app restart)
-  useEffect(() => {
-    const checkCooldown = async () => {
-      const storedTime = await AsyncStorage.getItem("cooldownEndTime");
-      if (storedTime) {
-        const cooldownEnd = parseInt(storedTime, 10);
-        const now = Date.now();
-        if (cooldownEnd > now) {
-          const remaining = Math.ceil((cooldownEnd - now) / 1000);
-          setCooldownTimeLeft(remaining);
-        } else {
-          await AsyncStorage.removeItem("cooldownEndTime");
-          setCooldownTimeLeft(null);
-        }
-      }
-    };
-    checkCooldown();
-  }, []);
-
   // Cooldown timer effect (counts down every second)
   useEffect(() => {
-    if (cooldownTimeLeft !== null && cooldownTimeLeft > 0) {
+    if (cooldownTimeLeft > 0) {
       cooldownIntervalRef.current = setInterval(() => {
         setCooldownTimeLeft((prev) => {
           if (prev && prev > 1) return prev - 1;
           else {
             if (cooldownIntervalRef.current)
               clearInterval(cooldownIntervalRef.current);
-            AsyncStorage.removeItem("cooldownEndTime");
+            AsyncStorage.removeItem("tap-and-type-cool-down-time");
+            handleHeartsRefill();
             return 0;
           }
         });
@@ -215,14 +262,75 @@ const TypingGameScreen: React.FC = () => {
     };
   }, [cooldownTimeLeft]);
 
-  // -------------------------
-  // ROUND HELPERS
-  // -------------------------
+  const calculateProgress = () => {
+    return (((currentLevel - 1) * MAX_SCORE + score) / TOTAL_PROGRESS) * 100;
+  };
+
+  const handleHeartsRefill = async () => {
+    const savedData = JSON.parse(
+      (await AsyncStorage.getItem("tap-and-type-game")) as string
+    );
+    await AsyncStorage.setItem(
+      "tap-and-type-game",
+      JSON.stringify({ ...savedData, hearts: INITIAL_HEARTS })
+    );
+    setHearts(INITIAL_HEARTS);
+  };
+
+  // start the background music
+  const startBackgroundMusic = async () => {
+    if (backgroundMusicRef.current) {
+      try {
+        await backgroundMusicRef.current.setVolumeAsync(0.2);
+        await backgroundMusicRef.current.playAsync();
+      } catch {
+        handleGameError("Error", "Failed to start background music");
+      }
+    }
+  };
+
+  // stop the background music
+  const stopBackgroundMusic = async () => {
+    if (backgroundMusicRef.current) {
+      try {
+        await backgroundMusicRef.current.stopAsync();
+        await backgroundMusicRef.current.unloadAsync();
+        backgroundMusicRef.current = null;
+      } catch {
+        handleGameError("Error", "Failed to stop background music");
+      }
+    }
+  };
+
+  // Play success sound
+  const playSuccessSound = async () => {
+    if (successSoundRef.current) {
+      try {
+        await successSoundRef.current.replayAsync();
+      } catch {
+        handleGameError("Error", "Failed to play success sound");
+      }
+    }
+  };
+
+  // Play failure sound
+  const playFailureSound = async () => {
+    if (failureSoundRef.current) {
+      try {
+        await failureSoundRef.current.replayAsync();
+      } catch {
+        handleGameError("Error", "Failed to play failure sound");
+      }
+    }
+  };
+
+  // Generate a random letter for letter rounds
   const generateRandomLetter = (): string => {
     const randomIndex = Math.floor(Math.random() * ALPHABETS.length);
     return ALPHABETS[randomIndex];
   };
 
+  // Generate a random 3 or 4-letter word for word rounds
   const generateRandomWord = (): string => {
     const filteredWords = SIMPLE_WORDS.filter(
       (word) => word.length === 3 || word.length === 4
@@ -231,20 +339,23 @@ const TypingGameScreen: React.FC = () => {
     return filteredWords[randomIndex];
   };
 
+  // Start a new round (letter or word) based on the current level
   const startNewRound = (): void => {
     if (isTimed) {
       setTimeLeft(TIME_LIMIT);
     }
     if (roundType === "letter") {
-      setCurrentLetter(generateRandomLetter());
+      const newLetter = generateRandomLetter();
+      setCurrentLetter(newLetter);
     } else {
       const newWord = generateRandomWord();
-      console.log("New word:", newWord);
       setCurrentWord(newWord);
       setCurrentCharIndex(0);
+      setCorrectCharCount(0);
     }
   };
 
+  // Trigger shake animation on wrong
   const triggerShakeAnimation = (): void => {
     shake.value = withSequence(
       withTiming(-10, { duration: 50 }),
@@ -266,28 +377,28 @@ const TypingGameScreen: React.FC = () => {
     }
   };
 
-  // -------------------------
-  // COOLDOWN HANDLING
-  // -------------------------
+  // Start a cooldown period after losing
   const startCooldown = async (): Promise<void> => {
     // Set cooldown state and store the end time in AsyncStorage
     setCooldownTimeLeft(COOLDOWN_TIME);
-    const cooldownEndTime = Date.now() + COOLDOWN_TIME * 1000;
-    await AsyncStorage.setItem("cooldownEndTime", cooldownEndTime.toString());
+    const coolDownEndTime = Date.now() + COOLDOWN_TIME * 1000;
+    await AsyncStorage.setItem(
+      "tap-and-type-cool-down-time",
+      coolDownEndTime.toString()
+    );
   };
 
-  // -------------------------
-  // HANDLE KEY PRESSES FROM THE VIRTUAL KEYBOARD
-  // -------------------------
+  // Handle key presses (letters or words)
   const handleKeyPress = (char: string): void => {
     // Do not process key presses during cooldown or after level completion
-    if (cooldownTimeLeft !== null || levelComplete) return;
+    if (cooldownTimeLeft !== 0 || levelComplete) return;
 
     if (roundType === "letter") {
       if (char === currentLetter) {
+        playSuccessSound();
         setScore((prev) => {
           const newScore = prev + 2;
-          if (newScore >= TARGET_SCORE) {
+          if (newScore >= MAX_SCORE) {
             setLevelComplete(true);
           }
           return newScore;
@@ -295,6 +406,7 @@ const TypingGameScreen: React.FC = () => {
         startNewRound();
       } else {
         triggerShakeAnimation();
+        playFailureSound();
         const updatedHearts = hearts - 1;
         setHearts(updatedHearts);
         if (updatedHearts <= 0) {
@@ -305,34 +417,33 @@ const TypingGameScreen: React.FC = () => {
       }
     } else {
       if (char === currentWord[currentCharIndex]) {
+        playSuccessSound();
         if (currentCharIndex + 1 === currentWord.length) {
           setScore((prev) => {
             const newScore = prev + 2;
-            if (newScore >= TARGET_SCORE) {
+            if (newScore >= MAX_SCORE) {
               setLevelComplete(true);
             }
             return newScore;
           });
           startNewRound();
         } else {
+          setCorrectCharCount((prev) => prev + 1);
           setCurrentCharIndex(currentCharIndex + 1);
         }
       } else {
         triggerShakeAnimation();
+        playFailureSound();
         const updatedHearts = hearts - 1;
         setHearts(updatedHearts);
         if (updatedHearts <= 0) {
           startCooldown();
-        } else {
-          startNewRound();
         }
       }
     }
   };
 
-  // -------------------------
-  // HANDLERS FOR LEVEL PROGRESSION & GAME RESET
-  // -------------------------
+  // Handle next level or game completion
   const handleNextLevel = (): void => {
     if (currentLevel < 4) {
       setCurrentLevel(currentLevel + 1);
@@ -341,41 +452,74 @@ const TypingGameScreen: React.FC = () => {
       setLevelComplete(false);
       startNewRound();
     } else {
-      Alert.alert("Congratulations!", "You have completed all levels!", [
-        { text: "Restart Game", onPress: resetGame },
-      ]);
+      handleResetGame();
     }
   };
 
-  const handleRestartLevel = (): void => {
-    // Only allow restart if cooldown is finished (i.e. cooldownTimeLeft is 0)
-    if (cooldownTimeLeft && cooldownTimeLeft > 0) return;
+  // Restart the game (reset all state to initial values)
+  const handleRestartLevel = async () => {
     setScore(0);
-    setHearts(INITIAL_HEARTS);
+    setCooldownTimeLeft(0);
     setLevelComplete(false);
-    setCooldownTimeLeft(null);
+    setHearts(INITIAL_HEARTS);
+    await AsyncStorage.removeItem("tap-and-type-cool-down-time");
     startNewRound();
   };
 
-  const resetGame = (): void => {
+  // Reset the game to level 1
+  const handleResetGame = (): void => {
     setCurrentLevel(1);
     setScore(0);
     setHearts(INITIAL_HEARTS);
     setLevelComplete(false);
-    setCooldownTimeLeft(null);
+    setCooldownTimeLeft(0);
     startNewRound();
   };
 
-  const handleBackButtonPress = () => {
-    Alert.alert("Exit Game", "Are you sure you want to exit?", [
-      {
-        text: "Cancel",
-        style: "cancel",
-      },
+  // Handle back button press
+  const handleBackButtonPress = async () => {
+    await ScreenOrientation.unlockAsync();
+    router.back();
+  };
+
+  // Render letter or word display
+  const renderDisplay = () => {
+    if (roundType === "letter") {
+      return (
+        <Animated.View style={animatedStyle}>
+          <View style={styles.key}>
+            <Text style={styles.keyText}>{currentLetter}</Text>
+          </View>
+        </Animated.View>
+      );
+    } else {
+      return currentWord.split("").map((letter, index) => (
+        <Animated.View
+          key={index}
+          style={[
+            currentCharIndex === index && animatedStyle,
+            currentCharIndex === index && styles.focusKey,
+          ]}
+        >
+          <View
+            style={[
+              styles.key,
+              index < correctCharCount && { backgroundColor: "#FFD700" },
+            ]}
+          >
+            <Text style={styles.keyText}>{letter}</Text>
+          </View>
+        </Animated.View>
+      ));
+    }
+  };
+
+  // Handle game errors (e.g. loading/saving data)
+  const handleGameError = (title: string, message: string) => {
+    Alert.alert(title, message, [
       {
         text: "Exit",
         onPress: async () => {
-          // resetGame();
           await ScreenOrientation.unlockAsync();
           router.back();
         },
@@ -383,38 +527,14 @@ const TypingGameScreen: React.FC = () => {
     ]);
   };
 
-  // -------------------------
-  // RENDER HELPERS
-  // -------------------------
-  // Virtual keyboard layout
-  const keyboardRows: string[][] = [
-    ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
-    ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
-    ["Z", "X", "C", "V", "B", "N", "M"],
-  ];
-
-  // Render letter or word display
-  const renderDisplay = () => {
-    if (roundType === "letter") {
-      return (
-        <Animated.View style={animatedStyle}>
-          <HexagonSVG character={currentLetter} fill={theme.colors.primary} />
-        </Animated.View>
-      );
-    } else {
-      const displayString = currentWord
-        .split("")
-        .map((letter, index) => (index < currentCharIndex ? letter : "_"))
-        .join(" ");
-      return (
-        <Animated.View style={animatedStyle}>
-          <Text style={[styles.displayText, { fontSize: 30 }]}>
-            {displayString}
-          </Text>
-        </Animated.View>
-      );
-    }
-  };
+  // Check if the game is loading fonts
+  if (!fontsLoaded) {
+    return (
+      <View style={styles.loader}>
+        <Loader size={30} />
+      </View>
+    );
+  }
 
   return (
     <ImageBackground
@@ -425,16 +545,32 @@ const TypingGameScreen: React.FC = () => {
       <View style={styles.overlay}>
         <View style={styles.topRow}>
           <View style={styles.backButtonAndLifeContainer}>
-            <Button onPress={handleBackButtonPress} variant="icon">
+            <Button onPress={() => setIsGameExiting(true)} variant="icon">
               <Icons.ChevronLeft color="black" />
             </Button>
-            <Text style={[styles.infoText, { fontSize: 30 }]}>❤️ {hearts}</Text>
+            <View style={styles.heartsContainer}>
+              <Icons.Heart
+                size={40}
+                fill="red"
+                stroke="black"
+                strokeWidth={1}
+              />
+              <Text style={styles.hearts}>{hearts}</Text>
+            </View>
           </View>
 
           <View style={styles.randomCharContainer}>{renderDisplay()}</View>
 
           <View style={styles.scoreAndTimeContainer}>
-            {isTimed && <Text style={styles.infoText}>Time: {timeLeft}</Text>}
+            {isTimed && (
+              <CircularProgress
+                perecentage={timeLeft}
+                max={TIME_LIMIT}
+                timer
+                textColor="black"
+                color="#feae32"
+              />
+            )}
             <View style={styles.scoreBoardContainer}>
               <View style={styles.scoreContainer}>
                 <Text style={styles.level}>Level {currentLevel}</Text>
@@ -442,7 +578,7 @@ const TypingGameScreen: React.FC = () => {
               </View>
               <Image
                 style={styles.scoreBoardImage}
-                source={require("@/assets/images/black-board.png")}
+                source={Images.blakboard}
                 resizeMode="contain"
               />
             </View>
@@ -466,52 +602,109 @@ const TypingGameScreen: React.FC = () => {
         </View>
 
         {/* Cooldown Modal */}
-        {cooldownTimeLeft !== null && (
-          <View style={styles.overlayContainer}>
+        {cooldownTimeLeft !== 0 && (
+          <View style={styles.modelWrapper}>
             <View style={styles.modal}>
-              <Text style={styles.modalText}>
-                {cooldownTimeLeft > 0
-                  ? `Please wait ${cooldownTimeLeft} seconds`
-                  : "Cooldown complete!"}
-              </Text>
-              <TouchableOpacity
-                style={[
-                  styles.modalButton,
-                  {
-                    backgroundColor:
-                      cooldownTimeLeft && cooldownTimeLeft > 0
-                        ? "#aaa"
-                        : "#4CAF50",
-                  },
-                ]}
-                onPress={handleRestartLevel}
-                disabled={cooldownTimeLeft !== 0}
-              >
-                <Text style={styles.modalButtonText}>Restart Game</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.modalButton, { backgroundColor: "#FF5252" }]}
-                onPress={handleBackButtonPress}
-              >
-                <Text style={styles.modalButtonText}>Exit Game</Text>
-              </TouchableOpacity>
+              {/* <Text style={styles.modalText}>Level Complete!</Text> */}
+              <View style={styles.scoreBar}>
+                <Text style={[styles.scoreText, { fontSize: hp(3) }]}>
+                  COOLDOWN TIME:
+                </Text>
+                <Text
+                  style={[styles.score, { color: "black", fontSize: hp(3.5) }]}
+                >
+                  {`${Math.floor(cooldownTimeLeft / 60)
+                    .toString()
+                    .padStart(2, "0")}:${(cooldownTimeLeft % 60)
+                    .toString()
+                    .padStart(2, "0")}`}
+                </Text>
+              </View>
+
+              <View style={styles.buttonContainer}>
+                <Button onPress={handleRestartLevel} style={styles.button}>
+                  <Icons.Repeat size={40} color={"black"} />
+                  <Text style={styles.buttonText}>REPLAY</Text>
+                </Button>
+                <Button
+                  onPress={() => setIsGameExiting(true)}
+                  style={[styles.button, styles.exitButton]}
+                >
+                  <Icons.LogOut size={40} color={"black"} />
+                  <Text style={styles.buttonText}>EXIT</Text>
+                </Button>
+              </View>
             </View>
           </View>
         )}
 
         {/* Level Complete Modal */}
-        {levelComplete && (
-          <View style={styles.overlayContainer}>
+        {(levelComplete || (currentLevel === 4 && score === MAX_SCORE)) && (
+          <View style={styles.modelWrapper}>
+            <View style={styles.modelOverlay} />
             <View style={styles.modal}>
-              <Text style={styles.modalText}>Level Complete!</Text>
-              <TouchableOpacity
-                style={styles.modalButton}
-                onPress={handleNextLevel}
-              >
-                <Text style={styles.modalButtonText}>
-                  {currentLevel < 4 ? "Next Level" : "Finish"}
+              <Text style={styles.modalText}>
+                {currentLevel !== 4
+                  ? `Level ${currentLevel} Complete!`
+                  : "Congratulations"}
+              </Text>
+              {currentLevel === 4 && (
+                <Text style={[styles.scoreText]}>
+                  You have completed all levels!
                 </Text>
-              </TouchableOpacity>
+              )}
+
+              <View style={styles.scoreBar}>
+                <Text style={[styles.scoreText, { fontSize: hp(3) }]}>
+                  YOUR SCORE:
+                </Text>
+                <Text
+                  style={[styles.score, { color: "black", fontSize: hp(3.5) }]}
+                >
+                  {score}
+                </Text>
+              </View>
+
+              <View style={styles.buttonContainer}>
+                <Button onPress={handleRestartLevel} style={styles.button}>
+                  <Icons.Repeat size={40} color={"black"} />
+                  <Text style={styles.buttonText}>REPLAY</Text>
+                </Button>
+                <Button
+                  onPress={handleNextLevel}
+                  style={[styles.button, styles.nextLevelButton]}
+                >
+                  <Icons.ArrowBigRight size={40} color={"black"} />
+                  <Text style={styles.buttonText}>
+                    {currentLevel !== 4 ? "NEXT LEVEL" : "RESTART"}
+                  </Text>
+                </Button>
+              </View>
+            </View>
+          </View>
+        )}
+
+        {isGameExiting && (
+          <View style={styles.modelWrapper}>
+            <View style={styles.modelOverlay} />
+            <View style={styles.modal}>
+              <Text style={styles.modalText}>Exit Game?</Text>
+              <View style={styles.buttonContainer}>
+                <Button
+                  onPress={() => setIsGameExiting(false)}
+                  style={styles.button}
+                >
+                  <Icons.X size={40} color={"black"} />
+                  <Text style={styles.buttonText}>Cancel</Text>
+                </Button>
+                <Button
+                  onPress={handleBackButtonPress}
+                  style={[styles.button, styles.exitButton]}
+                >
+                  <Icons.Check size={40} color={"black"} />
+                  <Text style={styles.buttonText}>Ok</Text>
+                </Button>
+              </View>
             </View>
           </View>
         )}
@@ -521,6 +714,11 @@ const TypingGameScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
+  loader: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   container: {
     flex: 1,
   },
@@ -543,21 +741,33 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 50,
   },
+  heartsContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  hearts: {
+    fontSize: 30,
+    fontFamily: "Coiny",
+    color: "black",
+  },
   randomCharContainer: {
     flex: 1,
     alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
   },
   scoreAndTimeContainer: {
     flex: 1,
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "flex-end",
-    gap: 30,
+    gap: wp(5),
   },
   scoreBoardContainer: {
     position: "relative",
-    width: wp(34),
-    height: hp(10),
+    width: wp(40),
+    height: hp(12),
   },
   scoreBoardImage: {
     width: "100%",
@@ -573,20 +783,30 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  scoreText: {
+    fontFamily: "Coiny",
+    fontSize: hp(2.5),
+    color: "#9a5f31",
+  },
   level: {
-    fontSize: hp(2),
-    fontWeight: "600",
+    fontSize: hp(1.7),
+    fontFamily: "Coiny",
     color: "#fff",
   },
   score: {
     fontSize: hp(2.5),
-    fontWeight: "bold",
-    color: "#fff",
+    fontFamily: "Coiny",
+    color: "#e8e3e3",
+  },
+  scoreBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
   },
   infoText: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#fff",
+    fontFamily: "Coiny",
+    fontSize: hp(2.5),
+    color: "#9a5f31",
   },
   keyboardContainer: {
     backgroundColor: "#fdeed8",
@@ -605,41 +825,63 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     margin: 5,
     borderRadius: 5,
-    padding: 10,
     width: 50,
     height: 50,
     justifyContent: "center",
     alignItems: "center",
-    borderWidth: 1,
+    borderWidth: 1.5,
+  },
+  focusKey: {
+    backgroundColor: "red",
+    borderRadius: 5,
   },
   keyText: {
-    fontSize: 20,
-    fontWeight: "bold",
+    fontSize: hp(2.5),
+    fontFamily: "Coiny",
   },
   displayText: {
     color: "#fff",
     fontWeight: "bold",
   },
-  overlayContainer: {
+  modelWrapper: {
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.4)",
+    position: "absolute",
+    zIndex: 1,
+  },
+  modal: {
+    backgroundColor: "#fff2b2",
+    paddingVertical: hp(5),
+    borderRadius: 10,
+    alignItems: "center",
+    position: "relative",
+    width: "75%",
+    display: "flex",
+    justifyContent: "space-between",
+    borderWidth: 6,
+    borderColor: "#9a5f31",
+  },
+  modelOverlay: {
     position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "rgba(0,0,0,0.7)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  modal: {
-    backgroundColor: "#fff",
-    padding: 30,
-    borderRadius: 10,
-    alignItems: "center",
   },
   modalText: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
+    fontSize: hp(4),
+    fontFamily: "Coiny",
+    backgroundColor: "#74b52b",
+    paddingHorizontal: wp(5),
+    color: "#fbfffe",
+    borderRadius: 5,
+    position: "absolute",
+    top: -30,
   },
   modalButton: {
     paddingVertical: 10,
@@ -651,6 +893,27 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "#fff",
   },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    width: "100%",
+  },
+  buttonText: {
+    fontSize: hp(2.5),
+    fontFamily: "Coiny",
+    color: "#fff",
+  },
+  nextLevelButton: {
+    backgroundColor: "#6ee661",
+  },
+  exitButton: {
+    backgroundColor: "#f44336",
+  },
+  button: {
+    borderColor: "#000",
+    borderWidth: 4,
+    gap: 10,
+  },
 });
 
-export default TypingGameScreen;
+export default TapAndTypeScreen;

@@ -1,14 +1,36 @@
 import * as React from "react";
 
 import { useUserStore } from "@/src/store/user-store";
+import auth from "@react-native-firebase/auth";
 import { hp, wp } from "@/src/utils/common";
 import { StyleSheet, Text, View } from "react-native";
 import HomeProgress from "@/src/components/home-progress";
 import GameSliderContainer from "@/src/components/game/game-slider-container";
 import AnimatedAvatar from "@/src/components/animated-avatar";
+import Modal from "@/src/components/ui/modal";
+import { ModalState } from "@/src/types/type";
 
 const HomeScreen = () => {
   const { user } = useUserStore();
+
+  const [isVisible, setIsVisible] = React.useState<ModalState>({
+    visible: false,
+    message: "",
+    type: null,
+  });
+
+  React.useEffect(() => {
+    (async () => {
+      const user = auth().currentUser;
+      if (user?.emailVerified) return;
+
+      setIsVisible({
+        visible: true,
+        message: "Verification email sent! Please check your inbox.",
+        type: "success",
+      });
+    })();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -16,6 +38,14 @@ const HomeScreen = () => {
       <HomeProgress />
       <AnimatedAvatar />
       <GameSliderContainer />
+      <Modal
+        type={isVisible.type}
+        isVisible={isVisible.visible}
+        setCloseModel={() =>
+          setIsVisible({ visible: false, message: "", type: null })
+        }
+        message={isVisible.message}
+      />
     </View>
   );
 };

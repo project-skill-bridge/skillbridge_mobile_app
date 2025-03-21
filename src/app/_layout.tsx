@@ -1,12 +1,14 @@
 import * as React from "react";
 
+import { StyleSheet, View } from "react-native";
 import { FirebaseAuthTypes } from "@react-native-firebase/auth";
-import { Stack, useRouter, useSegments } from "expo-router";
-import { GoogleSignin } from "@react-native-google-signin/google-signin";
-import auth from "@react-native-firebase/auth";
-import Loader from "@/src/components/ui/loader";
-import { useUserStore } from "../store/user-store";
 import firestore from "@react-native-firebase/firestore";
+import auth from "@react-native-firebase/auth";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import { Stack, useRouter, useSegments } from "expo-router";
+import { useUserStore } from "../store/user-store";
+import Loader from "../components/ui/loader";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const RootLayout = () => {
   GoogleSignin.configure({
@@ -38,31 +40,48 @@ const RootLayout = () => {
 
     const isRootGroup = segments[0] === "(tabs)";
 
-    if (userSession && !isRootGroup) {
-      firestore()
-        .collection("users")
-        .doc(userSession?.uid)
-        .get()
-        .then((doc) => {
-          const user = doc.data();
-          if (user) {
-            setUser({
-              name: user.name,
-              email: user.email,
-              mobile: user.mobile,
-              image: user.image,
-            });
-          }
+    const appInit = async () => {
+      const isOnboarding = JSON.parse(
+        (await AsyncStorage.getItem("isOnboarding")) as string
+      );
+
+      if (!isOnboarding) {
+        await AsyncStorage.setItem("sound", JSON.stringify(true));
+        await AsyncStorage.setItem("music", JSON.stringify(true));
+      }
+
+      if (userSession && !isRootGroup) {
+        const doc = await firestore()
+          .collection("users")
+          .doc(userSession?.uid)
+          .get();
+
+        const user = doc.data();
+
+        setUser({
+          id: userSession.uid,
+          name: user?.name,
+          email: user?.email,
+          mobile: user?.mobile,
+          image: user?.image,
         });
-      router.replace("/(tabs)/home");
-    } else if (!userSession && isRootGroup) {
-      setUser(null);
-      router.replace("/(auth)/sign-in");
-    }
+
+        router.replace("/(tabs)/home");
+      } else if ((!userSession && isRootGroup) || isOnboarding) {
+        setUser(null);
+        router.replace("/(auth)/sign-in");
+      }
+    };
+
+    appInit();
   }, [userSession, initializing]);
 
   if (initializing) {
-    return <Loader />;
+    return (
+      <View style={styles.loader}>
+        <Loader size={30} />
+      </View>
+    );
   }
 
   return (
@@ -76,3 +95,11 @@ const RootLayout = () => {
 };
 
 export default RootLayout;
+
+const styles = StyleSheet.create({
+  loader: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
