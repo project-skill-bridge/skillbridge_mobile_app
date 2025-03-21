@@ -10,15 +10,20 @@ jobs:
     name: Android Build
     runs-on: ubuntu-latest
     steps:
-      - uses: ./.github/actions/checkout/action.yml
-      - uses: ./.github/actions/setup-java/action.yml
-      - uses: ./.github/actions/setup-node/action.yml
-      - uses: ./.github/actions/gradle-setup/action.yml
-      - uses: ./.github/actions/build-apk/action.yml
-      - uses: ./.github/actions/upload-apk/action.yml
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - uses: ./.github/actions/setup-java
+      - uses: ./.github/actions/setup-node
+      - uses: ./.github/actions/gradle-setup
+      - uses: ./.github/actions/build-apk
+      - uses: ./.github/actions/upload-apk
 
   deploy:
     needs: android-build
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
       - uses: ./.github/actions/download-apk
