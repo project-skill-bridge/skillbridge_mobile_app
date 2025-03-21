@@ -22,10 +22,10 @@ export const RegisterSchema = z.object({
 export const UpdateProfileSchema = z.object({
   name: z.string().trim().min(1, { message: "Name is required" }),
   mobile: z
-    .union([
-      z.string().trim().regex(/^[0-9]{10}$/, { message: "Invalid mobile number" }).optional(),
-      z.literal('')
-    ]),
+    .string()
+    .trim()
+    .min(10, { message: "Mobile number is required" }),
+    // .regex(/^[0-9]{10}$/, { message: "Invalid mobile number" }),
   password: z
     .string()
     .trim()

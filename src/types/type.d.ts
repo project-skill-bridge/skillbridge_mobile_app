@@ -7,7 +7,10 @@ import { Control } from "react-hook-form";
 declare interface InputFieldProps extends TextInputProps {
   name: string;
   control?: Control<T>;
-  icon?: React.JSX.Element;
+  leftIcon?: React.JSX.Element;
+  rightIcon?: React.JSX.Element;
+  secureTextEntry?: boolean;
+  onRightIconPress?: () => void;
 }
 
 declare interface ButtonProps extends PressableProps {
@@ -30,22 +33,8 @@ declare interface TabBarButtonProps {
 }
 
 declare interface User {
-  id: string;
   name: string;
   email: string;
   mobile?: string;
   image?: string;
-}
-
-declare interface ModalProps {
-  isVisible: boolean;
-  message: string;
-  type: "success" | "error" | null;
-  setCloseModel: () => void;
-}
-
-declare interface ModalState {
-  visible: boolean;
-  message: string;
-  type: "success" | "error" | null;
 }

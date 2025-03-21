@@ -1,4 +1,5 @@
 import * as React from "react";
+
 import { FlatList, StyleSheet, Text, View, ViewToken } from "react-native";
 import { hp } from "../../utils/common";
 import { gameInfo } from "@/src/data/gameInfo";
@@ -8,7 +9,6 @@ import { theme } from "@/src/constants/Theme";
 
 const GameSliderContainer = () => {
   const [currentIndex, setCurrentIndex] = React.useState(0);
-  const sliderRef = React.useRef<FlatList>(null);
 
   const viewableItemsChanged = React.useRef(
     ({
@@ -17,16 +17,16 @@ const GameSliderContainer = () => {
       viewableItems: Array<ViewToken>;
       changed: Array<ViewToken>;
     }) => {
-      if (viewableItems.length > 0 && viewableItems[0].index !== null) {
-        setCurrentIndex(viewableItems[0].index ?? 0);
-      }
+      setCurrentIndex(viewableItems[0].index || 0);
     }
   ).current;
 
   const viewConfig = React.useRef({
-    viewAreaCoveragePercentThreshold: 50, // Ensures the item is at least 50% visible before updating the index
+    viewAreaCoveragePercentThreshold: 0,
   }).current;
 
+  const sliderRef = React.useRef<FlatList>(null);
+  
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>Games to Play</Text>

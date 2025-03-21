@@ -1,5 +1,6 @@
 import * as React from "react";
-import { BackHandler, Keyboard, LayoutChangeEvent, StyleSheet, View } from "react-native";
+
+import { Keyboard, LayoutChangeEvent, StyleSheet, View } from "react-native";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { hp, wp } from "@/src/utils/common";
 import { theme } from "@/src/constants/Theme";
@@ -12,11 +13,8 @@ import Animated, {
 
 const TabBar = ({ state, navigation }: BottomTabBarProps) => {
   const [dimensions, setDimensions] = React.useState({ height: 20, width: 10 });
-  const [isTabBarVisible, setIsTabBarVisible] = React.useState(true);
-  const [isKeyboardVisible, setKeyboardVisible] = React.useState(false);
 
   const buttonWidth = dimensions.width / state.routes.length;
-  const tabPositionX = useSharedValue(0);
 
   const onTabBarLayout = (e: LayoutChangeEvent) => {
     setDimensions({
@@ -24,6 +22,8 @@ const TabBar = ({ state, navigation }: BottomTabBarProps) => {
       width: e.nativeEvent.layout.width,
     });
   };
+
+  const tabPositionX = useSharedValue(0);
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -36,6 +36,8 @@ const TabBar = ({ state, navigation }: BottomTabBarProps) => {
       duration: 1500,
     });
   }, [state.index]);
+
+  const [isKeyboardVisible, setKeyboardVisible] = React.useState(false);
 
   React.useEffect(() => {
     const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
@@ -51,32 +53,7 @@ const TabBar = ({ state, navigation }: BottomTabBarProps) => {
     };
   }, []);
 
-  React.useEffect(() => {
-    if (
-      ["progress", "forum", "settings"].includes(state.routes[state.index].name)
-    ) {
-      const timer = setTimeout(() => {
-        setIsTabBarVisible(false);
-      }, 2000);
-      return () => clearTimeout(timer);
-    } else {
-      setIsTabBarVisible(true);
-    }
-  }, [state.index]);
-
-  React.useEffect(() => {
-    const handleBackPress = () => {
-      setIsTabBarVisible(true);
-      return false;
-    };
-
-    BackHandler.addEventListener("hardwareBackPress", handleBackPress);
-    return () => {
-      BackHandler.removeEventListener("hardwareBackPress", handleBackPress);
-    };
-  }, []);
-
-  if (!isTabBarVisible || isKeyboardVisible) {
+  if (isKeyboardVisible) {
     return null;
   }
 

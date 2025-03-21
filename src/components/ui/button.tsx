@@ -1,13 +1,9 @@
 import * as React from "react";
 
-import { GestureResponderEvent, Pressable, StyleSheet } from "react-native";
+import { ActivityIndicator, Pressable, StyleSheet } from "react-native";
 import { theme } from "@/src/constants/Theme";
 import { ButtonProps } from "@/src/types/type";
 import { hp, wp } from "@/src/utils/common";
-import Loader from "./loader";
-import { Audio } from "expo-av";
-import { Sounds } from "@/src/constants/Sounds";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const getVariantStyle = (variant: string) => {
   switch (variant) {
@@ -40,39 +36,9 @@ const Button = ({
   variant = "default",
   children,
 }: ButtonProps) => {
-  const buttonClickRef = React.useRef<Audio.Sound | null>(null);
-
-  React.useEffect(() => {
-    const loadSound = async () => {
-      const { sound: buttonClick } = await Audio.Sound.createAsync(
-        Sounds.buttonClick
-      );
-      buttonClickRef.current = buttonClick;
-    };
-
-    loadSound();
-    return () => {
-      buttonClickRef.current?.unloadAsync();
-    };
-  }, []);
-
-  const handlePress = async (e: GestureResponderEvent) => {
-    if (!onPress) return;
-
-    const hasSound = JSON.parse(
-      (await AsyncStorage.getItem("sound")) as string
-    );
-
-    if (hasSound && variant === "icon") {
-      await buttonClickRef.current?.setVolumeAsync(0.3);
-      await buttonClickRef.current?.replayAsync();
-    }
-    onPress(e);
-  };
-
   return (
     <Pressable
-      onPress={(e) => handlePress(e)}
+      onPress={onPress}
       style={[
         styles.button,
         getVariantStyle(variant),
@@ -81,7 +47,7 @@ const Button = ({
       ]}
     >
       {isLoading && (
-        <Loader
+        <ActivityIndicator
           color={variant === "outline" ? theme.colors.primary : "white"}
         />
       )}

@@ -12,7 +12,6 @@ interface CircularProgressProps {
   delay?: number;
   textColor?: string;
   max?: number;
-  timer?: boolean;
 }
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
@@ -27,7 +26,6 @@ const CircularProgress = ({
   delay = 0,
   textColor,
   max = 100,
-  timer = false,
 }: CircularProgressProps) => {
   const circleRef = React.useRef<Circle>(null);
   const inputRef = React.useRef<TextInput>(null);
@@ -60,7 +58,7 @@ const CircularProgress = ({
 
       if (inputRef?.current) {
         inputRef.current.setNativeProps({
-          text: getTextValue(v.value),
+          text: `${Math.round(v.value)}%`,
         });
       }
     });
@@ -69,17 +67,6 @@ const CircularProgress = ({
       animatedValue.removeAllListeners();
     };
   }, [perecentage, max, radius]);
-
-  const getTextValue = (value: number) => {
-    if (timer) {
-      const roundedValue = Math.round(value);
-      return `${Math.floor(roundedValue / 60)
-        .toString()
-        .padStart(2, "0")}:${(roundedValue % 60).toString().padStart(2, "0")}`;
-    }
-
-    return `${Math.round(value)}%`;
-  };
 
   return (
     <View>
