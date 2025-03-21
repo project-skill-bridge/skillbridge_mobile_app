@@ -1,5 +1,5 @@
-name: 'Upload APK'
-description: 'Uploads the APK as an artifact'
+name: "Upload APK"
+description: "Uploads the APK as an artifact"
 
 runs:
   using: "composite"
@@ -9,4 +9,3 @@ runs:
       with:
         name: app-release
         path: android/app/build/outputs/apk/release/*.apk
-      shell: bash
