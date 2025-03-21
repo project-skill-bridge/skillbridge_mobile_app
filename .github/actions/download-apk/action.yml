@@ -1,0 +1,15 @@
+name: "Download APK"
+description: "Downloads the APK artifact"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Download APK
+      uses: actions/download-artifact@v4
+      with:
+        name: app-release
+        path: downloaded-apk
+
+    - name: Display structure of downloaded files
+      run: ls -R downloaded-apk
+      shell: bash

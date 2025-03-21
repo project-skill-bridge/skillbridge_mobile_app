@@ -1,0 +1,10 @@
+name: "Build Android Bundle"
+description: "Builds the Android App Bundle"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Generate App Bundle
+      run: |
+        cd android && ./gradlew bundleRelease --no-daemon
+      shell: bash

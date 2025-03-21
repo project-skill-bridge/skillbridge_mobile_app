@@ -1,4 +1,5 @@
 import * as React from "react";
+
 import { Pressable, StyleSheet } from "react-native";
 import { TabBarButtonProps } from "@/src/types/type";
 import { Icons } from "@/src/constants/Icons";
@@ -11,7 +12,7 @@ const TabBarButton = ({
   const iconMapping: Record<string, JSX.Element> = {
     home: <Icons.House color="white" />,
     progress: <Icons.ChartLine color="white" />,
-    forum : <Icons.MessageSquare color="white" />,
+    forum: <Icons.MessageSquare color="white" />,
     settings: <Icons.Settings color="white" />,
   };
 

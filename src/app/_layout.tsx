@@ -90,6 +90,7 @@ const RootLayout = () => {
       <Stack.Screen name="(auth)" options={{ headerShown: false }} />
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="(games)" options={{ headerShown: false }} />
+      <Stack.Screen name="(externalPages)" options={{ headerShown: false }} />
     </Stack>
   );
 };
