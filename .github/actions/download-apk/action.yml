@@ -1,5 +1,5 @@
-name: 'Download APK'
-description: 'Downloads the APK artifact'
+name: "Download APK"
+description: "Downloads the APK artifact"
 
 runs:
   using: "composite"
@@ -9,7 +9,6 @@ runs:
       with:
         name: app-release
         path: downloaded-apk
-      shell: bash
 
     - name: Display structure of downloaded files
       run: ls -R downloaded-apk
