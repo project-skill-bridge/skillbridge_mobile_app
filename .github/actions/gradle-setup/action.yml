@@ -1,5 +1,5 @@
-name: 'Setup Gradle'
-description: 'Sets up Gradle with cache'
+name: "Setup Gradle"
+description: "Sets up Gradle with cache"
 
 runs:
   using: "composite"
@@ -9,7 +9,6 @@ runs:
       with:
         path: ~/.gradle/wrapper
         key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
-      shell: bash
 
     - name: Cache Gradle Dependencies
       uses: actions/cache@v4
@@ -18,7 +17,6 @@ runs:
         key: ${{ runner.os }}-gradle-caches-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
         restore-keys: |
           ${{ runner.os }}-gradle-caches-
-      shell: bash
 
     - name: Make Gradlew Executable
       run: cd android && chmod +x ./gradlew
