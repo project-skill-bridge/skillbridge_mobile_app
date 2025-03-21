@@ -1,48 +1,57 @@
 name: CI/CD Integration
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+  workflow_dispatch: 
+  release:
+    types: [published]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  android-build:
+    name: Android Build
+    runs-on: ubuntu-latest 
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Check out Git repository 
+        uses: actions/checkout@v2
 
-      - name: Set up JDK
-        uses: actions/setup-java@v3
+      - name: Set up our JDK environment 
+        uses: actions/setup-java@v1.4.3
         with:
-          distribution: "temurin"
-          java-version: "17"
+          java-version: 1.8
 
-
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Restore node_modules from cache
+        uses: actions/cache@v2
+        id: yarn-cache
         with:
-          node-version: "20"
-          cache: "npm"
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
 
-      - name: Install dependencies
-        run: npm install
+      - name: Install dependencies 
+        run: yarn install --frozen-lockfile
 
-      - name: Build Android
+      
+      - name: Cache Gradle Wrapper
+        uses: actions/cache@v2
+        with:
+          path: ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+
+      - name: Cache Gradle Dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-caches-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-caches-
+      - name: Make Gradlew Executable
+        run: cd android && chmod +x ./gradlew
+
+      - name: Generate App APK
         run: |
-          cd android
-          ./gradlew assembleRelease
-          cd ..
-
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v3
-        with:
-          name: app-release
-          path: android/app/build/outputs/apk/release/
+          cd android && ./gradlew assembleRelease --no-daemon
 
