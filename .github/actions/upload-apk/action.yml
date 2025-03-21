@@ -1,0 +1,12 @@
+name: 'Upload APK'
+description: 'Uploads the APK as an artifact'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Upload Release APK
+      uses: actions/upload-artifact@v2
+      with:
+        name: app-release
+        path: android/app/build/outputs/apk/release/*.apk
+      shell: bash

@@ -1,0 +1,9 @@
+name: 'Checkout Repository'
+description: 'Checks out the git repository'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Check out Git repository
+      uses: actions/checkout@v4
+      shell: bash
