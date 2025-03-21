@@ -1,10 +1,10 @@
-name: 'Build Android APK'
-description: 'Builds the Android APK'
+name: "Build Android Bundle"
+description: "Builds the Android App Bundle"
 
 runs:
   using: "composite"
   steps:
-    - name: Generate App APK
+    - name: Generate App Bundle
       run: |
-        cd android && ./gradlew assembleRelease --no-daemon
+        cd android && ./gradlew bundleRelease --no-daemon
       shell: bash
