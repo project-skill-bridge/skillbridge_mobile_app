@@ -5,7 +5,7 @@ import CircularProgress from "./ui/circular-progress";
 import { theme } from "../constants/Theme";
 import { db } from '../services/firebase'; // Import your firebase config
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
-
+import firestore from "@react-native-firebase/firestore";
 
 const HomeProgress = () => {
 
@@ -19,13 +19,13 @@ const HomeProgress = () => {
         //comment when user session created
         const userId = "8S5GzpnTS7Q5lc8OuU4NTOZ0mZT2"; // Hardcoded user ID
 
-        const userDocRef = doc(db, "users", userId); // Reference to the hardcoded user's document
-        const userDocSnap = await getDoc(userDocRef);
+        const gamesSnapshot =  firestore().collection("users").doc(userId).collection("games"); //doc(db, "users", userId); // Reference to the hardcoded user's document
+        //const userDocSnap = await getDoc(userDocRef);
         //------------------------------------------
 
          // Reference to 'games' subcollection for this user
-         const gamesCollectionRef = collection("games");
-         const gamesSnapshot = await getDocs(gamesCollectionRef);
+         //const gamesCollectionRef = collection("games");
+         //const gamesSnapshot = await getDocs(gamesCollectionRef);
  
         
         // if (!snapshot.empty) {
