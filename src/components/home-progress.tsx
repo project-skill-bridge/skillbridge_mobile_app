@@ -37,14 +37,13 @@ const HomeProgress = () => {
         //----------------------------------------
 
 
-        //   // Loop through each document in the "games" collection
-        //   snapshot.forEach(doc => {
-        //     const data = doc.data();
-        //     if (data?.totalGameProgressPercentage) {
-        //       totalProgress += data.totalGameProgressPercentage;
-        //       gameCount++;
-        //     }
-        //   });
+        //if (!userDocSnap.exists()) {
+          console.log("No user document found!");
+          return;
+        }
+
+        //console.log(`User ID: ${user.uid}`, userDocSnap.data());
+
 
         //   // Calculate the average progress
         //   const avgProgress = gameCount > 0 ? totalProgress / gameCount : 0;
