@@ -4,6 +4,7 @@ import { hp, wp } from "../utils/common";
 import CircularProgress from "./ui/circular-progress";
 import { theme } from "../constants/Theme";
 import { db } from '../services/firebase'; // Import your firebase config
+import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 
 
 const HomeProgress = () => {
@@ -15,8 +16,10 @@ const HomeProgress = () => {
     // Fetch data from Firestore
     const fetchGameProgress = async () => {
       try {
-        // const gamesCollectionRef = db.firestore().collection('/users/338KqomFDhYMtWd8xCXWIMwtg3v1/games');
-        // const snapshot = await gamesCollectionRef.get();
+         // Reference to 'games' subcollection for this user
+         const gamesCollectionRef = collection("games");
+         const gamesSnapshot = await getDocs(gamesCollectionRef);
+ 
         
         // if (!snapshot.empty) {
         //   let totalProgress = 0;
