@@ -1,146 +1,77 @@
-import * as React from "react";
-import { BackHandler, Keyboard, LayoutChangeEvent, StyleSheet, View } from "react-native";
-import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
-import { hp, wp } from "@/src/utils/common";
-import { theme } from "@/src/constants/Theme";
-import TabBarButton from "./tab-bar-button";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-} from "react-native-reanimated";
+// src/components/ui/tab-bar.tsx
+import React from 'react';
+import { View, StyleSheet, SafeAreaView } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { theme } from '@/src/constants/Theme';
+import TabBarButton from './tab-bar-button';
+import { hp, wp } from '@/src/utils/common';
 
-const TabBar = ({ state, navigation }: BottomTabBarProps) => {
-  const [dimensions, setDimensions] = React.useState({ height: 20, width: 10 });
-  const [isTabBarVisible, setIsTabBarVisible] = React.useState(true);
-  const [isKeyboardVisible, setKeyboardVisible] = React.useState(false);
+interface TabBarProps {
+  state: any;
+  descriptors: any;
+  navigation: any;
+}
 
-  const buttonWidth = dimensions.width / state.routes.length;
-  const tabPositionX = useSharedValue(0);
-
-  const onTabBarLayout = (e: LayoutChangeEvent) => {
-    setDimensions({
-      height: e.nativeEvent.layout.height,
-      width: e.nativeEvent.layout.width,
-    });
-  };
-
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateX: tabPositionX.value }],
-    };
-  });
-
-  React.useEffect(() => {
-    tabPositionX.value = withSpring(buttonWidth * state.index, {
-      duration: 1500,
-    });
-  }, [state.index]);
-
-  React.useEffect(() => {
-    const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
-      setKeyboardVisible(true);
-    });
-    const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
-      setKeyboardVisible(false);
-    });
-
-    return () => {
-      showSubscription.remove();
-      hideSubscription.remove();
-    };
-  }, []);
-
-  React.useEffect(() => {
-    if (
-      ["progress", "forum", "settings"].includes(state.routes[state.index].name)
-    ) {
-      const timer = setTimeout(() => {
-        setIsTabBarVisible(false);
-      }, 2000);
-      return () => clearTimeout(timer);
-    } else {
-      setIsTabBarVisible(true);
-    }
-  }, [state.index]);
-
-  React.useEffect(() => {
-    const handleBackPress = () => {
-      setIsTabBarVisible(true);
-      return false;
-    };
-
-    BackHandler.addEventListener("hardwareBackPress", handleBackPress);
-    return () => {
-      BackHandler.removeEventListener("hardwareBackPress", handleBackPress);
-    };
-  }, []);
-
-  if (!isTabBarVisible || isKeyboardVisible) {
-    return null;
-  }
-
+const TabBar: React.FC<TabBarProps> = ({ state, descriptors, navigation }) => {
+  const insets = useSafeAreaInsets();
+  
   return (
-    <View onLayout={onTabBarLayout} style={[styles.tabBar, theme.shadowStyle]}>
-      <Animated.View
-        style={[
-          animatedStyle,
-          {
-            position: "absolute",
-            backgroundColor: theme.colors.secondary,
-            borderRadius: 50,
-            marginHorizontal: 16,
-            height: dimensions.height - 20,
-            width: buttonWidth - 32,
-          },
-        ]}
-      />
-      {state.routes.map((route, index) => {
-        const isFocused = state.index === index;
+    <SafeAreaView style={[styles.container, { paddingBottom: Math.max(insets.bottom, 10) }]}>
+      <View style={styles.tabBar}>
+        {state.routes.map((route: any, index: number) => {
+          const { options } = descriptors[route.key];
+          const label = options.tabBarLabel || options.title || route.name;
+          const isFocused = state.index === index;
 
-        const onPress = () => {
-          const event = navigation.emit({
-            type: "tabPress",
-            target: route.key,
-            canPreventDefault: true,
-          });
+          const onPress = () => {
+            const event = navigation.emit({
+              type: 'tabPress',
+              target: route.key,
+              canPreventDefault: true,
+            });
 
-          if (!isFocused && !event.defaultPrevented) {
-            navigation.navigate(route.name, route.params);
-          }
-        };
+            if (!isFocused && !event.defaultPrevented) {
+              navigation.navigate(route.name);
+            }
+          };
 
-        const onLongPress = () => {
-          navigation.emit({
-            type: "tabLongPress",
-            target: route.key,
-          });
-        };
-
-        return (
-          <TabBarButton
-            key={route.name}
-            onPress={onPress}
-            routeName={route.name}
-            onLongPress={onLongPress}
-          />
-        );
-      })}
-    </View>
+          return (
+            <TabBarButton
+              key={route.key}
+              label={label}
+              isFocused={isFocused}
+              onPress={onPress}
+              routeName={route.name}
+            />
+          );
+        })}
+      </View>
+    </SafeAreaView>
   );
 };
 
-export default TabBar;
-
 const styles = StyleSheet.create({
+  container: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: '#ffffff',
+    borderTopWidth: 1,
+    borderTopColor: '#e0e0e0',
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+  },
   tabBar: {
-    position: "absolute",
-    bottom: hp(2.5),
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: theme.colors.primaryText,
-    marginHorizontal: wp(7),
-    paddingVertical: hp(3),
-    borderRadius: 100,
+    flexDirection: 'row',
+    height: hp(7),
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    paddingHorizontal: wp(2),
   },
 });
+
+export default TabBar;

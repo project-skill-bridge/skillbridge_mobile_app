@@ -1,38 +1,73 @@
-import * as React from "react";
+// src/components/ui/tab-bar-button.tsx
+import React from 'react';
+import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { hp, wp } from '@/src/utils/common';
+import { Icons } from '@/src/constants/Icons';
+import { theme } from '@/src/constants/Theme';
 
-import { Pressable, StyleSheet } from "react-native";
-import { TabBarButtonProps } from "@/src/types/type";
-import { Icons } from "@/src/constants/Icons";
+interface TabBarButtonProps {
+  label: string;
+  isFocused: boolean;
+  onPress: () => void;
+  routeName: string;
+}
 
-const TabBarButton = ({
+const TabBarButton: React.FC<TabBarButtonProps> = ({
+  label,
+  isFocused,
   onPress,
   routeName,
-  onLongPress,
-}: TabBarButtonProps) => {
-  const iconMapping: Record<string, JSX.Element> = {
-    home: <Icons.House color="white" />,
-    progress: <Icons.ChartLine color="white" />,
-    forum: <Icons.MessageSquare color="white" />,
-    settings: <Icons.Settings color="white" />,
+}) => {
+  // Get the appropriate icon based on the route name
+  const getIcon = () => {
+    const color = isFocused ? '#6277bf' : '#8c8c8c';
+    const size = hp(2.8);
+
+    switch (routeName) {
+      case 'home':
+        return <Icons.Home color={color} size={size} />;
+      case 'progress':
+        return <Icons.BarChart color={color} size={size} />;
+      case 'forum':
+        return <Icons.MessageCircle color={color} size={size} />;
+      case 'settings':
+        return <Icons.Settings color={color} size={size} />;
+      default:
+        return <Icons.Home color={color} size={size} />;
+    }
   };
 
   return (
-    <Pressable
+    <TouchableOpacity
+      style={styles.button}
       onPress={onPress}
-      onLongPress={onLongPress}
-      style={styles.tabBarItem}
+      activeOpacity={0.7}
     >
-      {iconMapping[routeName]}
-    </Pressable>
+      {getIcon()}
+      <Text
+        style={[
+          styles.label,
+          { color: isFocused ? '#6277bf' : '#8c8c8c' },
+        ]}
+      >
+        {label}
+      </Text>
+    </TouchableOpacity>
   );
 };
 
-export default TabBarButton;
-
 const styles = StyleSheet.create({
-  tabBarItem: {
+  button: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: hp(1),
+  },
+  label: {
+    fontSize: hp(1.6),
+    marginTop: hp(0.5),
+    fontWeight: '500',
   },
 });
+
+export default TabBarButton;
