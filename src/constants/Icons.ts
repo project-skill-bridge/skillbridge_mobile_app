@@ -40,7 +40,11 @@ import {
   Map,
   Phone,
   Tv,
-  MessageSquare
+  MessageSquare,
+  MessageCircle,
+  ArrowLeft,
+  Plus,
+  Send
 } from "lucide-react-native";
 
 export const Icons = {
@@ -85,7 +89,11 @@ export const Icons = {
   Map,
   Phone,
   Tv,
-  MessageSquare
+  MessageSquare,
+  Send,
+  MessageCircle,
+  ArrowLeft,
+  Plus
 };
 
 export type Icon = keyof typeof Icons;
