@@ -28,8 +28,10 @@ import { theme } from "@/src/constants/Theme";
 import { Fonts } from "@/src/constants/Fonts";
 import Loader from "@/src/components/ui/loader";
 import { SafeAreaView } from "react-native-safe-area-context";
+import FinnVoiceIntro from "@/src/components/FinnCharacter/FinnGame";
 
 type ImageKeys = `level${1 | 2 | 3 | 4}Badge`;
+const welcomeMessage = "Hi there! Welcome to Tap & Type game where your typing skills will be put to the test!";
 
 const INITIAL_HEARTS = 10;
 
@@ -351,6 +353,19 @@ const MainScreen = () => {
             </View>
           </View>
         )}
+        
+        
+        <View style={styles.finnOverlayContainer}>
+          <FinnVoiceIntro
+          gameId="Tap-Type"
+          buttonText={welcomeMessage}  
+          IntroText={welcomeMessage}  
+          displayText={welcomeMessage}
+          language="en-US"
+          speed="normal"
+          voiceType="child"
+          />
+          </View>
       </SafeAreaView>
     </ImageBackground>
   );
@@ -521,4 +536,13 @@ const styles = StyleSheet.create({
     color: "rgba(255, 255, 255, 0.8)",
     fontFamily: "Coiny",
   },
+     finnOverlayContainer: {
+    position: "absolute",
+    bottom: 360,
+    right: 0,
+    width: "100%",
+    zIndex: 10,
+    pointerEvents: "box-none",
+  },
+
 });
