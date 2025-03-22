@@ -11,6 +11,8 @@ const { width } = Dimensions.get("window");
 const FinnCharacter: React.FC = () => {
   const [message, setMessage] = useState("");
   const bounceAnim = useRef(new Animated.Value(0)).current;
+  const bubbleAnim = useRef(new Animated.Value(0)).current;
+  const bubbleDotsAnim = useRef(new Animated.Value(0)).current;
 
   // Load custom font
   const [fontsLoaded] = useFonts({
@@ -51,6 +53,25 @@ const FinnCharacter: React.FC = () => {
     });
   };
 
+    // Initial speech bubble animation
+    const startBubbleAnimation = () => {
+      // First animate the main bubble
+      Animated.timing(bubbleAnim, {
+        toValue: 1,
+        duration: 800,
+        useNativeDriver: true
+      }).start();
+      
+      // Then animate the bubble dots with a slight delay
+      setTimeout(() => {
+        Animated.timing(bubbleDotsAnim, {
+          toValue: 1,
+          duration: 600,
+          useNativeDriver: true
+        }).start();
+      }, 400);
+    };
+  
   // Update message based on time and start animation
   useEffect(() => {
     setMessage(getTimeBasedMessage());
@@ -63,6 +84,9 @@ const FinnCharacter: React.FC = () => {
     // Start the bounce animation
     startBounceAnimation();
 
+    // Start the bubble animation
+    startBubbleAnimation();
+
     return () => clearInterval(intervalId);
   }, []);
 
@@ -73,7 +97,7 @@ const FinnCharacter: React.FC = () => {
 
     return {
       containerHeight: Math.min(120 * scale, 180),
-      characterSize: Math.min(100 * scale, 150),
+      characterSize: Math.min(120 * scale),
       fontSize: Math.min(18 * scale, 24),
       bubblePadding: Math.min(15 * scale, 25),
     };
@@ -85,6 +109,27 @@ const FinnCharacter: React.FC = () => {
   const bounceTransform = bounceAnim.interpolate({
     inputRange: [0, 0.5, 1],
     outputRange: [0, -8, 0],
+  });
+
+  // Bubble animation styles
+  const bubbleScale = bubbleAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0.6, 1]
+  });
+  
+  const bubbleOpacity = bubbleAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 1]
+  });
+  
+  const dotsOpacity = bubbleDotsAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 1]
+  });
+  
+  const dotsTranslate = bubbleDotsAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [-10, 0]
   });
 
   if (!fontsLoaded) {
@@ -99,6 +144,15 @@ const FinnCharacter: React.FC = () => {
       <View style={styles.messageSection}>
         {/* Improved thought bubble */}
         <View style={styles.bubbleContainer}>
+        <Animated.View style={[
+            styles.bubbleWrapper,
+            {
+              opacity: bubbleOpacity,
+              transform: [
+                { scale: bubbleScale }
+              ]
+            }
+          ]}>
           <View
             style={[
               styles.thoughtBubble,
@@ -114,12 +168,22 @@ const FinnCharacter: React.FC = () => {
               {message}
             </Text>
           </View>
-          <View style={styles.bubbleDots}>
+        </Animated.View>
+
+        <Animated.View style={[
+            styles.bubbleDots,
+            {
+              opacity: dotsOpacity,
+              transform: [
+                { translateX: dotsTranslate }
+              ]
+            }
+          ]}>
             <View style={styles.dot1}></View>
             <View style={styles.dot2}></View>
             <View style={styles.dot3}></View>
             <View style={styles.dot4}></View>
-          </View>
+          </Animated.View>
         </View>
       </View>
 
@@ -151,8 +215,8 @@ const styles = StyleSheet.create({
     width: "100%",
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingHorizontal: 15,
     position: "relative",
+    top: 7,
   },
   messageSection: {
     flex: 1,
@@ -163,22 +227,39 @@ const styles = StyleSheet.create({
   characterSection: {
     justifyContent: "flex-end",
     alignItems: "flex-end",
-    paddingBottom: 5,
+    // paddingBottom: 5,
   },
   bubbleContainer: {
     flexDirection: "row",
     alignItems: "center",
-    maxWidth: "95%",
+    maxWidth: "100%",
+  },
+  bubbleWrapper: {
+    // Container for shadow and bubble
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 5,
   },
   thoughtBubble: {
-    backgroundColor: "#87CEFA",
-    borderRadius: 20,
-    borderTopLeftRadius: 4,
-    marginRight: 5,
+    backgroundColor: "#4AA4DE", // More vibrant blue color
+    borderRadius: 24,
+    // padding: 15,
+    // marginRight: 1,
+    // Subtle inner shadow for 3D bubble effect
+    borderWidth: 1,
+    borderColor: "#5CBBFF",
+    // For Android elevation
+    elevation: 3,
+    
   },
   thoughtText: {
-    color: "#000",
-    fontWeight: "500",
+    color: "#FFFFFF", // White text for better contrast on blue
+    fontWeight: "600",
+    textShadowColor: "rgba(0, 0, 0, 0.1)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
   bubbleDots: {
     flexDirection: "column",
@@ -188,32 +269,53 @@ const styles = StyleSheet.create({
   dot1: {
     width: 12,
     height: 12,
-    borderRadius: 6,
-    backgroundColor: "#87CEFA",
-    marginBottom: 3,
+    borderRadius: 12,
+    backgroundColor: "#4AA4DE",
+    position: "relative",
+    left: 10,
+    marginBottom: 1,
+    // Bubble effect with border
+    borderWidth: 1.5,
+    borderColor: "#5CBBFF",
+    elevation: 2,
   },
   dot2: {
     width: 9,
     height: 9,
-    borderRadius: 4.5,
-    backgroundColor: "#87CEFA",
-    marginBottom: 3,
-    marginLeft: 3,
+    borderRadius: 9,
+    backgroundColor: "#4AA4DE",
+    position: "relative",
+    left: 25,
+    marginBottom: 1,
+    // Bubble effect with border
+    borderWidth: 1,
+    borderColor: "#5CBBFF",
+    elevation: 2,
   },
   dot3: {
     width: 6,
     height: 6,
-    borderRadius: 3,
-    backgroundColor: "#87CEFA",
-    marginBottom: 2,
-    marginLeft: 6,
+    borderRadius: 6,
+    backgroundColor: "#4AA4DE",
+    position: "relative",
+    left: 37,
+    marginBottom: 1,
+    // Bubble effect with border
+    borderWidth: 0.8,
+    borderColor: "#5CBBFF",
+    elevation: 1,
   },
   dot4: {
     width: 4,
     height: 4,
-    borderRadius: 2,
-    backgroundColor: "#87CEFA",
-    marginLeft: 8,
+    borderRadius: 4,
+    backgroundColor: "#4AA4DE",
+    position: "relative",
+    left: 46,
+    // Bubble effect with border
+    borderWidth: 0.5,
+    borderColor: "#5CBBFF",
+    elevation: 1,
   },
   characterContainer: {
     // Position adjusted in character section
@@ -222,6 +324,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     resizeMode: "contain",
+    left: 15,
   },
 });
 
