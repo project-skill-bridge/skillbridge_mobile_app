@@ -3,7 +3,8 @@ import { StyleSheet, Text, View } from "react-native";
 import { hp, wp } from "../utils/common";
 import CircularProgress from "./ui/circular-progress";
 import { theme } from "../constants/Theme";
-import firebase from '../services/firebase'; // Import your firebase config
+import { auth, db } from '../services/firebase'; // Import your firebase config
+import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 
 
 const HomeProgress = () => {
@@ -12,35 +13,66 @@ const HomeProgress = () => {
   const [loading, setLoading] = React.useState<boolean>(true);
 
   React.useEffect(() => {
-    // Fetch data from Firestore
+
+
     const fetchGameProgress = async () => {
+      console.log("Begin");
+
       try {
-        const gamesCollectionRef = firebase.firestore().collection('/users/338KqomFDhYMtWd8xCXWIMwtg3v1/games');
-        const snapshot = await gamesCollectionRef.get();
-        
-        if (!snapshot.empty) {
-          let totalProgress = 0;
-          let gameCount = 0;
+        //comment when user session created
+        const userId = "8S5GzpnTS7Q5lc8OuU4NTOZ0mZT2"; // Hardcoded user ID
 
-          // Loop through each document in the "games" collection
-          snapshot.forEach(doc => {
-            const data = doc.data();
-            if (data?.totalGameProgressPercentage) {
-              totalProgress += data.totalGameProgressPercentage;
-              gameCount++;
-            }
-          });
+        const userDocRef = doc(db, "users", userId); // Reference to the hardcoded user's document
+        const userDocSnap = await getDoc(userDocRef);
+        //------------------------------------------
 
-          // Calculate the average progress
-          const avgProgress = gameCount > 0 ? totalProgress / gameCount : 0;
-          setAverageProgress(avgProgress);
-        } else {
-          console.log("No games found!");
+        //uncomment when user session created
+        // const user = auth.currentUser; // Get the logged-in user
+        // if (!user) {
+        //   console.log("No user is logged in");
+        //   return;
+        // }
+
+        // const userDocRef = doc(db, "users", user.uid); // Reference to logged-in user's document
+        // const userDocSnap = await getDoc(userDocRef);
+        //----------------------------------------
+
+        if (!userDocSnap.exists()) {
+          console.log("No user document found!");
+          return;
         }
+
+        //console.log(`User ID: ${user.uid}`, userDocSnap.data());
+
+        // Reference to 'games' subcollection for this user
+        const gamesCollectionRef = collection(userDocRef, "games");
+        const gamesSnapshot = await getDocs(gamesCollectionRef);
+
+        let totalProgress = 0;
+        let gameCount = 0;
+
+        gamesSnapshot.forEach((gameDoc) => {
+          console.log(`  Game ID: ${gameDoc.id}`, gameDoc.data());
+
+          const gameData = gameDoc.data();
+          if (gameData.totalGameProgressPercentage !== undefined) {
+            totalProgress += gameData.totalGameProgressPercentage;
+            gameCount++;
+          }
+        });
+
+        // Calculate the average progress
+        const avgProgress = gameCount > 0 ? totalProgress / gameCount : 0;
+        console.log(`Average Progress: ${avgProgress}`);
+
+        // If you're using React state, update it
+        setAverageProgress(avgProgress);
+
       } catch (error) {
-        console.error("Error getting games:", error);
+        console.error("Error getting games: ", error);
       } finally {
-        setLoading(false);
+        // If using React state, update loading status
+        // setLoading(false);
       }
     };
 
@@ -56,7 +88,7 @@ const HomeProgress = () => {
 
   // Calculate and cap progress percentage
   //const rawPercentage = (completedLevels / totalLevels) * 100;
- // const progressPercentage = Math.min(rawPercentage, 100); // prevent overfill
+  // const progressPercentage = Math.min(rawPercentage, 100); // prevent overfill
 
   return (
     <View style={styles.container}>
