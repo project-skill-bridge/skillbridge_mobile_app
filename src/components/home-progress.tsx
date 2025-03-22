@@ -16,6 +16,13 @@ const HomeProgress = () => {
     // Fetch data from Firestore
     const fetchGameProgress = async () => {
       try {
+        //comment when user session created
+        const userId = "8S5GzpnTS7Q5lc8OuU4NTOZ0mZT2"; // Hardcoded user ID
+
+        const userDocRef = doc(db, "users", userId); // Reference to the hardcoded user's document
+        const userDocSnap = await getDoc(userDocRef);
+        //------------------------------------------
+
          // Reference to 'games' subcollection for this user
          const gamesCollectionRef = collection("games");
          const gamesSnapshot = await getDocs(gamesCollectionRef);
