@@ -23,14 +23,19 @@ const HomeProgress = () => {
         //const userDocSnap = await getDoc(userDocRef);
         //------------------------------------------
 
-         // Reference to 'games' subcollection for this user
-         //const gamesCollectionRef = collection("games");
-         //const gamesSnapshot = await getDocs(gamesCollectionRef);
- 
-        
-        // if (!snapshot.empty) {
-        //   let totalProgress = 0;
-        //   let gameCount = 0;
+         
+
+        //uncomment when user session created
+        // const user = auth.currentUser; // Get the logged-in user
+        // if (!user) {
+        //   console.log("No user is logged in");
+        //   return;
+        // }
+
+        // const userDocRef = doc(db, "users", user.uid); // Reference to logged-in user's document
+        // const userDocSnap = await getDoc(userDocRef);
+        //----------------------------------------
+
 
         //   // Loop through each document in the "games" collection
         //   snapshot.forEach(doc => {
