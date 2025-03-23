@@ -18,4 +18,5 @@ export const Images = {
   talkingFinn: require("@/assets/gif/Talking-Finn.gif"),
   normalFinn: require("@/assets/gif/Normal-Finn.gif"),
   mindMatchMainScreen: require("@/assets/images/games/mind-match/main-background.jpg"),
+  circlobrustMainScreen: require("@/assets/images/games/Circlo-brust/Background-Circlobrust1.png"),
 } as const;

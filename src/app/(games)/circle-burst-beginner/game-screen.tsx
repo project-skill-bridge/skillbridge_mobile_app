@@ -63,10 +63,10 @@ import firestore from "@react-native-firebase/firestore"; // Firebase database
 // App-specific UI components, animations, and static assets
 import { Images } from "@/src/constants/Images"; // Image assets
 import { Fonts } from "@/src/constants/Fonts"; // Font assets
-import FinnVoiceTntro from "@/src/components/FinnCharacter/FinnGame"; // Character voice guide
+import FinnVoiceTntro from "@/src/components/Circlobrust Voice/FinnGame"; // Character voice guide
 import BufferingProgress from "@/src/components/ui/buffering-progress"; // Loading indicator
-import AnimatedBubbles from "@/src/app/(games)/circlo-brust/UI/animated-bubbles/animated-bubbles"; // Background bubble animations
-import LogoAnimation from "@/src/app/(games)/circlo-brust/UI/animated-logo/animated-logo"; // Game logo animation
+import AnimatedBubbles from "@/src/app/(games)/circle-burst-beginner/UI/animated-bubbles/animated-bubbles"; // Background bubble animations
+import LogoAnimation from "@/src/app/(games)/circle-burst-beginner/UI/animated-logo/animated-logo"; // Game logo animation
 
 /* ================ CONSTANTS ================ */
 // Get device screen dimensions for responsive layouts
@@ -75,10 +75,10 @@ const { width, height } = Dimensions.get("window");
 /* ================ NATIVE MODULE SETUP ================ */
 /**
  * Access to native code functionality through the bridge
- * LoginModule provides methods to launch different game activities
+ * BeginnerGameModule provides methods to launch different game activities
  */
-const { LoginModule } = NativeModules;
-const eventEmitter = new NativeEventEmitter(LoginModule);
+const { BeginnerGameModule } = NativeModules;
+const eventEmitter = new NativeEventEmitter(BeginnerGameModule);
 
 /* ================ GAME LEVEL CONFIGURATION ================ */
 /**
@@ -161,10 +161,10 @@ export default function GameScreen() {
     try {
       // Dynamically construct the method name based on activity number
       const methodName =
-        `showActivity${activityNumber}Screen` as keyof typeof LoginModule;
+        `showActivity${activityNumber}Screen` as keyof typeof BeginnerGameModule;
 
       // Call the native method with current game state
-      const result = await LoginModule[methodName](
+      const result = await BeginnerGameModule[methodName](
         score,
         formattedTime,
         audioPosition
@@ -956,7 +956,7 @@ export default function GameScreen() {
 
             {/* SVG Background Decoration */}
             <ImageBackground
-              source={Images.BackgroundSVGcirclobrust}
+              source={Images.circlobrustMainScreen} 
               style={styles.imageBackground}
               resizeMode="cover"
             >
