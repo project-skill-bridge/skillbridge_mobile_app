@@ -1107,3 +1107,24 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  handContainer: {
+    position: "absolute",
+    width: 80,
+    height: 80,
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1, // Below circle
+  },
+  blueCircle: {
+    position: "absolute",
+    width: 40,
+    height: 40,
+    borderRadius: 20, // Perfect circle
+    backgroundColor: "#1d3557", // Dark blue
+    zIndex: 2, // Above hand
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3, // Subtle shadow
+  },
+
