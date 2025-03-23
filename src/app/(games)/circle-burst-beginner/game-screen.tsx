@@ -153,6 +153,42 @@ export default function GameScreen() {
     ]);
   };
 
+  /* ================ ACTIVITY SCREEN LAUNCHERS ================ */
+  /**
+   * Opens a specific game activity through the native module
+   * Passes current game state and handles the result
+   *
+   * @param {number} activityNumber - The level number to launch (1-5)
+   */
+  const openActivityScreen = async (activityNumber: number) => {
+    try {
+      // Dynamically construct the method name based on activity number
+      const methodName =
+        `showActivity${activityNumber}Screen` as keyof typeof LoginModule;
+
+      // Call the native method with current game state
+      const result = await LoginModule[methodName](
+        score,
+        formattedTime,
+        audioPosition
+      );
+
+      // Process the returned result
+      await handleActivityResult(result);
+
+      // Clean up audio resources
+      stopBackgroundMusic();
+      Speech.stop();
+
+      // Update first run flag if needed
+      if (isFirstRun) setIsFirstRun(false);
+    } catch (error) {
+      // Ensure audio cleanup even on failure
+      Speech.stop();
+      stopBackgroundMusic();
+    }
+  };
+
 
 export default function GameScreen(): JSX.Element {
   const router = useRouter();
