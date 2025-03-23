@@ -49,4 +49,56 @@ class Level5ActivityClass : AppCompatActivity() {
     }
 
     /* ================ Activity Lifecycle Section ================ 
+     * Methods for controlling the activity lifecycle - creation, destruction
+     */
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        val audioPosition = intent.getIntExtra("AUDIO_POSITION", 0)
+
+        try {
+            mediaPlayer = MediaPlayer.create(this, R.raw.background_music).apply {
+                isLooping = false
+                seekTo(audioPosition)
+                start()
+
+                setOnCompletionListener { mp ->
+                    lifecycleScope.launch {
+                        if (score < 10 && !gameEnded) {
+                            gameEnded = true
+                            goToLevel5LossActivity()
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        val fragment = CameraPanel.newInstance(CameraPanel.ACTIVITY5)
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .commit()
+
+        binding.levelNumberView.text = "$LEVEL"
+
+
+        score = intent.getIntExtra("INITIAL_SCORE", 0)
+        val timeString = intent.getStringExtra("FORMATTED_TIME") ?: "00:00"
+        val (seconds, millis) = parseTimeString(timeString)
+        timeInSeconds = seconds
+        milliseconds = millis
+
+        updateScoreInUi()
+        updateTimeInUi()
+
+        startTimer()
+        startCountdownTimer()
+
+        binding.playButton.setOnClickListener {
+            onBackPressed()
+        }
+    }
+
 }
