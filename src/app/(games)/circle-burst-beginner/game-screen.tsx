@@ -879,3 +879,24 @@ export default function GameScreen() {
                 color="#333"
               />
             </TouchableOpacity>
+          </View>
+
+          {/* Game Logo Area with Animations */}
+          <View style={styles.logoContainer}>
+            <LogoAnimation />
+          </View>
+
+          {/* Finn Character Voice Guide Overlay */}
+          <View style={styles.finnOverlay}>
+            <FinnVoiceTntro
+              displayText={
+                level === 1
+                  ? "Welcome to Level 1! Pop the blue bubbles to score points and advance."
+                  : level === 2
+                  ? "Level 2 unlocked! Now you'll face faster bubbles and more challenges."
+                  : level === 3
+                  ? "Level 3 unlocked! Can you keep up with the speedy dots?"
+                  : level === 4
+                  ? "Level 4 unlocked! Magic Circles are here to challenge you."
+                  : "Level 5 unlocked! Super Pop Rush is the final challenge."
+              }
