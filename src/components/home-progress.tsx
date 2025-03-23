@@ -3,9 +3,9 @@ import { StyleSheet, Text, View } from "react-native";
 import { hp, wp } from "../utils/common";
 import CircularProgress from "./ui/circular-progress";
 import { theme } from "../constants/Theme";
-import { db } from '../services/firebase'; // Import your firebase config
+import { auth, db } from '../services/firebase'; // Import your firebase config
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
-import firestore from "@react-native-firebase/firestore";
+
 
 const HomeProgress = () => {
 
@@ -13,17 +13,18 @@ const HomeProgress = () => {
   const [loading, setLoading] = React.useState<boolean>(true);
 
   React.useEffect(() => {
-    // Fetch data from Firestore
+
+
     const fetchGameProgress = async () => {
+      console.log("Begin");
+
       try {
         //comment when user session created
         const userId = "8S5GzpnTS7Q5lc8OuU4NTOZ0mZT2"; // Hardcoded user ID
 
-        const gamesSnapshot =  firestore().collection("users").doc(userId).collection("games"); //doc(db, "users", userId); // Reference to the hardcoded user's document
-        //const userDocSnap = await getDoc(userDocRef);
+        const userDocRef = doc(db, "users", userId); // Reference to the hardcoded user's document
+        const userDocSnap = await getDoc(userDocRef);
         //------------------------------------------
-
-         
 
         //uncomment when user session created
         // const user = auth.currentUser; // Get the logged-in user
@@ -36,11 +37,11 @@ const HomeProgress = () => {
         // const userDocSnap = await getDoc(userDocRef);
         //----------------------------------------
 
-
-        //if (!userDocSnap.exists()) {
+        if (!userDocSnap.exists()) {
           console.log("No user document found!");
           return;
         }
+
         //console.log(`User ID: ${user.uid}`, userDocSnap.data());
 
         // Reference to 'games' subcollection for this user
@@ -60,34 +61,34 @@ const HomeProgress = () => {
           }
         });
 
-          // Calculate the average progress
-          const avgProgress = gameCount > 0 ? totalProgress / gameCount : 0;
-          console.log(`Average Progress: ${avgProgress}`);
-  
-          // If you're using React state, update it
-          setAverageProgress(avgProgress);
+        // Calculate the average progress
+        const avgProgress = gameCount > 0 ? totalProgress / gameCount : 0;
+        console.log(`Average Progress: ${avgProgress}`);
 
-        } catch (error) {
-          console.error("Error getting games: ", error);
-        } finally {
-          
-           setLoading(false);
-        }
-      };
+        // If you're using React state, update it
+        setAverageProgress(avgProgress);
+
+      } catch (error) {
+        console.error("Error getting games: ", error);
+      } finally {
+        // If using React state, update loading status
+        // setLoading(false);
+      }
+    };
 
     fetchGameProgress();
-    }, []);
+  }, []);
 
 
-  //  This should dynamically reflect game progress
+  // // Total number of levels in your game
+  // const totalLevels = 5;
+
+  // // This should dynamically reflect game progress
   // const completedLevels = 2;
-
-  //  This should dynamically reflect game progress
-  //  const completedLevels = 2;
 
   // Calculate and cap progress percentage
   //const rawPercentage = (completedLevels / totalLevels) * 100;
- // const progressPercentage = Math.min(rawPercentage, 100); // prevent overfill
+  // const progressPercentage = Math.min(rawPercentage, 100); // prevent overfill
 
   return (
     <View style={styles.container}>
@@ -95,7 +96,7 @@ const HomeProgress = () => {
       <CircularProgress
         percentage={averageProgress}
         color={theme.colors.primary}
-        textColor="black"
+        textColor="blue"
         radius={45}
 
       />
