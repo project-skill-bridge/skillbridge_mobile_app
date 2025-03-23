@@ -1,30 +1,19 @@
 // src/components/forum/comment-form.tsx
 import React, { useState } from 'react';
-import { View, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { useForumStore } from '@/src/store/forum-store';
-import { Icons } from '@/src/constants/Icons';
+import { View, TextInput, StyleSheet } from 'react-native';
+import Button from '../ui/button';
 
-interface CommentFormProps {
-  postId: string;
-}
+type CommentFormProps = {
+  onSubmit: (comment: string) => void;
+};
 
-const CommentForm: React.FC<CommentFormProps> = ({ postId }) => {
+export default function CommentForm({ onSubmit }: CommentFormProps) {
   const [comment, setComment] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const createComment = useForumStore(state => state.createComment);
   
-  const handleSubmit = async () => {
-    if (!comment.trim()) return;
-    
-    setIsSubmitting(true);
-    try {
-      await createComment(postId, comment.trim());
+  const handleSubmit = () => {
+    if (comment.trim()) {
+      onSubmit(comment);
       setComment('');
-    } catch (error) {
-      console.error('Error creating comment:', error);
-      Alert.alert('Error', 'Failed to post comment. Please try again.');
-    } finally {
-      setIsSubmitting(false);
     }
   };
   
@@ -32,52 +21,36 @@ const CommentForm: React.FC<CommentFormProps> = ({ postId }) => {
     <View style={styles.container}>
       <TextInput
         style={styles.input}
-        placeholder="Add a comment..."
         value={comment}
         onChangeText={setComment}
+        placeholder="Write a comment..."
         multiline
-        maxLength={500}
       />
-      <TouchableOpacity 
-        style={[
-          styles.sendButton,
-          (!comment.trim() || isSubmitting) && styles.disabledButton
-        ]}
-        onPress={handleSubmit}
-        disabled={!comment.trim() || isSubmitting}
+      {/* Using children prop instead of label */}
+      <Button 
+        onPress={handleSubmit} 
+        disabled={!comment.trim()}
       >
-        <Icons.Send size={20} color="#ffffff" />
-      </TouchableOpacity>
+        Post Comment
+      </Button>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#ffffff',
-    borderRadius: 20,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderWidth: 1,
-    borderColor: '#cad3ed',
-    marginVertical: 8,
+    padding: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#e0e0e0',
+    backgroundColor: '#fff',
   },
   input: {
-    flex: 1,
-    fontSize: 14,
-    maxHeight: 100,
-  },
-  sendButton: {
-    backgroundColor: '#6277bf',
-    borderRadius: 20,
+    height: 80,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    borderRadius: 4,
     padding: 8,
-    marginLeft: 8,
-  },
-  disabledButton: {
-    backgroundColor: '#cad3ed',
+    marginBottom: 8,
+    textAlignVertical: 'top',
   },
 });
-
-export default CommentForm;

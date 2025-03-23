@@ -1,90 +1,79 @@
 // src/components/forum/post-card.tsx
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { ForumPost } from '@/src/types/forum-types';
 import { useRouter } from 'expo-router';
-import { Icons } from '@/src/constants/Icons';
-import { formatDistanceToNow } from 'date-fns';
+import { ForumPost } from '../../types/forum-types';
 
-interface PostCardProps {
+type PostCardProps = {
   post: ForumPost;
-}
+};
 
-const PostCard: React.FC<PostCardProps> = ({ post }) => {
+export default function PostCard({ post }: PostCardProps) {
   const router = useRouter();
-  
-const navigateToPost = () => {
-  // Cast the path to 'any' to bypass TypeScript's strict checking
-  router.push(`/forum/post/${post.id}` as any);
-}
-  
+
+  const handlePress = () => {
+    // Updated to use the (externalPages) path
+    router.push({
+      pathname: '/(externalPages)/post',
+      params: { postId: post.id }
+    });
+  };
+
   return (
-    <TouchableOpacity 
-      style={styles.container}
-      onPress={navigateToPost}
-      activeOpacity={0.8}
-    >
+    <TouchableOpacity style={styles.container} onPress={handlePress}>
       <Text style={styles.title}>{post.title}</Text>
-      <Text style={styles.content} numberOfLines={2}>{post.content}</Text>
-      
+      <Text style={styles.author}>Posted by {post.authorName}</Text>
+      <Text style={styles.date}>
+        {new Date(post.createdAt).toLocaleDateString()}
+      </Text>
+      <Text style={styles.content} numberOfLines={3}>
+        {post.content}
+      </Text>
       <View style={styles.footer}>
-        <Text style={styles.authorInfo}>
-          Posted by {post.authorName} • {formatDistanceToNow(post.createdAt, { addSuffix: true })}
+        <Text style={styles.commentCount}>
+          {post.commentCount || 0} comments
         </Text>
-        
-        <View style={styles.commentInfo}>
-          <Icons.MessageCircle size={16} color="#6277bf" />
-          <Text style={styles.commentCount}>{post.commentCount}</Text>
-        </View>
       </View>
     </TouchableOpacity>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
+    backgroundColor: '#fff',
+    borderRadius: 8,
     padding: 16,
     marginBottom: 16,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
     elevation: 2,
   },
   title: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#000000',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  author: {
+    fontSize: 14,
+    color: '#666',
+  },
+  date: {
+    fontSize: 12,
+    color: '#999',
     marginBottom: 8,
   },
   content: {
-    fontSize: 14,
-    color: '#333333',
-    marginBottom: 12,
+    fontSize: 16,
+    marginBottom: 16,
   },
   footer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderTopWidth: 1,
-    borderTopColor: '#cad3ed',
-    paddingTop: 12,
-  },
-  authorInfo: {
-    fontSize: 12,
-    color: '#666666',
-  },
-  commentInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    justifyContent: 'flex-end',
   },
   commentCount: {
-    marginLeft: 4,
-    fontSize: 12,
-    color: '#6277bf',
+    fontSize: 14,
+    color: '#666',
   },
 });
-
-export default PostCard;

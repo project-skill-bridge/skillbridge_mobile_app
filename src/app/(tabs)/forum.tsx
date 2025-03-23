@@ -1,63 +1,48 @@
 // src/app/(tabs)/forum.tsx
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useForumStore } from '@/src/store/forum-store';
-import PostCard from '@/src/components/forum/post-card';
-import { Icons } from '@/src/constants/Icons';
+import React, { useEffect } from 'react';
+import { View, FlatList, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useForumStore } from '../../store/forum-store';
+import PostCard from '../../components/forum/post-card';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ForumScreen() {
+  const { posts, fetchPosts, loading, error } = useForumStore();
   const router = useRouter();
-  const { posts, fetchPosts, loading } = useForumStore();
-  const [refreshing, setRefreshing] = useState(false);
-  
+
   useEffect(() => {
     fetchPosts();
   }, []);
-  
-  const handleRefresh = async () => {
-    setRefreshing(true);
-    await fetchPosts();
-    setRefreshing(false);
+
+  const handleCreatePost = () => {
+    // Updated to use the (externalPages) path
+    router.push('/(externalPages)/create-post');
   };
-  
-  const navigateToCreatePost = () => {
-    // Use a relative path without the leading slash and cast to 'any' to bypass type checking
-    router.push('forum/create' as any);
-  }
+
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <SafeAreaView style={styles.container} edges={['bottom']}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Parent Forum</Text>
+        <Text style={styles.title}>Forum</Text>
+        <TouchableOpacity 
+          style={styles.createButton} 
+          onPress={handleCreatePost}
+        >
+          <Text style={styles.createButtonText}>Create Post</Text>
+        </TouchableOpacity>
       </View>
-      
+
+      {error && (
+        <Text style={styles.errorText}>{error}</Text>
+      )}
+
       <FlatList
         data={posts}
-        keyExtractor={(item) => item.id}
+        keyExtractor={item => item.id}
         renderItem={({ item }) => <PostCard post={item} />}
         contentContainerStyle={styles.listContent}
-        refreshControl={
-          <RefreshControl 
-            refreshing={refreshing} 
-            onRefresh={handleRefresh}
-            colors={['#6277bf']}
-            tintColor="#6277bf"
-          />
-        }
-        ListEmptyComponent={
-          <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>No posts yet. Be the first to start a discussion!</Text>
-          </View>
-        }
+        refreshing={loading}
+        onRefresh={fetchPosts}
       />
-      
-      <TouchableOpacity 
-        style={styles.fabButton}
-        onPress={navigateToCreatePost}
-      >
-        <Icons.Plus size={24} color="#ffffff" />
-      </TouchableOpacity>
     </SafeAreaView>
   );
 }
@@ -65,46 +50,34 @@ export default function ForumScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f7',
+    backgroundColor: '#f5f5f5',
   },
   header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     padding: 16,
-    backgroundColor: '#ffffff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#cad3ed',
   },
-  headerTitle: {
-    fontSize: 20,
+  title: {
+    fontSize: 24,
     fontWeight: 'bold',
-    color: '#6277bf',
+  },
+  createButton: {
+    backgroundColor: '#007bff',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 4,
+  },
+  createButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
   listContent: {
     padding: 16,
   },
-  emptyContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 24,
-  },
-  emptyText: {
-    fontSize: 16,
-    color: '#666666',
+  errorText: {
+    color: 'red',
     textAlign: 'center',
-  },
-  fabButton: {
-    position: 'absolute',
-    bottom: 24,
-    right: 24,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: '#6277bf',
-    alignItems: 'center',
-    justifyContent: 'center',
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
+    marginVertical: 8,
   },
 });
