@@ -82,4 +82,9 @@ class Level5LogicClass @JvmOverloads constructor(
         initializeCircle() // Reset circle collection on size change
     }
 
+    private fun initializeCircle() {
+        circles.clear() // Remove all existing circles
+        lastCircleTime = System.currentTimeMillis() // Reset spawn timer
+        addNewCircleIfNeeded() // Add initial circle
+    }
 }
