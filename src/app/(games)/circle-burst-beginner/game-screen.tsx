@@ -189,6 +189,9 @@ export default function GameScreen() {
     }
   };
 
+  // Level-specific activity launcher convenience methods
+  /**
+   * Convenience methods for launching specific level activities
    * These provide a cleaner API for the different event handlers
    */
   const openLoginScreen = () => openActivityScreen(1); // Level 1
@@ -244,6 +247,65 @@ export default function GameScreen() {
     // Cleanup function
     return () => subscription.remove();
   }, []); // Empty dependency array ensures this runs once on mount
+
+  /**
+   * Handles results from Activity 1
+   * Updates game state and launches the appropriate next level
+   */
+  useEffect(() => {
+    const handleActivity1Result = (result: {
+      audioPosition: any;
+      finalScore: any;
+      levelScore: any;
+      formattedTime: any;
+    }) => {
+      // Extract and update state values
+      const newScore = result.finalScore;
+      const newLevel = result.levelScore;
+      const newFormattedTime = result.formattedTime;
+      const newAudioPosition = result.audioPosition;
+
+      setScore(newScore);
+      setLevel(newLevel);
+      setFormattedTime(newFormattedTime);
+      setAudioPosition(newAudioPosition);
+
+      // Persist to storage
+      AsyncStorage.setItem("gameScore", newScore.toString());
+      AsyncStorage.setItem("gameLevel", newLevel.toString());
+      AsyncStorage.setItem("formattedTime", newFormattedTime);
+      AsyncStorage.setItem("audioPosition", newAudioPosition.toString());
+
+      // If level changed, launch the appropriate level activity
+      if (newLevel !== level) {
+        // Clean up audio before launching
+        stopBackgroundMusic();
+        Speech.stop();
+
+        // Launch the appropriate level based on newLevel
+        if (newLevel == 1) {
+          openLoginScreen();
+        } else if (newLevel == 2) {
+          openActivity2Screen();
+        } else if (newLevel == 3) {
+          openActivity3Screen();
+        } else if (newLevel == 4) {
+          openActivity4Screen();
+        } else if (newLevel == 5) {
+          openActivity5Screen();
+        }
+      }
+    };
+
+    // Register event listener
+    const subscription = eventEmitter.addListener(
+      "Activity1Result",
+      handleActivity1Result
+    );
+
+    // Cleanup function
+    return () => subscription.remove();
+  }, []);
 
 
 export default function GameScreen(): JSX.Element {
