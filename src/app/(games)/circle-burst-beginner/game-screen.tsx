@@ -751,6 +751,29 @@ export default function GameScreen() {
     () => Math.random() * width
   );
 
+  /**
+   * Sets up and starts all animations
+   * Creates looping animations for visual elements
+   */
+  useEffect(() => {
+    // Pulse animation for the blue circle
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulseAnim, {
+          toValue: 1.2, // Expand to 120%
+          duration: 1000,
+          easing: Easing.inOut(Easing.ease),
+          useNativeDriver: true,
+        }),
+        Animated.timing(pulseAnim, {
+          toValue: 1, // Return to normal size
+          duration: 1000,
+          easing: Easing.inOut(Easing.ease),
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+
 
 export default function GameScreen(): JSX.Element {
   const router = useRouter();
