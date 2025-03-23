@@ -774,6 +774,24 @@ export default function GameScreen() {
       ])
     ).start();
 
+    // Hand animation - scaling up and down
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(handAnim, {
+          toValue: 1,
+          duration: 1500,
+          easing: Easing.inOut(Easing.ease),
+          useNativeDriver: true,
+        }),
+        Animated.timing(handAnim, {
+          toValue: 0,
+          duration: 1500,
+          easing: Easing.inOut(Easing.ease),
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+
 
 export default function GameScreen(): JSX.Element {
   const router = useRouter();
