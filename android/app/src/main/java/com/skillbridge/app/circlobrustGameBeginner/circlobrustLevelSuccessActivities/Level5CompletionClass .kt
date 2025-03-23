@@ -31,4 +31,18 @@ class Level5CompletionClass : AppCompatActivity() {
     private var mediaPlayerLoop: MediaPlayer? = null // For looping background music
     private var mediaPlayerOnce: MediaPlayer? = null // For one-time victory sound
 
+    /* ================ Activity Lifecycle Section ================ 
+     * Handles creation and destruction of the activity
+     * Sets up UI elements and attaches event listeners
+     */
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState) // Call parent implementation
+        setContentView(R.layout.activity_level_5_complete) // Set the layout for this screen
+        val BackToHome = findViewById<Button>(R.id.BackToHome) // Get reference to home button
+
+        BackToHome.setOnClickListener {
+            onBackPressed() // Handle back button behavior
+            finish() // Close this activity
+        }
+
 }
