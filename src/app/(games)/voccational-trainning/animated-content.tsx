@@ -70,6 +70,24 @@ const AnimatedContent = ({ steps }: StepsProps) => {
           {steps[stepNo].description}
         </TypeWriter>
 
+        <TouchableOpacity style={styles.button} onPress={nextStep}>
+          <Text style={styles.buttonText}>
+            {stepNo < steps.length - 1 ? "Next Step" : "Done"}
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.voiceContainer}>
+        <VoiceIntro
+          introText={steps[stepNo].voiceNote}
+          bannarText={steps[stepNo].text}
+          autoPlay={true}
+        />
+      </View>
+    </View>
+  );
+};
+
 /**
  * Component styles
  */
