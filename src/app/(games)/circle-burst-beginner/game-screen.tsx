@@ -391,6 +391,56 @@ export default function GameScreen() {
     return () => clearTimeout(saveTimeout);
   }, [level, score]); // Only run when level or score changes
 
+  /* ================ LOAD SAVED GAME DATA ================ */
+  /**
+   * Loads previously saved game data from AsyncStorage on component mount
+   * Restores the player's level, score, and audio position
+   */
+  useEffect(() => {
+    const loadSavedGame = async () => {
+      try {
+        if (!hasFetchedData) {
+          // Fetch all game data in parallel for efficiency
+          const [
+            savedScore,
+            savedLevel,
+            savedFormattedTime,
+            savedAudioPosition,
+          ] = await AsyncStorage.multiGet([
+            "gameScore",
+            "gameLevel",
+            "formattedTime",
+            "audioPosition",
+          ]);
+
+          // Parse and set audio position
+          setAudioPosition(parseInt(savedAudioPosition?.[1] || "0", 10));
+
+          // Determine if this is first run based on absence of saved data
+          setIsFirstRun(!savedScore?.[1] && !savedLevel?.[1]);
+
+          // Parse and set score (default to 0)
+          setScore(parseInt(savedScore?.[1] || "0", 10));
+
+          // Parse and set level (default to 1)
+          setLevel(parseInt(savedLevel?.[1] || "1", 10));
+
+          // Set formatted time (default to empty string)
+          setFormattedTime(savedFormattedTime?.[1] || "");
+
+          // Mark data as fetched to prevent duplicate loading
+          setHasFetchedData(true);
+        }
+      } catch (error) {
+        // Handle loading errors
+        console.error("Error loading saved game:", error);
+        Alert.alert("Error", "Failed to load the saved game.");
+      }
+    };
+
+    loadSavedGame();
+  }, [hasFetchedData]); // Dependency ensures this runs once when component mounts
+
 
 export default function GameScreen(): JSX.Element {
   const router = useRouter();
