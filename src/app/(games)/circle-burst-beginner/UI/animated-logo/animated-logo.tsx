@@ -392,3 +392,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#c1121f",
     borderBottomLeftRadius: 15,
   },
+  // Bottom-left corner decoration
+  bannerCorner3: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    width: 15,
+    height: 15,
+    backgroundColor: "#c1121f",
+    borderTopRightRadius: 15,
+  },
+  // Bottom-right corner decoration
