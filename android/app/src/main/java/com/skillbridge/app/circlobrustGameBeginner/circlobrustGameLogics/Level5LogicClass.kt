@@ -20,4 +20,14 @@ class Level5LogicClass @JvmOverloads constructor(
     attrs: AttributeSet? = null // Optional XML attributes
 ) : BaseLogicClass (context, attrs) {
 
+    /* ================ Interface Section ================ 
+     * Defines callback for circle popping events
+     * Allows activity to respond to player scoring
+     */
+    interface OnCirclePoppedListener {
+        fun onCirclePopped() // Called when player pops a circle
+    }
+
+    var circlePoppedListener: OnCirclePoppedListener? = null // Listener for score updates
+
 }
