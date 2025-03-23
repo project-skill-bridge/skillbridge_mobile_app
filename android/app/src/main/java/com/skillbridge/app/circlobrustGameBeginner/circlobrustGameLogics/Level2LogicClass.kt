@@ -138,4 +138,18 @@ class Level2LogicClass @JvmOverloads constructor(
             
             // Handle horizontal boundaries - bounce off walls
             if (circle.x - circle.radius <= 0 || circle.x + circle.radius >= width) { // Hit left or right edge
+                // Create a new circle with reversed horizontal direction
+                val newHorizontalVelocity = -circle.horizontalVelocity // Reverse direction
+                val newX = if (circle.x - circle.radius <= 0) {
+                    circle.radius // Keep inside left boundary
+                } else {
+                    width - circle.radius // Keep inside right boundary
+                }
+                
+                // Replace the circle with updated properties
+                val index = circles.indexOf(circle) // Find circle index
+                if (index >= 0) {
+                    circles[index] = circle.copy(x = newX, horizontalVelocity = newHorizontalVelocity) // Update with new properties
+                }
+            }
 }
