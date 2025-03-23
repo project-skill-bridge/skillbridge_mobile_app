@@ -88,6 +88,17 @@ const HandTouchingSVG = React.forwardRef(
   }
 );
 
+// Create an animatable version of the hand SVG component
+const AnimatedHand = Animated.createAnimatedComponent(HandTouchingSVG);
+
+/**
+ * AnimatedLogo Component
+ *
+ * Creates an animated logo banner for the CircloBrust game with multiple
+ * coordinated animations that create an engaging visual experience.
+ *
+ * The logo features a red banner with corner decorations, a pulsing
+ * blue circle that represents the game's bubble-popping mechanic,
  * an animated hand that simulates the player interaction, and a
  * sweeping shine effect to add visual interest.
  *
@@ -203,3 +214,18 @@ const AnimatedLogo = () => {
           ]}
         />
         {/* Banner content - hand, circle, and text */}
+        <View style={styles.bannerContent}>
+          {/* Left side with animated hand and circle */}
+          <View style={styles.splatterContainer}>
+            {/* Animated hand that rotates and scales */}
+            <Animated.View
+              style={[
+                styles.handContainer,
+                {
+                  transform: [
+                    { rotate: handRotate }, // Continuous rotation
+                    { scale: handScale }, // Subtle scaling
+                  ],
+                },
+              ]}
+            >
