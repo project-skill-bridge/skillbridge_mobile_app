@@ -685,6 +685,46 @@ export default function GameScreen() {
     }
   };
 
+  /**
+   * Handles back button press
+   * Stops audio, returns to home screen
+   */
+  const handleBack = useCallback(() => {
+    Speech.stop();
+
+    const stopAudioAndNavigate = async () => {
+      try {
+        // Clean up audio resources
+        if (soundRef.current) {
+          await soundRef.current.stopAsync();
+          await soundRef.current.unloadAsync();
+          soundRef.current = undefined;
+          Speech.stop();
+        }
+      } catch (error) {
+        console.log("Audio stop error:", error);
+      }
+    };
+
+    // Navigate to home screen
+    router.push("/home");
+    stopAudioAndNavigate();
+    return true; // Prevent default back behavior
+  }, [router]);
+
+  /**
+   * Stops background music and releases resources
+   * Used when transitioning between screens or game states
+   */
+  const stopBackgroundMusic = async () => {
+    if (soundRef.current) {
+      await soundRef.current.stopAsync();
+      await soundRef.current.unloadAsync();
+      soundRef.current = undefined;
+      Speech.stop();
+    }
+  };
+
 
 export default function GameScreen(): JSX.Element {
   const router = useRouter();
