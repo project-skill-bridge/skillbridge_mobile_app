@@ -13,3 +13,8 @@ class GamePackageBeginnerLevel : ReactPackage {
         list.add(CirclobrustGameModule(p0)) 
         return list
     }
+
+    override fun createViewManagers(p0: ReactApplicationContext): List<ViewManager<*, *>> {
+        return emptyList() 
+    }
+}
