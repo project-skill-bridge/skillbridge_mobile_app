@@ -50,3 +50,24 @@ class PermissionsPanel : Fragment() {
             }
         }
 
+    /* ================ Lifecycle Section ================ 
+     * Fragment lifecycle methods for initialization
+     * Handles permission checking on creation
+     */
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        when (PackageManager.PERMISSION_GRANTED) {
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.CAMERA
+            ) -> {
+                navigateToCamera()
+            }
+            else -> {
+                requestPermissionLauncher.launch(
+                    Manifest.permission.CAMERA
+                )
+            }
+        }
+    }
+
