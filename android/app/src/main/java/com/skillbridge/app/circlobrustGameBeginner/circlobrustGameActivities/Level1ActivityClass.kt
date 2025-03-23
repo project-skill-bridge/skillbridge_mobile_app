@@ -48,7 +48,6 @@ class Level1ActivityClass : AppCompatActivity() {
         private const val DEFAULT_AUDIO_DURATION_MS = 30000L // Fallback duration for music
     }
 
-
     /* ================ Activity Lifecycle Section ================ 
      * Methods for controlling the activity lifecycle - creation, destruction
      */
@@ -56,50 +55,50 @@ class Level1ActivityClass : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val audioPosition = intent.getIntExtra("AUDIO_POSITION", 0)
+        val audioPosition = intent.getIntExtra("AUDIO_POSITION", 0) // Get saved audio position
 
         try {
             mediaPlayer = MediaPlayer.create(this, R.raw.background_music).apply {
-                isLooping = false
-                seekTo(audioPosition)
+                isLooping = false // Play music only once
+                seekTo(audioPosition) // Resume from previous position
                 start()
 
                 setOnCompletionListener { mp ->
                     lifecycleScope.launch {
                         if (!gameEnded) {
                             gameEnded = true
-                            if (score < 15) goToLevel1LossActivity()
-                            else goToLevel1CompleteActivity()
+                            if (score < 15) goToLevel1LossActivity() // Fail if score too low
+                            else goToLevel1CompleteActivity() // Success otherwise
                         }
                     }
                 }
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            e.printStackTrace() // Log any media player errors
         }
 
-        val fragment = CameraPanel.newInstance(CameraPanel.ACTIVITY1)
+        val fragment = CameraPanel.newInstance(CameraPanel.ACTIVITY1) // Initialize camera for hand tracking
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fragment)
             .commit()
 
-        binding.levelNumberView.text = "$LEVEL"
+        binding.levelNumberView.text = "$LEVEL" // Display level number
 
-
-        score = intent.getIntExtra("INITIAL_SCORE", 0)
-        val timeString = intent.getStringExtra("FORMATTED_TIME") ?: "00:00"
-        val (seconds, millis) = parseTimeString(timeString)
+        // Restore game state if returning from another activity
+        score = intent.getIntExtra("INITIAL_SCORE", 0) // Get saved score
+        val timeString = intent.getStringExtra("FORMATTED_TIME") ?: "00:00" // Get saved time
+        val (seconds, millis) = parseTimeString(timeString) // Parse time components
         timeInSeconds = seconds
         milliseconds = millis
 
-        updateScoreInUi()
-        updateTimeInUi()
+        updateScoreInUi() // Initialize score display
+        updateTimeInUi() // Initialize timer display
 
-        startTimer()
-        startCountdownTimer()
+        startTimer() // Begin tracking time
+        startCountdownTimer() // Start level timer
 
         binding.playButton.setOnClickListener {
-            onBackPressed()
+            onBackPressed() // Show exit dialog when button pressed
         }
     }
 
@@ -108,13 +107,13 @@ class Level1ActivityClass : AppCompatActivity() {
      */
     private fun parseTimeString(timeString: String): Pair<Int, Int> {
         return try {
-            val parts = timeString.split(":")
-            val seconds = parts[0].toIntOrNull() ?: 0
-            val millisecondsPart = parts.getOrNull(1)?.toIntOrNull() ?: 0
-            val milliseconds = millisecondsPart * 10
+            val parts = timeString.split(":") // Split into seconds and centiseconds
+            val seconds = parts[0].toIntOrNull() ?: 0 // Parse seconds
+            val millisecondsPart = parts.getOrNull(1)?.toIntOrNull() ?: 0 // Parse centiseconds
+            val milliseconds = millisecondsPart * 10 // Convert to milliseconds
             Pair(seconds, milliseconds)
         } catch (e: Exception) {
-            Pair(0, 0)
+            Pair(0, 0) // Default values on error
         }
     }
 
