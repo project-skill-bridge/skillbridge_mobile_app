@@ -1013,3 +1013,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff", // Consistent white background
   },
 
+  /* Bubble Animation Styles */
+  bubblesContainer: {
+    ...StyleSheet.absoluteFillObject, // Cover entire screen
+    overflow: "hidden", // Prevent bubbles from causing scrolling
+  },
+  bubble: {
+    position: "absolute",
+    backgroundColor: "#6979c9", // Soft blue color
+    opacity: 0.5, // Semi-transparent
+  },
+
