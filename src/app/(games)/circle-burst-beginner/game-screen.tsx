@@ -1239,3 +1239,24 @@ const styles = StyleSheet.create({
   gradientFill: {
     flex: 1,
   },
+
+  /* Background Image Styles */
+  imageBackground: {
+    flex: 1,
+    zIndex: 2, // Above gradient
+    position: "relative",
+    marginRight: -20, // Full width plus margins
+    marginLeft: -20,
+  },
+
+  /* Mute Button Styles */
+  muteButton: {
+    position: "absolute",
+    right: 20,
+    width: 40,
+    height: 40,
+    borderRadius: 20, // Circular
+    backgroundColor: "#8de4a2", // Match back button
+    justifyContent: "center",
+    alignItems: "center",
+  },
