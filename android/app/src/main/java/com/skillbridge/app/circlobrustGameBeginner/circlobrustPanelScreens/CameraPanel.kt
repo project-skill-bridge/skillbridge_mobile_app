@@ -234,6 +234,29 @@ class CameraPanel : Fragment(), HandIdentifier.LandmarkerListener {
                         (activity as? Level4ActivityClass)?.incrementScore() // Increment score in activity
                     }
                 }
+            }
+            ACTIVITY5 -> { // Level 5 setup
+                binding.Level1Graphics.visibility = View.GONE // Hide Level 1 overlay
+                binding.Level2Graphics.visibility = View.GONE // Hide Level 2 overlay
+                binding.Level3Graphics.visibility = View.GONE // Hide Level 3 overlay
+                binding.Level4Graphics.visibility = View.GONE // Hide Level 4 overlay
+                binding.Level5Graphics.visibility = View.VISIBLE // Show Level 5 overlay
+                binding.Level5Graphics.circlePoppedListener = object : Level5LogicClass.OnCirclePoppedListener {
+                    override fun onCirclePopped() { // When circle is popped
+                        popSound.start() // Play sound
+                        (activity as? Level5ActivityClass)?.incrementScore() // Increment score in activity
+                    }
+                }
+            }
+
+            else -> throw IllegalStateException("Unknown activity source") // Handle invalid level
+        }
+
+        popSound.setOnCompletionListener {
+            it.seekTo(0) // Reset sound to beginning for next play
+        }
+    }
+
     private fun updateOverlay(
         overlay: View, // Use View as the base type
         resultBundle: HandIdentifier.ResultBundle
