@@ -111,4 +111,16 @@ class Level4LostActivityClass : AppCompatActivity() {
         binding.score.text = "$score" // Display score value in TextView
     }
 
+    /* ================ Navigation Section ================ 
+     * Methods for handling screen transitions and back navigation
+     * Communicates with React Native layer for app navigation
+     */
+    override fun onBackPressed() {
+        val intent = Intent() // Create new intent for result
+        intent.putExtra("FINAL_SCORE", 0) // Reset score for returning to menu
+        intent.putExtra("LEVEL", 1) // Set level to retry
+        setResult(RESULT_OK, intent) // Set result for calling activity
+        MyNativeModules.getInstance()?.emitActivity2Result(0, 4 , "00:00" , 0) //emit2ma daala balamu - Signal React Native
+        finish() // Close this activity
+    }
 }
