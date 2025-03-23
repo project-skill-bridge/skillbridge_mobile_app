@@ -91,6 +91,16 @@ class HandIdentifier (
             postRotate(imageProxy.imageInfo.rotationDegrees.toFloat()) // Apply rotation based on camera orientation
             if (isFrontCamera) { // Mirror for front camera
                 postScale(-1f, 1f, imageProxy.width.toFloat(), imageProxy.height.toFloat()) // Horizontal flip
+            }
+        }
+
+        val rotatedBitmap = Bitmap.createBitmap( // Create a new bitmap with transformations applied
+            bitmapBuffer, 0, 0, bitmapBuffer.width, bitmapBuffer.height, matrix, true // Apply matrix transformations
+        )
+
+        detectAsync(BitmapImageBuilder(rotatedBitmap).build(), SystemClock.uptimeMillis()) // Process image
+    }
+
     companion object {
         const val TAG = "HandLandmarkerHelper" // Logging tag
         private const val MP_HAND_LANDMARKER_TASK = "hand_landmarker.task" // Model file name
