@@ -136,3 +136,22 @@ class Level1ActivityClass : AppCompatActivity() {
         binding.scoreTextView.text = "$score"
     }
 
+    /* ================ Timer Management Section ================ 
+     * Handles time tracking and countdown for game progression
+     */
+    private fun startTimer() {
+        timerJob?.cancel()
+        timerJob = lifecycleScope.launch {
+            while (isActive) {
+                delay(10)
+                milliseconds += 10
+                if (milliseconds >= 1000) {
+                    milliseconds = 0
+                    timeInSeconds++
+                }
+                updateTimeInUi()
+            }
+        }
+    }
+
+
