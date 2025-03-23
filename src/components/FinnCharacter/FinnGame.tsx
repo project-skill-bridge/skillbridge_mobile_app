@@ -118,7 +118,7 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
       containerHeight: Math.min(150 * scale, 220),
       characterSize: Math.min(140 * scale, 150),
       fontSize: Math.min(16 * scale, 20),
-      bubblePadding: Math.min(15 * scale, 22),
+      bubblePadding: Math.min(11 * scale, 22),
       buttonSize: Math.min(115 * scale, 160),
       bubbleMaxHeight: Math.min(180 * scale, 360),
     };
@@ -773,7 +773,7 @@ const styles = StyleSheet.create({
     marginRight: 0,
     position: "relative",
     width: wp(50),
-    height: hp(20),
+    height: hp(21),
     right: 54,
   },
   thoughtText: {
