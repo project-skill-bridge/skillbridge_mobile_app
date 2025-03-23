@@ -84,4 +84,13 @@ class CameraPanel : Fragment(), HandIdentifier.LandmarkerListener {
         }
     }
 
+    /* ================ Lifecycle Section ================ 
+     * Fragment lifecycle methods for creation, resumption, and destruction
+     * Handles initialization, permissions, and resource management
+     */
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState) // Call parent implementation
+        activitySource = arguments?.getString(ARG_ACTIVITY_SOURCE) // Get activity source from arguments
+    }
+
 }
