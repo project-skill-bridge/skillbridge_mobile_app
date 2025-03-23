@@ -23,6 +23,7 @@
     "@react-native-google-signin/google-signin": "^13.1.0",
     "@react-navigation/bottom-tabs": "^7.0.0",
     "@react-navigation/native": "^7.0.0",
+    "date-fns": "^4.1.0",
     "expo": "~52.0.26",
     "expo-av": "~15.0.2",
     "expo-blur": "~14.0.3",
