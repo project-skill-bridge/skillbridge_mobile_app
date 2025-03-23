@@ -56,10 +56,29 @@ const ProgressScreen = () => {
         const gamesCollectionRef = collection(userDocRef, "games");
         const gamesSnapshot = await getDocs(gamesCollectionRef);
 
-        let totalProgress = 0;
-        let gameCount = 0;
+        let totalProgressGame1 = 0;
+        let totalProgressGame2 = 0;
+
+        let gameCountGame1 = 0;
+        let gameCountGame2 = 0;
 
         console.log(`gamesSnapshot : ${gamesSnapshot}`);
+        gamesSnapshot.forEach((gameDoc) => {
+          console.log(`  Game ID: ${gameDoc.id}`, gameDoc.data());
+
+          // Assuming each game document has a `progress` field with a percentage value (0-100)
+          const gameProgress = gameDoc.data().totalGameProgressPercentage;
+
+          // You can add more logic to distinguish which game is Game 1 and Game 2
+          if (gameDoc.id === "mind-match") {
+            totalProgressGame1 += gameProgress;
+            gameCountGame1 += 1;
+          } else if (gameDoc.id === "tap-and-type") {
+            totalProgressGame2 += gameProgress;
+            gameCountGame2 += 1;
+          }
+        });
+
 
       }catch (error) {
 
