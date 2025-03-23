@@ -263,6 +263,24 @@ class Level1ActivityClass : AppCompatActivity() {
     }
 
 
+     /* ================ Cleanup Section ================ 
+     * Resource management and proper disposal of system resources
+     */
+    override fun onDestroy() {
+        super.onDestroy()
+
+        mediaPlayer?.let {
+            if (it.isPlaying) {
+                it.stop()
+            }
+            it.release()
+        }
+        mediaPlayer = null
+        timerJob?.cancel()
+        countdownJob?.cancel()
+    }
+
+
 
 
 
