@@ -257,8 +257,7 @@ class Level1ActivityClass : AppCompatActivity() {
         return "$secondsFormatted:$millisecondsFormatted" // Return formatted time string
     }
 
-
-     /* ================ Cleanup Section ================ 
+    /* ================ Cleanup Section ================ 
      * Resource management and proper disposal of system resources
      */
     override fun onDestroy() {
@@ -266,17 +265,12 @@ class Level1ActivityClass : AppCompatActivity() {
 
         mediaPlayer?.let {
             if (it.isPlaying) {
-                it.stop()
+                it.stop() // Stop playback if active
             }
-            it.release()
+            it.release() // Release media player resources
         }
-        mediaPlayer = null
-        timerJob?.cancel()
+        mediaPlayer = null // Clear reference
+        timerJob?.cancel() // Cancel timer coroutines
         countdownJob?.cancel()
     }
 }
-
-
-
-
-
