@@ -19,3 +19,19 @@ import com.skillbridge.app.R
  */
 private val PERMISSIONS_REQUIRED = arrayOf(Manifest.permission.CAMERA)
 
+/* ================ Fragment Definition Section ================ 
+ * Permission management fragment for handling camera access
+ * Checks for existing permissions and requests them if needed
+ * Automatically navigates to camera screen once permissions are granted
+ */
+class PermissionsPanel : Fragment() {
+
+    /* ================ Permission Management Section ================ 
+     * Handler for permission request results
+     * Processes user's permission decisions and navigates accordingly
+     */
+    private val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
