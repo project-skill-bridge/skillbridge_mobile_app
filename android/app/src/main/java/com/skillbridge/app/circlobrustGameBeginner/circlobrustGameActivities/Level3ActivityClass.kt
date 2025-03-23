@@ -175,3 +175,72 @@ class Level3ActivityClass : AppCompatActivity() {
         }
     }
 
+    private fun goToLevel3CompleteActivity() {
+        timerJob?.cancel() // Stop all timers
+        countdownJob?.cancel()
+        val intent = Intent(this, Level3CompletionClass::class.java) // Create intent for success screen
+        startActivity(intent)
+        finish() // Close current activity
+    }
+
+    private fun goToLevel3LossActivity() {
+        timerJob?.cancel() // Stop all timers
+        countdownJob?.cancel()
+        val intent = Intent(this, Level3LostActivityClass::class.java).apply {
+            putExtra("EXTRA_SCORE", score) // Pass final score to loss screen
+        }
+        startActivity(intent)
+        finish() // Close current activity
+    }
+
+    fun incrementScore() {
+        score++ // Increase score by 1
+        runOnUiThread {
+            binding.scoreTextView.text = "$score" // Update score on UI thread
+        }
+        checkScore() // Check if target score reached after increment
+    }
+
+    /* ================ User Interaction Section ================ 
+     * Handling user input and navigation through the game
+     */
+    override fun onBackPressed() {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_exit, null) // Create exit dialog
+
+        val dialog = AlertDialog.Builder(this, R.style.CustomDialogTheme)
+            .setView(dialogView)
+            .create()
+
+        dialogView.findViewById<Button>(R.id.btn_yes).setOnClickListener {
+            val formattedTime = formatTimeToString() // Format current time for return value
+            val audioPosition = mediaPlayer?.currentPosition ?: 0 // Save audio position for potential resume
+            val intent = Intent().apply {
+                putExtra("FINAL_SCORE", score) // Return final score
+                putExtra("LEVEL", LEVEL) // Return level info
+                putExtra("FORMATTED_TIME", formattedTime) // Return formatted time
+                putExtra("AUDIO_POSITION", audioPosition) // Return audio position
+            }
+            setResult(RESULT_OK, intent)
+            MyNativeModules.getInstance()?.emitActivity2Result(score, LEVEL, formattedTime, audioPosition) // Signal to React Native
+            finish()
+            dialog.dismiss() // Close dialog
+        }
+
+        dialogView.findViewById<Button>(R.id.btn_no).setOnClickListener {
+            dialog.dismiss() // Continue playing if user cancels exit
+        }
+
+        dialog.show() // Show the dialog
+
+        dialog.window?.setLayout(
+            (resources.displayMetrics.widthPixels * 0.8).toInt(), // Size dialog to 80% of screen width
+            WindowManager.LayoutParams.WRAP_CONTENT
+        )
+    }
+
+    private fun formatTimeToString(): String {
+        val secondsFormatted = DecimalFormat("00").format(timeInSeconds) // Format seconds with leading zeros
+        val millisecondsFormatted = DecimalFormat("00").format(milliseconds / 10) // Format as centiseconds
+        return "$secondsFormatted:$millisecondsFormatted" // Return formatted time string
+    }
+
