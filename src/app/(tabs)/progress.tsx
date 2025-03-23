@@ -11,7 +11,11 @@ const ProgressScreen = () => {
   return ( //first game progress circle
     <View style={styles.container}> 
       <Text style={styles.title}>Your progress</Text>
-
+      {/* Image added after "Your progress" text */}
+      <Image
+        source={require("@/assets/gif/Talking-Finn.gif")} // Replace with your image path
+        style={styles.image}
+      />
       <View style={styles.achievement}><CircularProgress
         value={(progress / maxprogress) * 100}
         radius={55}
@@ -68,7 +72,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 10,
     paddingTop: 20,
-    paddingBottom:20,
+    paddingBottom:70,
     color: "#6277bf"
   },
   streakCount: {
@@ -90,6 +94,15 @@ const styles = StyleSheet.create({
     color: "#555",
     marginBottom: 20,
     paddingTop: 15,
+  },
+  image:{
+    width: 140,
+    height:140,
+    paddingTop: 280,
+    paddingRight: 160,
+    resizeMode: "contain",
+    position: "absolute",
+
   },
   achievements: {
     backgroundColor: "#FFF",
