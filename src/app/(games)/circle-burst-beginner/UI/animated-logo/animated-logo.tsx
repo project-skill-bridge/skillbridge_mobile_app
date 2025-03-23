@@ -350,3 +350,24 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
   },
 
+  /* Text Styles */
+  textContainer: {
+    flexDirection: "row", // Arrange text parts horizontally
+    alignItems: "center",
+    marginLeft: 10, // Space from hand/circle
+  },
+  logoText: {
+    color: "#f1faee", // Off-white color
+    fontSize: 28, // Large text size
+    fontFamily: "Montserrat-SemiBold", // Medium weight font
+    textAlign: "center",
+    // Text shadow for better readability
+    textShadowColor: "rgba(0, 0, 0, 0.3)",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
+  },
+  logoTextBold: {
+    fontFamily: "Montserrat-Bold", // Heavier weight for emphasis
+    color: "#ffd700", // Gold color for contrast
+  },
+
