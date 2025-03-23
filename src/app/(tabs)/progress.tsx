@@ -45,12 +45,12 @@ const ProgressScreen = () => {
           // const userDocSnap = await getDoc(userDocRef);
           //----------------------------------------
   
-          // if (!userDocSnap.exists()) {
-          //   console.log("No user document found!");
-          //   return;
-          // }
+          if (!userDocSnap.exists()) {
+            console.log("No user document found!");
+            return;
+          }
   
-          //console.log(`User ID: ${user.uid}`, userDocSnap.data());
+          console.log(`User ID: ${userId}`, userDocSnap.data());
   
 
       }catch (error) {
