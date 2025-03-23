@@ -164,4 +164,22 @@ class CameraPanel : Fragment(), HandIdentifier.LandmarkerListener {
             .also { // Configure analyzer
                 it.setAnalyzer(backgroundExecutor) { image -> detectHand(image) } // Set up frame analysis
             }
+
+        try {
+            cameraProvider.unbindAll() // Unbind previous use cases
+            camera = cameraProvider.bindToLifecycle( // Bind new use cases
+                this, cameraSelector, preview, imageAnalyzer // Bind to fragment lifecycle
+            )
+            preview?.setSurfaceProvider(binding.viewFinder.surfaceProvider) // Set surface for preview
+        } catch (exc: Exception) {
+            Log.e(TAG, "Use case binding failed", exc) // Log binding errors
+        }
+    }
+
+    /* ================ Game Overlay Section ================ 
+     * Methods for setting up and managing game-specific overlays
+     * Configures level-specific graphics and connects popping events to scoring
+     */
+    private fun initializeOverlays() {
+        val popSound = MediaPlayer.create(requireContext(), R.raw.pop_sound) // Create pop sound player
 }
