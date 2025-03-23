@@ -8,7 +8,7 @@ export const gameInfo = [
   },
   {
     id: 2,
-    path: "/circle-burst-advanced/game-screen",
+    path: "/circle-burst/game-screen",
     image: Images.game2,
   },
   {
@@ -22,11 +22,5 @@ export const gameInfo = [
     path: "/mind-match/main-screen",
     image: Images.game4,
   },
-  {
-    id: 5,
-    path:"/circle-burst-beginner/game-screen",
-    image: Images.game5,
-  }
-  
 
 ] as const;
