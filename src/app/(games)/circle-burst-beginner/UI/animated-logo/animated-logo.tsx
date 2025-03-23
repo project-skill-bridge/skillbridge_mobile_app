@@ -403,3 +403,16 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 15,
   },
   // Bottom-right corner decoration
+  bannerCorner4: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    width: 15,
+    height: 15,
+    backgroundColor: "#c1121f",
+    borderTopLeftRadius: 15,
+  },
+});
+
+/* ================ EXPORT ================ */
+export default AnimatedLogo;
