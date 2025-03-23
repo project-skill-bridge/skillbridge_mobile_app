@@ -114,4 +114,27 @@ class CameraPanel : Fragment(), HandIdentifier.LandmarkerListener {
         return binding.root // Return root view
     }
 
+    @SuppressLint("MissingPermission") // Suppress permission warning (permissions checked elsewhere)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState) // Call parent implementation
+        setupCameraComponents() // Set up camera
+        initializeOverlays() // Set up game overlays
+    }
+
+    /* ================ Camera Setup Section ================ 
+     * Methods for configuring and initializing camera components
+     * Handles camera binding and preview surface management
+     */
+    private fun setupCameraComponents() {
+        backgroundExecutor = Executors.newSingleThreadExecutor() // Create background thread
+        binding.viewFinder.post { setUpCamera() } // Set up camera when view is ready
+
+        backgroundExecutor.execute { // Run on background thread
+            handLandmarkerHelper = HandIdentifier( // Initialize hand tracking helper
+                context = requireContext(), // Provide context
+                handLandmarkerHelperListener = this // Set callback to this fragment
+            )
+        }
+    }
+
 }
