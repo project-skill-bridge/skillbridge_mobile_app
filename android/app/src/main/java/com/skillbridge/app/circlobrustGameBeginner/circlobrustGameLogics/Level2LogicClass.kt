@@ -152,4 +152,29 @@ class Level2LogicClass @JvmOverloads constructor(
                     circles[index] = circle.copy(x = newX, horizontalVelocity = newHorizontalVelocity) // Update with new properties
                 }
             }
+            
+            // Handle vertical boundary - reset position
+            if ((circle.isMovingUp && circle.y + circle.radius < 0) || // Off top edge
+                (!circle.isMovingUp && circle.y - circle.radius > height)) { // Off bottom edge
+                
+                // Reset position based on direction
+                val newY = if (circle.isMovingUp) {
+                    height + circle.radius // Reset to bottom
+                } else {
+                    -circle.radius // Reset to top
+                }
+                
+                // Randomize X position when resetting
+                val newX = (0f + circle.radius..width - circle.radius).randomFloat() // New random position
+                
+                // Update the circle with new position
+                val index = circles.indexOf(circle) // Find circle index
+                if (index >= 0) {
+                    circles[index] = circle.copy(x = newX, y = newY) // Update with new position
+                }
+            }
+        }
+        invalidate() // Request redraw with updated positions
+    }
+
 }
