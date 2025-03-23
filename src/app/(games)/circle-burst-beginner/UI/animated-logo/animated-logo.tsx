@@ -382,3 +382,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#c1121f", // Darker red
     borderBottomRightRadius: 15, // Creates quarter-circle shape
   },
+  // Top-right corner decoration
+  bannerCorner2: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    width: 15,
+    height: 15,
+    backgroundColor: "#c1121f",
+    borderBottomLeftRadius: 15,
+  },
