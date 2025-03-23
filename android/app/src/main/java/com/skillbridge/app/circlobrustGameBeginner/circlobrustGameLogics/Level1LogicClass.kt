@@ -44,4 +44,14 @@ class Level1LogicClass @JvmOverloads constructor(
         var isPopped: Boolean = false // Whether circle has been popped
     )
 
+    /* ================ Properties Section ================ 
+     * Game state variables and UI elements
+     * Manages collections of game objects and their visual representation
+     */
+    private val circles = mutableListOf<Circle>() // Collection of active game circles
+    private val circlePaint = Paint().apply { // Paint configuration for circles
+        style = Paint.Style.FILL // Fill the circles
+        isAntiAlias = true // Enable smooth edges
+    }
+
 }

@@ -45,4 +45,17 @@ class Level2LogicClass @JvmOverloads constructor(
         var isPopped: Boolean = false // Whether circle has been popped
     )
 
+    /* ================ Properties Section ================ 
+     * Game state variables, rendering tools, and configuration values
+     */
+    private val circles = mutableListOf<Circle>() // Collection of active game circles
+    private val circlePaint = Paint().apply { // Paint configuration for circles
+        style = Paint.Style.FILL // Fill the circles
+        isAntiAlias = true // Enable smooth edges
+    }
+
+    private val MAX_CIRCLES = 4 // Maximum circles on screen at once
+    private var lastCircleTime = 0L // Last time a circle was created
+    private val CIRCLE_SPAWN_INTERVAL = 1500L // 1.5 seconds between circles
+
 }
