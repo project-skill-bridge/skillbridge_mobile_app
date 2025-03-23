@@ -101,7 +101,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="/12"
+            android:text="/10"
             android:textColor="#3F51B5"
             android:textSize="20sp"
             android:textStyle="bold" />
