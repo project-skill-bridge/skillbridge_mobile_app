@@ -74,4 +74,14 @@ class CameraPanel : Fragment(), HandIdentifier.LandmarkerListener {
          const val ACTIVITY4 = "Activity4" // Level 4 identifier
          const val ACTIVITY5 = "Activity5" // Level 5 identifier
 
+
+        fun newInstance(activitySource: String): CameraPanel {
+            return CameraPanel().apply { // Create new instance with arguments
+                arguments = Bundle().apply { // Create and attach bundle
+                    putString(ARG_ACTIVITY_SOURCE, activitySource) // Store source activity
+                }
+            }
+        }
+    }
+
 }
