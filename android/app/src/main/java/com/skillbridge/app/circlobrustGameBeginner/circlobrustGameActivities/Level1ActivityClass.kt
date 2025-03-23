@@ -39,3 +39,12 @@ class Level1ActivityClass : AppCompatActivity() {
     private var countdownJob: Job? = null
 
     private var gameEnded = false
+
+
+    /* ================ Constants Section ================ 
+     * Configuration values for the game level
+     */
+    companion object {
+        private const val LEVEL = 1
+        private const val DEFAULT_AUDIO_DURATION_MS = 30000L
+    }
