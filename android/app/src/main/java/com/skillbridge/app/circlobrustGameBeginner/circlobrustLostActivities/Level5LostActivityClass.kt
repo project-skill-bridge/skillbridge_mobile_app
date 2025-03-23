@@ -63,4 +63,15 @@ class Level5LostActivityClass : AppCompatActivity() {
             finish() // Close this activity
         }
 
+        val gifViewloss: ImageView = findViewById(R.id.gifViewlevelloss) // Reference to GIF container
+        val gifUriloss = "android.resource://$packageName/${R.raw.loose}" // Create URI for loss animation
+
+
+        updateScoreInUi() // Update score display
+
+        Glide.with(this)
+            .load(gifUriloss) // Load the loss animation GIF
+            .into(gifViewloss) // Display in the ImageView
+
+
 }
