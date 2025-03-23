@@ -1,20 +1,22 @@
 import * as React from "react";
-import { StyleSheet, Text, View, } from "react-native";
+import { StyleSheet, Text, View, Image, } from "react-native";
 import { useState } from "react";
 import CircularProgress from "react-native-circular-progress-indicator";
 
-const StreakScreen = () => {
+const ProgressScreen = () => {
   const [progress, setprogress] = useState(5);
-  const maxprogress = 10;
+  const maxprogress = 10; //progress
   const Spacer = ({ size = 10 }) => <View style={{ height: size }} />;
-  return (
-    <View style={styles.container}>
+
+  return ( //first game progress circle
+    <View style={styles.container}> 
       <Text style={styles.title}>Your progress</Text>
+
       <View style={styles.achievement}><CircularProgress
         value={(progress / maxprogress) * 100}
         radius={55}
         duration={1000}
-        progressValueColor={"#e85454"}
+        progressValueColor={"#FF6347"}  
         maxValue={100}
         title={"Progress"}
         titleColor={"#6277bf"}
@@ -23,8 +25,8 @@ const StreakScreen = () => {
       <Text style={styles.streakCount}> // Game name</Text>
 
       <Spacer size={30} />
-
-      <View style={styles.achievement}><CircularProgress
+      
+      <View style={styles.achievement}><CircularProgress //second game progress circle
         value={(progress / maxprogress) * 100}
         radius={55}
         duration={1000}
@@ -47,12 +49,11 @@ const StreakScreen = () => {
   <Text>✅ --------</Text>
 </View>
 */}
-
     </View>
   );
 };
 
-export default StreakScreen;
+export default ProgressScreen;
 
 const styles = StyleSheet.create({
   container: {
