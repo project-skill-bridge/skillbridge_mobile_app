@@ -45,6 +45,29 @@ class CirclobrustGameModule(reactContext: ReactApplicationContext) : ReactContex
         }
     }
 
+    // Updated methods for Activities 2-5 with proper parameters
+    @ReactMethod
+    fun showActivity2Screen(
+        initialScore: Int,
+        formattedTime: String,
+        audioPosition: Int,
+        promise: Promise
+    ) {
+        val activity = reactApplicationContext.currentActivity
+        this.promise = promise
+        if (activity != null) {
+            val intent = Intent(activity, Level2ActivityClass::class.java).apply {
+                putExtra("INITIAL_SCORE", initialScore)
+                putExtra("FORMATTED_TIME", formattedTime)
+                putExtra("AUDIO_POSITION", audioPosition)
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            }
+            activity.startActivityForResult(intent, 1002)
+        } else {
+            promise.reject("ERROR", "Activity is null")
+        }
+    }
+
 
 class CirclobrustGameModule {
 }
