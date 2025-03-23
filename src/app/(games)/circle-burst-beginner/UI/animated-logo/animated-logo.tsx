@@ -133,3 +133,24 @@ const AnimatedLogo = () => {
         }),
       ])
     ).start();
+
+    // Hand animation - scaling up and down to simulate tapping motion
+    Animated.loop(
+      Animated.sequence([
+        // Scale up over 1.5 seconds
+        Animated.timing(handAnim, {
+          toValue: 1,
+          duration: 1500,
+          easing: Easing.inOut(Easing.ease),
+          useNativeDriver: true,
+        }),
+        // Scale back down over 1.5 seconds
+        Animated.timing(handAnim, {
+          toValue: 0,
+          duration: 1500,
+          easing: Easing.inOut(Easing.ease),
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+
