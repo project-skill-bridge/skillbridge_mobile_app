@@ -168,4 +168,15 @@ class CirclobrustGameModule(reactContext: ReactApplicationContext) : ReactContex
 
 
 
+    override fun onNewIntent(intent: Intent?) {
+        // Handle new intent if necessary
+    }
+
+    @ReactMethod
+    fun emitNavigateToBackPage() {
+        val reactContext = reactApplicationContext
+        reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+            .emit("NavigateToBackPage", null)
+    }
+
 }
