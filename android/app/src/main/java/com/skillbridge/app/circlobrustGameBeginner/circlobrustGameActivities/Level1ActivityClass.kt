@@ -48,3 +48,59 @@ class Level1ActivityClass : AppCompatActivity() {
         private const val LEVEL = 1
         private const val DEFAULT_AUDIO_DURATION_MS = 30000L
     }
+
+
+    /* ================ Activity Lifecycle Section ================ 
+     * Methods for controlling the activity lifecycle - creation, destruction
+     */
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        val audioPosition = intent.getIntExtra("AUDIO_POSITION", 0)
+
+        try {
+            mediaPlayer = MediaPlayer.create(this, R.raw.background_music).apply {
+                isLooping = false
+                seekTo(audioPosition)
+                start()
+
+                setOnCompletionListener { mp ->
+                    lifecycleScope.launch {
+                        if (!gameEnded) {
+                            gameEnded = true
+                            if (score < 15) goToLevel1LossActivity()
+                            else goToLevel1CompleteActivity()
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        val fragment = CameraPanel.newInstance(CameraPanel.ACTIVITY1)
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .commit()
+
+        binding.levelNumberView.text = "$LEVEL"
+
+
+        score = intent.getIntExtra("INITIAL_SCORE", 0)
+        val timeString = intent.getStringExtra("FORMATTED_TIME") ?: "00:00"
+        val (seconds, millis) = parseTimeString(timeString)
+        timeInSeconds = seconds
+        milliseconds = millis
+
+        updateScoreInUi()
+        updateTimeInUi()
+
+        startTimer()
+        startCountdownTimer()
+
+        binding.playButton.setOnClickListener {
+            onBackPressed()
+        }
+    }
+
