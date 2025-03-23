@@ -87,4 +87,39 @@ class Level5LogicClass @JvmOverloads constructor(
         lastCircleTime = System.currentTimeMillis() // Reset spawn timer
         addNewCircleIfNeeded() // Add initial circle
     }
+
+    /* ================ Circle Creation Section ================ 
+     * Methods for generating new game objects
+     * Configures circles with challenging level 5 parameters
+     */
+    private fun addNewCircleIfNeeded() {
+        // Only add if we have less than maximum circles
+        if (circles.count { !it.isPopped } < MAX_CIRCLES) {
+            val colors = listOf(Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, Color.CYAN, Color.MAGENTA) // Available colors
+            val radius = (45f..90f).randomFloat() // Larger circles than previous levels
+            val initialX = (radius..(width - radius)).randomFloat() // Initial horizontal position
+            val y = height + radius // Start below screen
+            val color = colors.random() // Pick random color
+            val velocity = (25f..35f).randomFloat() // Much higher speed than previous levels
+            
+            // Sine wave parameters
+            val amplitude = (width / 10f..width / 5f).randomFloat() // Control wave width
+            val frequency = (0.005f..0.015f).randomFloat() // Control wave frequency
+            val phase = (0f..2f * Math.PI.toFloat()).randomFloat() // Random starting phase
+            
+            circles.add(Circle( // Create and add new circle
+                x = initialX, // Initial x position
+                y = y, // Initial y position
+                initialX = initialX, // Reference position for sine wave
+                color = color, // Circle color
+                radius = radius, // Circle size
+                velocity = velocity, // Very fast upward speed
+                amplitude = amplitude, // Wave width
+                frequency = frequency, // Wave frequency
+                phase = phase, // Starting position in wave
+                isPopped = false // Not popped initially
+            ))
+            invalidate() // Request redraw
+        }
+    }
 }
