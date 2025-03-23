@@ -7,13 +7,13 @@ import com.facebook.react.modules.core.DeviceEventManagerModule
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import com.skillbridge.app.circlobrustGame.circlobrustGameActivities.Level1ActivityClass
-import com.skillbridge.app.circlobrustGame.circlobrustGameActivities.Level2ActivityClass
-import com.skillbridge.app.circlobrustGame.circlobrustGameActivities.Level3ActivityClass
-import com.skillbridge.app.circlobrustGame.circlobrustGameActivities.Level4ActivityClass
-import com.skillbridge.app.circlobrustGame.circlobrustGameActivities.Level5ActivityClass
+import com.skillbridge.app.circlobrustGameBeginner.circlobrustGameActivities.Level1ActivityClass
+import com.skillbridge.app.circlobrustGameBeginner.circlobrustGameActivities.Level2ActivityClass
+import com.skillbridge.app.circlobrustGameBeginner.circlobrustGameActivities.Level3ActivityClass
+import com.skillbridge.app.circlobrustGameBeginner.circlobrustGameActivities.Level4ActivityClass
+import com.skillbridge.app.circlobrustGameBeginner.circlobrustGameActivities.Level5ActivityClass
 
-class CirclobrustGameModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) , ActivityEventListener {
+class CirclobrustBeginnerGameModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) , ActivityEventListener {
 
     private var promise: Promise? = null
 
