@@ -953,3 +953,17 @@ export default function GameScreen() {
                 end={{ x: 0.5, y: 0 }} // End at top
               />
             </Animated.View>
+
+            {/* SVG Background Decoration */}
+            <ImageBackground
+              source={Images.BackgroundSVGcirclobrust}
+              style={styles.imageBackground}
+              resizeMode="cover"
+            >
+              <View style={styles.bottomContent}>
+                {/* Level Display */}
+                <Text style={styles.levelText}>
+                  {" "}
+                  {levelNames[level] || `Level ${level}`}
+                </Text>
+
