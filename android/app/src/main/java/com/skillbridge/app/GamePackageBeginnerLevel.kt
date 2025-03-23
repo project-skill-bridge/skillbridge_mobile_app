@@ -9,3 +9,7 @@ import com.skillbridge.app.circlobrustGameBeginner.CirclobrustGameModule
 
 class GamePackageBeginnerLevel : ReactPackage {
     override fun createNativeModules(p0: ReactApplicationContext): List<NativeModule> {
+        val list = mutableListOf<NativeModule>()
+        list.add(CirclobrustGameModule(p0)) 
+        return list
+    }
