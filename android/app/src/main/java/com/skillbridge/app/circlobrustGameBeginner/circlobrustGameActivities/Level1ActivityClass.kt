@@ -215,6 +215,53 @@ class Level1ActivityClass : AppCompatActivity() {
         checkScore()
     }
 
+    /* ================ User Interaction Section ================ 
+     * Handling user input and navigation through the game
+     */
+    override fun onBackPressed() {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_exit, null)
+
+        val dialog = AlertDialog.Builder(this, R.style.CustomDialogTheme)
+            .setView(dialogView)
+            .create()
+
+
+        dialogView.findViewById<Button>(R.id.btn_yes).setOnClickListener {
+            val formattedTime = formatTimeToString()
+            val audioPosition = mediaPlayer?.currentPosition ?: 0
+            val intent = Intent().apply {
+                putExtra("FINAL_SCORE", score)
+                putExtra("LEVEL", LEVEL)
+                putExtra("FORMATTED_TIME", formattedTime)
+                putExtra("AUDIO_POSITION", audioPosition)
+            }
+            setResult(RESULT_OK, intent)
+            MyNativeModules.getInstance()?.emitActivity2Result(score, LEVEL, formattedTime, audioPosition)
+            finish()
+            dialog.dismiss()
+        }
+
+
+        dialogView.findViewById<Button>(R.id.btn_no).setOnClickListener {
+            dialog.dismiss()
+        }
+
+
+        dialog.show()
+
+
+        dialog.window?.setLayout(
+            (resources.displayMetrics.widthPixels * 0.8).toInt(),
+            WindowManager.LayoutParams.WRAP_CONTENT
+        )
+    }
+
+    private fun formatTimeToString(): String {
+        val secondsFormatted = DecimalFormat("00").format(timeInSeconds)
+        val millisecondsFormatted = DecimalFormat("00").format(milliseconds / 10)
+        return "$secondsFormatted:$millisecondsFormatted"
+    }
+
 
 
 
