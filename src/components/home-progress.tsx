@@ -53,6 +53,12 @@ const HomeProgress = () => {
         gamesSnapshot.forEach((gameDoc) => {
           console.log(`  Game ID: ${gameDoc.id}`, gameDoc.data());
 
+          const gameData = gameDoc.data();
+          if (gameData.totalGameProgressPercentage !== undefined) {
+            totalProgress += gameData.totalGameProgressPercentage;
+            gameCount++;
+          }
+        });
 
         //   // Calculate the average progress
         //   const avgProgress = gameCount > 0 ? totalProgress / gameCount : 0;
