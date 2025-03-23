@@ -108,4 +108,22 @@ class Level4LogicClass @JvmOverloads constructor(
             // Rotation parameters
             val rotationSpeed = (-5f..20f).randomFloat() // Negative values rotate counterclockwise
             
+            circles.add(Circle( // Create and add new circle
+                x = initialX, // Initial x position
+                y = y, // Initial y position
+                initialX = initialX, // Reference position for sine wave
+                color = color, // Circle color
+                radius = radius, // Circle size
+                velocity = velocity, // Upward speed
+                amplitude = amplitude, // Wave width
+                frequency = frequency, // Wave frequency
+                phase = phase, // Starting position in wave
+                rotation = 0f, // Initial rotation angle
+                rotationSpeed = rotationSpeed, // Rotation speed
+                isPopped = false // Not popped initially
+            ))
+            invalidate() // Request redraw
+        }
+    }
+
 }
