@@ -25,30 +25,27 @@ export const useForumStore = create<ForumState & {
   fetchPosts: async () => {
     set({ loading: true, error: null });
     try {
-      const user = auth().currentUser;
-      if (!user) throw new Error('User not authenticated');
+      // Correct syntax for accessing Firestore collection
+      const postsSnapshot = await firestore()
+        .collection('forum_posts')
+        .orderBy('createdAt', 'desc')
+        .get();
       
-      // Use a path similar to your working "games" collection
-      const postsRef = firestore()
-        .collection('users')
-        .doc(user.uid)
-        .collection('forum_posts');
-        
-      const postsSnapshot = await postsRef.orderBy('createdAt', 'desc').get();
-      
-      const posts = postsSnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toMillis() || Date.now()
-      })) as ForumPost[];
+      const posts = postsSnapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          createdAt: data.createdAt?.toMillis() || Date.now()
+        } as ForumPost;
+      });
 
       set({ posts, loading: false });
     } catch (error) {
       console.error('Error fetching posts:', error);
       set({ 
         error: 'Failed to load posts. Please check your connection.',
-        loading: false,
-        posts: [] // Reset posts on error
+        loading: false
       });
     }
   },
@@ -56,22 +53,21 @@ export const useForumStore = create<ForumState & {
   fetchComments: async (postId: string) => {
     set({ loading: true, error: null });
     try {
-      const user = auth().currentUser;
-      if (!user) throw new Error('User not authenticated');
-      
-      const commentsRef = firestore()
-        .collection('users')
-        .doc(user.uid)
+      // Correct syntax for accessing Firestore collection with where clause
+      const commentsSnapshot = await firestore()
         .collection('forum_comments')
-        .where('postId', '==', postId);
-        
-      const commentsSnapshot = await commentsRef.orderBy('createdAt', 'asc').get();
+        .where('postId', '==', postId)
+        .orderBy('createdAt', 'asc')
+        .get();
       
-      const comments = commentsSnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toMillis() || Date.now()
-      })) as ForumComment[];
+      const comments = commentsSnapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          createdAt: data.createdAt?.toMillis() || Date.now()
+        } as ForumComment;
+      });
 
       set((state) => ({
         ...state,
@@ -103,10 +99,8 @@ export const useForumStore = create<ForumState & {
         commentCount: 0,
       };
       
-      // Add to user's posts collection
+      // Correct syntax for adding to Firestore collection
       const postRef = await firestore()
-        .collection('users')
-        .doc(user.uid)
         .collection('forum_posts')
         .add(postData);
         
@@ -144,17 +138,13 @@ export const useForumStore = create<ForumState & {
         createdAt: firestore.FieldValue.serverTimestamp(),
       };
       
-      // Add to user's comments collection
+      // Correct syntax for adding to Firestore collection
       const commentRef = await firestore()
-        .collection('users')
-        .doc(user.uid)
         .collection('forum_comments')
         .add(commentData);
         
       // Update the post's comment count
       await firestore()
-        .collection('users')
-        .doc(user.uid)
         .collection('forum_posts')
         .doc(postId)
         .update({
