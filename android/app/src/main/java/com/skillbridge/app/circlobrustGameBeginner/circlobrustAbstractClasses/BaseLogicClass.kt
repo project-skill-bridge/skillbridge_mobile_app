@@ -62,4 +62,31 @@ abstract class BaseLogicClass @JvmOverloads constructor(
         // Initialize paints if needed - can be overridden by subclasses
     }
 
+    /* ================ Results Processing Section ================ 
+     * Methods for handling hand landmark detection results
+     * Processes raw detection data for use in gameplay mechanics
+     * Calculates proper scaling for different display modes
+     */
+    fun setResults(
+        handLandmarkerResults: HandLandmarkerResult, // New hand detection results
+        imageHeight: Int, // Height of analyzed frame
+        imageWidth: Int, // Width of analyzed frame
+        runningMode: RunningMode = RunningMode.IMAGE // Detection mode (default: image)
+    ) {
+        results = handLandmarkerResults // Store new results
+        this.imageHeight = imageHeight // Update image dimensions
+        this.imageWidth = imageWidth
+
+        scaleFactor = when (runningMode) {
+            RunningMode.IMAGE,
+            RunningMode.VIDEO -> {
+                min(width * 1f / imageWidth, height * 1f / imageHeight) // Fit scaling for images/videos
+            }
+            RunningMode.LIVE_STREAM -> {
+                max(width * 1f / imageWidth, height * 1f / imageHeight) // Fill scaling for live camera
+            }
+        }
+        invalidate() // Request redraw with new results
+    }
+
 }
