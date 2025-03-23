@@ -1,7 +1,6 @@
 // src/components/forum/create-post-form.tsx
 import React, { useState } from 'react';
-import { View, TextInput, StyleSheet, Text } from 'react-native';
-import Button from '../ui/button';
+import { View, TextInput, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 
 type CreatePostFormProps = {
@@ -41,21 +40,23 @@ export default function CreatePostForm({ onSubmit }: CreatePostFormProps) {
       />
       
       <View style={styles.buttonContainer}>
-        {/* Using children prop instead of label */}
-        <Button 
-          onPress={() => router.back()} 
-          style={styles.cancelButton}
+        <TouchableOpacity 
+          style={styles.cancelButton} 
+          onPress={() => router.back()}
         >
-          Cancel
-        </Button>
+          <Text style={styles.cancelButtonText}>Cancel</Text>
+        </TouchableOpacity>
         
-        {/* Using children prop instead of label */}
-        <Button 
-          onPress={handleSubmit} 
+        <TouchableOpacity 
+          style={[
+            styles.submitButton, 
+            (!title.trim() || !content.trim()) && styles.disabledButton
+          ]} 
+          onPress={handleSubmit}
           disabled={!title.trim() || !content.trim()}
         >
-          Create Post
-        </Button>
+          <Text style={styles.submitButtonText}>Create Post</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -99,5 +100,31 @@ const styles = StyleSheet.create({
   },
   cancelButton: {
     backgroundColor: '#999',
+    borderRadius: 4,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    flex: 1,
+    marginRight: 8,
+  },
+  cancelButtonText: {
+    color: '#fff',
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  submitButton: {
+    backgroundColor: '#007bff', // Blue color matching your UI
+    borderRadius: 4,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    flex: 1,
+    marginLeft: 8,
+  },
+  disabledButton: {
+    backgroundColor: '#b3d7ff',
+  },
+  submitButtonText: {
+    color: '#fff',
+    textAlign: 'center',
+    fontWeight: 'bold',
   },
 });

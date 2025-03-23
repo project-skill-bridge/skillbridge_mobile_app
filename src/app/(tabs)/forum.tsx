@@ -15,7 +15,6 @@ export default function ForumScreen() {
   }, []);
 
   const handleCreatePost = () => {
-    // Updated to use the (externalPages) path
     router.push('/(externalPages)/create-post');
   };
 
@@ -63,7 +62,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   createButton: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#007bff', // Blue color matching your UI
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 4,

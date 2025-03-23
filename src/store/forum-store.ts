@@ -38,6 +38,8 @@ export const useForumStore = create<ForumState & {
   fetchComments: (postId: string) => Promise<void>;
   createPost: (title: string, content: string) => Promise<string>;
   createComment: (postId: string, content: string) => Promise<void>;
+  deletePost: (postId: string) => Promise<void>;
+  deleteComment: (postId: string, commentId: string) => Promise<void>;
 }>((set) => ({
   posts: [],
   comments: {},
@@ -229,6 +231,129 @@ export const useForumStore = create<ForumState & {
     } catch (error) {
       console.error('Error creating comment:', error);
       set({ error: 'Failed to create comment', loading: false });
+    }
+  },
+
+  deletePost: async (postId: string) => {
+    set({ loading: true, error: null });
+    try {
+      const user = auth().currentUser;
+      if (!user) throw new Error('User not authenticated');
+      
+      // First check if user is the author
+      const post = await firestore()
+        .collection('posts')
+        .doc(postId)
+        .get();
+        
+      if (!post.exists) throw new Error('Post not found');
+      if (post.data()?.authorId !== user.uid) throw new Error('Not authorized to delete this post');
+      
+      // Delete all comments first
+      const commentsSnapshot = await firestore()
+        .collection('posts')
+        .doc(postId)
+        .collection('comments')
+        .get();
+        
+      const batch = firestore().batch();
+      
+      commentsSnapshot.docs.forEach(doc => {
+        batch.delete(doc.ref);
+      });
+      
+      // Delete the post document
+      batch.delete(firestore().collection('posts').doc(postId));
+      
+      // Commit the batch
+      await batch.commit();
+      
+      // Update local state
+      set((state) => ({
+        ...state,
+        posts: state.posts.filter(p => p.id !== postId),
+        // Also remove comments for this post
+        comments: Object.keys(state.comments).reduce((acc, key) => {
+          if (key !== postId) {
+            acc[key] = state.comments[key];
+          }
+          return acc;
+        }, {} as Record<string, ForumComment[]>),
+        loading: false
+      }));
+      
+    } catch (error) {
+      console.error('Error deleting post:', error);
+      set({ 
+        error: 'Failed to delete post. ' + (error instanceof Error ? error.message : ''),
+        loading: false 
+      });
+    }
+  },
+
+  deleteComment: async (postId: string, commentId: string) => {
+    set({ loading: true, error: null });
+    try {
+      const user = auth().currentUser;
+      if (!user) throw new Error('User not authenticated');
+      
+      // First check if user is the author
+      const comment = await firestore()
+        .collection('posts')
+        .doc(postId)
+        .collection('comments')
+        .doc(commentId)
+        .get();
+        
+      if (!comment.exists) throw new Error('Comment not found');
+      if (comment.data()?.userId !== user.uid) throw new Error('Not authorized to delete this comment');
+      
+      // Delete the comment
+      await firestore()
+        .collection('posts')
+        .doc(postId)
+        .collection('comments')
+        .doc(commentId)
+        .delete();
+        
+      // Update the post's comment count
+      try {
+        await firestore()
+          .collection('posts')
+          .doc(postId)
+          .update({
+            commentCount: firestore.FieldValue.increment(-1)
+          });
+      } catch (updateError) {
+        console.error('Could not update comment count:', updateError);
+      }
+      
+      // Update local state
+      set((state) => {
+        const updatedPosts = state.posts.map(post => 
+          post.id === postId 
+            ? { ...post, commentCount: Math.max(0, (post.commentCount || 0) - 1) } 
+            : post
+        );
+        
+        const postComments = state.comments[postId] || [];
+        return {
+          ...state,
+          posts: updatedPosts,
+          comments: {
+            ...state.comments,
+            [postId]: postComments.filter(c => c.id !== commentId)
+          },
+          loading: false
+        };
+      });
+      
+    } catch (error) {
+      console.error('Error deleting comment:', error);
+      set({ 
+        error: 'Failed to delete comment. ' + (error instanceof Error ? error.message : ''),
+        loading: false 
+      });
     }
   }
 }));

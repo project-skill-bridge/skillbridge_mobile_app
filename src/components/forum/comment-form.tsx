@@ -1,7 +1,6 @@
 // src/components/forum/comment-form.tsx
 import React, { useState } from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
-import Button from '../ui/button';
+import { View, TextInput, StyleSheet, TouchableOpacity, Text } from 'react-native';
 
 type CommentFormProps = {
   onSubmit: (comment: string) => void;
@@ -26,13 +25,13 @@ export default function CommentForm({ onSubmit }: CommentFormProps) {
         placeholder="Write a comment..."
         multiline
       />
-      {/* Using children prop instead of label */}
-      <Button 
-        onPress={handleSubmit} 
+      <TouchableOpacity 
+        style={[styles.button, !comment.trim() && styles.disabledButton]} 
+        onPress={handleSubmit}
         disabled={!comment.trim()}
       >
-        Post Comment
-      </Button>
+        <Text style={styles.buttonText}>Post Comment</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -52,5 +51,18 @@ const styles = StyleSheet.create({
     padding: 8,
     marginBottom: 8,
     textAlignVertical: 'top',
+  },
+  button: {
+    backgroundColor: '#007bff', // Blue color matching your UI
+    borderRadius: 4,
+    paddingVertical: 12,
+  },
+  disabledButton: {
+    backgroundColor: '#b3d7ff',
+  },
+  buttonText: {
+    color: '#fff',
+    textAlign: 'center',
+    fontWeight: 'bold',
   },
 });
