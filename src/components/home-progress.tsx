@@ -61,11 +61,11 @@ const HomeProgress = () => {
         });
 
           // Calculate the average progress
-          const avgProgress = gameCount > 0 ? totalProgress / gameCount : 0;
-          console.log(`Average Progress: ${avgProgress}`);
+          //const avgProgress = gameCount > 0 ? totalProgress / gameCount : 0;
+          //console.log(`Average Progress: ${avgProgress}`);
   
           // If you're using React state, update it
-          setAverageProgress(avgProgress);
+          //setAverageProgress(avgProgress);
 
         } catch (error) {
           console.error("Error getting games: ", error);
@@ -80,7 +80,7 @@ const HomeProgress = () => {
 
 
   //  This should dynamically reflect game progress
-     const completedLevels = 2;
+  // const completedLevels = 2;
 
   //  This should dynamically reflect game progress
   //  const completedLevels = 2;
@@ -95,7 +95,7 @@ const HomeProgress = () => {
       <CircularProgress
         percentage={averageProgress}
         color={theme.colors.primary}
-        textColor="blue"
+        textColor="black"
         radius={45}
 
       />
