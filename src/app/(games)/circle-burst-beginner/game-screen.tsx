@@ -932,3 +932,24 @@ export default function GameScreen() {
                   { rate: 0.9, language: "en-US", pitch: 1.0, volume: 1.0 }
                 )}
                 {/* Mark this level as announced */}
+                {setSpokenLevels([...spokenLevels, level])}
+              </>
+            )}
+          </View>
+
+          {/* Bottom Section with Level Info and Play Button */}
+          <View style={styles.bottomContainer}>
+            {/* Animated Wave Gradient Background */}
+            <Animated.View
+              style={[
+                styles.gradientContainer,
+                { transform: [{ translateY: waveTransform }] },
+              ]}
+            >
+              <LinearGradient
+                colors={["#ffffff", "#ffffff"]}
+                style={styles.gradientFill}
+                start={{ x: 0.5, y: -1 }} // Start from bottom
+                end={{ x: 0.5, y: 0 }} // End at top
+              />
+            </Animated.View>
