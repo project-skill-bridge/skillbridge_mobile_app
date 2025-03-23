@@ -136,5 +136,15 @@ class CirclobrustGameModule(reactContext: ReactApplicationContext) : ReactContex
 
 
 
-class CirclobrustGameModule {
+
+    override fun onActivityResult(activity: Activity?, requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            1001 -> handleActivityResult(resultCode, data, 1001)
+            1002 -> handleActivityResult(resultCode, data, 1002)
+            1003 -> handleActivityResult(resultCode, data, 1003)
+            1004 -> handleActivityResult(resultCode, data, 1004)
+            1005 -> handleActivityResult(resultCode, data, 1005)
+        }
+    }
+
 }
