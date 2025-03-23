@@ -133,4 +133,43 @@ class Level2ActivityClass : AppCompatActivity() {
         binding.scoreTextView.text = "$score"
     }
 
+    /* ================ Timer Management Section ================ 
+     * Handles time tracking and countdown for game progression
+     */
+    private fun startTimer() {
+        timerJob?.cancel() // Cancel any existing timer
+        timerJob = lifecycleScope.launch {
+            while (isActive) {
+                delay(10)
+                milliseconds += 10
+                if (milliseconds >= 1000) {
+                    milliseconds = 0
+                    timeInSeconds++
+                }
+                updateTimeInUi()
+            }
+        }
+    }
+
+    private fun startCountdownTimer() {
+        countdownJob?.cancel() // Cancel any existing countdown
+        val audioDurationMs = mediaPlayer?.duration?.toLong() ?: DEFAULT_AUDIO_DURATION_MS
+        countdownJob = lifecycleScope.launch {
+
+            delay(10_000) // 10-second grace period before checking score
+
+
+            val startTime = System.currentTimeMillis()
+            while (System.currentTimeMillis() - startTime < audioDurationMs) {
+                delay(10)
+            }
+
+
+            if (score < 12 && !gameEnded) {
+                gameEnded = true
+                goToLevel2LossActivity() // Fail if target score not reached when time expires
+            }
+        }
+    }
+
 }
