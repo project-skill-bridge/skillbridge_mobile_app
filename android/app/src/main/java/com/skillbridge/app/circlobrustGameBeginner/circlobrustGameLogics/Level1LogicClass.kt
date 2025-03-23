@@ -74,4 +74,12 @@ class Level1LogicClass @JvmOverloads constructor(
         }
     }
 
+    /* ================ Initialization Section ================ 
+     * Methods for setting up the game environment
+     * Handles view size changes and initial game state
+     */
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh) // Handle parent class behavior
+        initializeCircle() // Reset circle collection on size change
+    }
 }
