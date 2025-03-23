@@ -335,3 +335,18 @@ const styles = StyleSheet.create({
     zIndex: 1, // Below circle
   },
 
+  /* Circle Styles */
+  blueCircle: {
+    position: "absolute",
+    width: 40,
+    height: 40,
+    borderRadius: 20, // Makes it a perfect circle
+    backgroundColor: "#1d3557", // Deep blue color
+    zIndex: 2, // Above hand
+    // Shadow for depth
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+  },
+
