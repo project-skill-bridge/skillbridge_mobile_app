@@ -316,3 +316,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
 
+  /* Hand and Circle Container Styles */
+  splatterContainer: {
+    position: "relative", // For positioning child elements
+    width: 80,
+    height: 80,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
