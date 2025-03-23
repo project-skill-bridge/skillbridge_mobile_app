@@ -93,4 +93,16 @@ class CameraPanel : Fragment(), HandIdentifier.LandmarkerListener {
         activitySource = arguments?.getString(ARG_ACTIVITY_SOURCE) // Get activity source from arguments
     }
 
+    override fun onResume() {
+        super.onResume() // Call parent implementation
+        if (!PermissionsPanel.hasPermissions(requireContext())) { // Check if permissions are granted
+            requireActivity().finish() // Close activity if permissions not granted
+        }
+        backgroundExecutor.execute { // Run on background thread
+            if (handLandmarkerHelper.isClose()) { // Check if model is closed/uninitialized
+                handLandmarkerHelper.setupHandLandmarker() // Initialize hand tracking
+            }
+        }
+    }
+
 }
