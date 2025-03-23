@@ -496,6 +496,27 @@ export default function GameScreen() {
     openActivity5Screen,
   ]);
 
+  /**
+   * Handles "Resume Game" button press
+   * Launches the appropriate game activity based on current level
+   */
+  const handleResume = useCallback(() => {
+    openActivityScreen(level); // Launch the current level activity
+  }, [level, openActivityScreen]);
+
+  /* ================ AUDIO MANAGEMENT ================ */
+  const navigation = useNavigation(); // Navigation controller for cleanup events
+  const [isMuted, setIsMuted] = useState(false); // Tracks audio mute state
+  const isMutedRef = useRef(isMuted); // Ref for access in async contexts
+  const [sound, setSound] = useState<Audio.Sound>(); // State for sound object
+  const soundRef = useRef<Audio.Sound>(); // Ref for access in async contexts
+
+  // Load custom fonts for text elements
+  const [fontsLoaded] = useFonts({
+    "Montserrat-Bold": Fonts.Coiny,
+    "Montserrat-SemiBold": Fonts.Coiny,
+  });
+
 
 export default function GameScreen(): JSX.Element {
   const router = useRouter();
