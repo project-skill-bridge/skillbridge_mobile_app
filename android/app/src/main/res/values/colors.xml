@@ -3,4 +3,17 @@
   <color name="iconBackground">#6277BF</color>
   <color name="colorPrimary">#023c69</color>
   <color name="colorPrimaryDark">#6277BF</color>
+  <color name="green">#11BD2A</color>
+  <color name="green_dark">#024003</color>
+  <color name="red_dark">#8C0A33</color>
+  <color name="black">#000000</color>
+  <color name="gray">#575555</color>
+
+  <color name="wooden_text">#FFD39B</color>
+  <color name="wooden_text_exit">#EF593939</color>
+  <color name="wooden_text_secondary">#CD8500</color>
+  <color name="wooden_button_bg">#8B6B4D</color>
+  <color name="lost_screen_background">#FFCC00</color>
+  <color name="colorHandLines">#B789C1B3</color>
+  <color name="colorPopPointer">#BFDEDDA7</color>
 </resources>

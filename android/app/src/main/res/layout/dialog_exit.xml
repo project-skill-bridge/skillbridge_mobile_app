@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@drawable/dialog_background">
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="EXT"
+        android:textSize="20sp"
+        android:textColor="@color/wooden_text_exit"
+        android:gravity="center"
+        android:layout_marginBottom="16dp"
+        android:textStyle="bold"
+        android:fontFamily="@font/cicle_brust_scorebar_level"/>
+
+    <!-- Message -->
+    <TextView
+        android:id="@+id/message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Are you sure you want to exit?"
+        android:textSize="16sp"
+        android:textColor="@color/wooden_text_secondary"
+        android:gravity="center"
+        android:fontFamily="@font/cicle_brust_scorebar_level"
+        android:layout_marginBottom="24dp"/>
+
+    <!-- Buttons Container -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+       >
+
+        <Button
+            android:id="@+id/btn_no"
+            android:layout_width="120dp"
+            android:layout_height="48dp"
+            android:text="No"
+            android:background="@drawable/wooden_button_no"
+            android:textColor="@color/white"
+            android:layout_marginEnd="16dp"/>
+
+        <Button
+            android:id="@+id/btn_yes"
+            android:layout_width="120dp"
+            android:layout_height="48dp"
+            android:text="Yes"
+            android:background="@drawable/wooden_button_yes"
+            android:textColor="@color/white"/>
+
+
+    </LinearLayout>
+
+</LinearLayout>

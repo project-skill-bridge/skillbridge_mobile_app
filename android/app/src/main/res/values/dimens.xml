@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="button_size">48dp</dimen>
+    <dimen name="margin_medium">16dp</dimen>
+    <dimen name="margin_small">8dp</dimen>
+
+    <!-- For different screen sizes -->
+    <dimen name="text_large">28sp</dimen>
+    <dimen name="text_medium">25sp</dimen>
+    <dimen name="margin_percent_small">2%</dimen>
+    <dimen name="margin_percent_medium">4%</dimen>
+</resources>
