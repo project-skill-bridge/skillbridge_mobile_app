@@ -913,3 +913,22 @@ export default function GameScreen() {
                   : "Level 5 unlocked! Super Pop Rush is the final challenge."
               }
             />
+
+            {/* Text-to-Speech for level announcements (only played once per level) */}
+            {level >= 1 && level <= 5 && !spokenLevels.includes(level) && (
+              <>
+                {Speech.speak(
+                  `<speak><break time="1500ms"/>${
+                    level === 1
+                      ? "Welcome to Level 1! Pop the blue bubbles to score points and advance."
+                      : level === 2
+                      ? "Level 2 unlocked! Now you'll face faster bubbles and more challenges."
+                      : level === 3
+                      ? "Level 3 unlocked! Can you keep up with the speedy dots?"
+                      : level === 4
+                      ? "Level 4 unlocked! Magic Circles are here to challenge you."
+                      : "Level 5 unlocked! Super Pop Rush is the final challenge."
+                  }</speak>`,
+                  { rate: 0.9, language: "en-US", pitch: 1.0, volume: 1.0 }
+                )}
+                {/* Mark this level as announced */}
