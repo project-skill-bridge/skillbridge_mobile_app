@@ -2,13 +2,65 @@ import * as React from "react";
 import { StyleSheet, Text, View, Image, } from "react-native";
 import { useState } from "react";
 import CircularProgress from "react-native-circular-progress-indicator";
-import auth from "@react-native-firebase/auth";
+//import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
+//import { collection, doc, getDoc, getDocs } from "@react-native-firebase/firestore";
+import { auth, db } from '../../services/firebase'; // Import your firebase config
+import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+
 
 
 
 const ProgressScreen = () => {
   const [progress, setprogress] = useState(5);
+  const [game1Progress, setgame1Progress] = React.useState<number>(0);
+  const [game2Progress, setgame2Progress] = React.useState<number>(0);
+
+  const [loading, setLoading] = React.useState<boolean>(true);
+
+  React.useEffect(() => {
+
+    
+    const fetchGameProgress = async () => {
+      console.log("Begin");
+      try{
+        
+        //comment when user session created
+        const userId = "8S5GzpnTS7Q5lc8OuU4NTOZ0mZT2"; // Hardcoded user ID
+
+        const userDocRef = doc(db, "users", userId); // Reference to the hardcoded user's document
+        const userDocSnap = await getDoc(userDocRef);
+        console.log("userDocSnap "+userDocSnap);
+
+        //------------------------------------------
+
+          //uncomment when user session created
+          // const user = auth.currentUser; // Get the logged-in user
+          // if (!user) {
+          //   console.log("No user is logged in");
+          //   return;
+          // }
+  
+          // const userDocRef = doc(db, "users", user.uid); // Reference to logged-in user's document
+          // const userDocSnap = await getDoc(userDocRef);
+          //----------------------------------------
+  
+          // if (!userDocSnap.exists()) {
+          //   console.log("No user document found!");
+          //   return;
+          // }
+  
+          //console.log(`User ID: ${user.uid}`, userDocSnap.data());
+  
+
+      }catch (error) {
+
+
+      }
+    }
+    fetchGameProgress();
+  });
+
   const maxprogress = 10; //progress
   const Spacer = ({ size = 10 }) => <View style={{ height: size }} />;
 
