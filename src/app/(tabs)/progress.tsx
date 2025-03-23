@@ -2,13 +2,8 @@ import * as React from "react";
 import { StyleSheet, Text, View, Image, } from "react-native";
 import { useState } from "react";
 import CircularProgress from "react-native-circular-progress-indicator";
-//import auth from "@react-native-firebase/auth";
+import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
-//import { collection, doc, getDoc, getDocs } from "@react-native-firebase/firestore";
-import { auth, db } from '../../services/firebase'; // Import your firebase config
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
-
-
 
 
 const ProgressScreen = () => {
@@ -25,50 +20,44 @@ const ProgressScreen = () => {
       console.log("Begin");
       try{
         
-        //comment when user session created
-        const userId = "338KqomFDhYMtWd8xCXWIMwtg3v1"; // Hardcoded user ID
-
-        const userDocRef = doc(db, "users", userId); // Reference to the hardcoded user's document
-        const userDocSnap = await getDoc(userDocRef);
-        console.log("userDocSnap "+userDocSnap);
-
-        //------------------------------------------
-
+        
           //uncomment when user session created
-          // const user = auth.currentUser; // Get the logged-in user
-          // if (!user) {
-          //   console.log("No user is logged in");
-          //   return;
-          // }
+          const user = auth().currentUser;
+          if (!user) {
+            console.log("No user is logged in");
+            return;
+          }
   
-          // const userDocRef = doc(db, "users", user.uid); // Reference to logged-in user's document
-          // const userDocSnap = await getDoc(userDocRef);
+          const userDocSnap = firestore().collection("users").doc(user.uid); // Reference to logged-in user's document
+         // const userDocSnap = await getDoc(userDocRef);
           //----------------------------------------
   
-          if (!userDocSnap.exists()) {
+          if (!userDocSnap) {
             console.log("No user document found!");
             return;
           }
   
-          console.log(`User ID: ${userId}`, userDocSnap.data());
-
-          // Reference to 'games' subcollection for this user
-        const gamesCollectionRef = collection(userDocRef, "games");
-        const gamesSnapshot = await getDocs(gamesCollectionRef);
-
+         // console.log(`User ID: ${userId}`, userDocSnap.data());
+         console.log(`gamesSnapshot : ${user.uid}`);
+         // Reference to 'games' subcollection for this user
+          const gamesSnapshot = await firestore()
+          .collection("users")
+          .doc(user.uid)
+          .collection("games")
+          .get(); // Ensure you use .get() to fetch the snapshot
+        
         let totalProgressGame1 = 0;
         let totalProgressGame2 = 0;
-
+        
         let gameCountGame1 = 0;
         let gameCountGame2 = 0;
-
+        
         console.log(`gamesSnapshot : ${gamesSnapshot}`);
         gamesSnapshot.forEach((gameDoc) => {
           console.log(`  Game ID: ${gameDoc.id}`, gameDoc.data());
-
-          // Assuming each game document has a `progress` field with a percentage value (0-100)
+        
           const gameProgress = gameDoc.data().totalGameProgressPercentage;
-
+        
           // You can add more logic to distinguish which game is Game 1 and Game 2
           if (gameDoc.id === "mind-match") {
             totalProgressGame1 += gameProgress;
