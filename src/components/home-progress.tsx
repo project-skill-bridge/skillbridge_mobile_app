@@ -60,14 +60,12 @@ const HomeProgress = () => {
           }
         });
 
-        //   // Calculate the average progress
-           const avgProgress = gameCount > 0 ? totalProgress / gameCount : 0;
-           setAverageProgress(avgProgress);
-           } else {
-           console.log("No games found!");
-         }
-         
-      
+          // Calculate the average progress
+          const avgProgress = gameCount > 0 ? totalProgress / gameCount : 0;
+          console.log(`Average Progress: ${avgProgress}`);
+  
+          // If you're using React state, update it
+          setAverageProgress(avgProgress);
 
     //fetchGameProgress();
   //}, []);
