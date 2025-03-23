@@ -43,4 +43,16 @@ import com.skillbridge.app.circlobrustGameBeginner.circlobrustGameActivities.Lev
  * Communicates between ML processing and game logic components
  */
 class CameraPanel : Fragment(), HandIdentifier.LandmarkerListener {
+
+    /* ================ Properties Section ================ 
+     * Member variables for camera management, media playback, view binding
+     * Tracks game state and manages resources
+     */
+    private var popSound: MediaPlayer? = null // Sound effect for popping circles
+    private var _binding: PanelCameraBinding? = null // View binding reference (nullable for lifecycle)
+    private val binding get() = _binding!! // Non-null accessor for view binding
+    private var activitySource: String? = null // Identifier for which level called this fragment
+    private lateinit var handLandmarkerHelper: HandIdentifier // ML model helper for hand tracking
+    private lateinit var backgroundExecutor: ExecutorService // Background thread for image processing
+
 }
