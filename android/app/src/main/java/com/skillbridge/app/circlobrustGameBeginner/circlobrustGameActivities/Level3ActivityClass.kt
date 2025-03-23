@@ -114,3 +114,17 @@ class Level3ActivityClass : AppCompatActivity() {
         }
     }
 
+    /* ================ UI Update Section ================ 
+     * Methods responsible for refreshing UI elements with current game data
+     */
+    private fun updateTimeInUi() {
+        val secondsFormatted = DecimalFormat("00").format(timeInSeconds) // Format seconds with leading zeros
+        val millisecondsFormatted = DecimalFormat("00").format(milliseconds / 10) // Format as centiseconds
+
+        binding.timeTextView.text = "$secondsFormatted:$millisecondsFormatted" // Update timer display
+    }
+
+    fun updateScoreInUi() {
+        binding.scoreTextView.text = "$score" // Update score display
+    }
+
