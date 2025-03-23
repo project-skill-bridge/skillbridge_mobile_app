@@ -41,4 +41,28 @@ class Level1LostActivityClass : AppCompatActivity() {
         setContentView(binding.root) // Set the content view using binding
 
         score = intent.getIntExtra("EXTRA_SCORE", 0) // Get score from intent
+
+        val tryAgainButton = findViewById<Button>(R.id.tryAgainButton) // Reference to retry button
+        val homeButton = findViewById<Button>(R.id.homeButton) // Reference to home button
+
+        tryAgainButton.setOnClickListener {
+            // Create intent with reset values
+            val intent = Intent() // Create new intent
+            intent.putExtra("FINAL_SCORE", 0) // Reset score
+            intent.putExtra("LEVEL", 1) // Set level to retry
+            intent.putExtra("FORMATTED_TIME", "00:00") // Reset timer
+            intent.putExtra("AUDIO_POSITION", 0) // Reset audio position
+
+            // Set result and finish
+            setResult(RESULT_OK, intent) // Set result for calling activity
+            MyNativeModules.getInstance()?.emitActivity1Result(0, 1, "00:00", 0) // Signal React Native
+            finish() // Close this activity
+
+        }
+
+        homeButton.setOnClickListener {
+            onBackPressed() // Handle back button behavior
+            finish() // Close this activity
+        }
+
 }
