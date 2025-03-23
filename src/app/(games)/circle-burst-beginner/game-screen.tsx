@@ -631,6 +631,29 @@ export default function GameScreen() {
       shouldDuckAndroid: true, // Lower volume when notifications occur
     });
 
+    // Initialize audio
+    loadAudio();
+
+    // Cleanup function with async handling
+    return () => {
+      isMounted = false; // Mark component as unmounted
+
+      // Async cleanup function for audio resources
+      (async () => {
+        try {
+          if (soundRef.current) {
+            await soundRef.current.stopAsync();
+            await soundRef.current.unloadAsync();
+            soundRef.current = undefined;
+            Speech.stop();
+          }
+        } catch (error) {
+          console.log("Audio cleanup error:", error);
+        }
+      })();
+    };
+  }, [navigation]);
+
 
 export default function GameScreen(): JSX.Element {
   const router = useRouter();
