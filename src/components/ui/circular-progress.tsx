@@ -4,7 +4,7 @@ import { StyleSheet, Animated, View, TextInput } from "react-native";
 import Svg, { G, Circle } from "react-native-svg";
 
 interface CircularProgressProps {
-  perecentage?: number;
+  perecentage: number;
   radius?: number;
   strokeWidth?: number;
   duration?: number;
