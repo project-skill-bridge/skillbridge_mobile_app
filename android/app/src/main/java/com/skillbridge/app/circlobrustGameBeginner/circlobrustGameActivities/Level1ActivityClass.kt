@@ -279,6 +279,7 @@ class Level1ActivityClass : AppCompatActivity() {
         timerJob?.cancel()
         countdownJob?.cancel()
     }
+}
 
 
 
