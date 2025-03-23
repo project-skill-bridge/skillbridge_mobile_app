@@ -140,4 +140,33 @@ class Level3LogicClass @JvmOverloads constructor(
             circle.x = circle.initialX + circle.amplitude * 
                        Math.sin((circle.frequency * circle.y + circle.phase).toDouble()).toFloat() // Calculate sine wave position
             
+            // Keep within horizontal boundaries
+            if (circle.x - circle.radius < 0) { // If hitting left edge
+                circle.x = circle.radius // Constrain to screen
+            } else if (circle.x + circle.radius > width) { // If hitting right edge
+                circle.x = width - circle.radius // Constrain to screen
+            }
+            
+            // Handle vertical boundary - reset position
+            if (circle.y + circle.radius < 0) { // If moved off top of screen
+                // Circle went off screen, reposition it
+                circle.y = height + circle.radius // Reset to bottom
+                
+                // Reset x position but keep sine wave parameters
+                val newInitialX = (circle.radius..(width - circle.radius)).randomFloat() // New random horizontal position
+                
+                // Update the circle with new position
+                val index = circles.indexOf(circle) // Find circle index
+                if (index >= 0) {
+                    circles[index] = circle.copy( // Create updated circle
+                        y = height + circle.radius, // Reset vertical position
+                        initialX = newInitialX, // New horizontal center
+                        x = newInitialX // Starting at new center
+                    )
+                }
+            }
+        }
+        invalidate() // Request redraw with updated positions
+    }
+
 }
