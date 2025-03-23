@@ -1266,3 +1266,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+
+  /* Finn Character Overlay Styles */
+  finnOverlay: {
+    position: "absolute",
+    top: "50%", // Center vertically
+    left: 0,
+    right: 0,
+    zIndex: 20, // Above all other elements
+    paddingHorizontal: 20,
+    transform: [{ translateY: -50 }], // True centering
+  },
+});
