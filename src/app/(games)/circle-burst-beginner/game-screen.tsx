@@ -189,6 +189,15 @@ export default function GameScreen() {
     }
   };
 
+   * These provide a cleaner API for the different event handlers
+   */
+  const openLoginScreen = () => openActivityScreen(1); // Level 1
+  const openActivity2Screen = () => openActivityScreen(2); // Level 2
+  const openActivity3Screen = () => openActivityScreen(3); // Level 3
+  const openActivity4Screen = () => openActivityScreen(4); // Level 4
+  const openActivity5Screen = () => openActivityScreen(5); // Level 5
+
+  /* ================ EVENT HANDLERS & LISTENERS ================ */
 
 export default function GameScreen(): JSX.Element {
   const router = useRouter();
