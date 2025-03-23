@@ -29,17 +29,16 @@ class Level1ActivityClass : AppCompatActivity() {
     /* ================ Properties Section ================ 
      * Key variables for maintaining game state and UI components
      */
-    private lateinit var binding: ActivityMainBinding
-    private var mediaPlayer: MediaPlayer? = null
+    private lateinit var binding: ActivityMainBinding // View binding for UI access
+    private var mediaPlayer: MediaPlayer? = null // Background music player
 
-    private var score = 0
-    private var timeInSeconds = 0
-    private var milliseconds = 0
-    private var timerJob: Job? = null
-    private var countdownJob: Job? = null
+    private var score = 0 // Player's current score
+    private var timeInSeconds = 0 // Time tracking - seconds part
+    private var milliseconds = 0 // Time tracking - milliseconds part
+    private var timerJob: Job? = null // Coroutine for game timer
+    private var countdownJob: Job? = null // Coroutine for level countdown
 
-    private var gameEnded = false
-
+    private var gameEnded = false // Flag to prevent duplicate game-over events
 
     /* ================ Constants Section ================ 
      * Configuration values for the game level
