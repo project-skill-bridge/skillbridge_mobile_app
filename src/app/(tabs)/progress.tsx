@@ -92,8 +92,7 @@ const ProgressScreen = () => {
 
 
       }catch (error) {
-
-
+        console.error("Error getting games: ", error);
       }
     }
     fetchGameProgress();
