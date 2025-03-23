@@ -37,6 +37,18 @@ const AnimatedContent = ({ steps }: StepsProps) => {
     transform: [{ scale: scale.value }],
   }));
 
+  /**
+   * Handles progression to next step or completion of the guide
+   * Applies a spring animation to the image when moving to next step
+   */
+  const nextStep = () => {
+    if (stepNo < steps.length - 1) {
+      setStepNo(stepNo + 1);
+      scale.value = withSpring(1.1, { damping: 5, stiffness: 100 });
+    } else {
+      router.push("/(tabs)/home");
+    }
+  };
 /**
  * Component styles
  */
