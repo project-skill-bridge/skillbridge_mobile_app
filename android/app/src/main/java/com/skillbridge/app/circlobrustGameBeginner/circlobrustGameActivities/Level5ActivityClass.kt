@@ -171,4 +171,41 @@ class Level5ActivityClass : AppCompatActivity() {
         }
     }
 
+    /* ================ Game Logic Section ================ 
+     * Core game mechanics including score tracking and level completion
+     */
+    private fun checkScore() {
+        if (score >= 10 && !gameEnded) {
+            gameEnded = true
+            countdownJob?.cancel()
+            goToLevel5CompleteActivity()
+        }
+    }
+
+    private fun goToLevel5CompleteActivity() {
+        timerJob?.cancel()
+        countdownJob?.cancel()
+        val intent = Intent(this, Level5CompletionClass::class.java)
+        startActivity(intent)
+        finish()
+    }
+
+    private fun goToLevel5LossActivity() {
+        timerJob?.cancel()
+        countdownJob?.cancel()
+        val intent = Intent(this, Level5LostActivityClass::class.java).apply {
+            putExtra("EXTRA_SCORE", score)
+        }
+        startActivity(intent)
+        finish()
+    }
+
+    fun incrementScore() {
+        score++
+        runOnUiThread {
+            binding.scoreTextView.text = "$score"
+        }
+        checkScore()
+    }
+
 }
