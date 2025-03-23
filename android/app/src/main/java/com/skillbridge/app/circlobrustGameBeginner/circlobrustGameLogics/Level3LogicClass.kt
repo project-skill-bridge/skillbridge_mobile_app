@@ -98,4 +98,25 @@ class Level3LogicClass @JvmOverloads constructor(
             val color = colors.random() // Pick random color
             val velocity = (8f..15f).randomFloat() // Vertical movement speed
             
+            // Sine wave parameters
+            val amplitude = (width / 10f..width / 5f).randomFloat() // Control wave width
+            val frequency = (0.005f..0.015f).randomFloat() // Control wave frequency
+            val phase = (0f..2f * Math.PI.toFloat()).randomFloat() // Random starting phase
+            
+            circles.add(Circle(
+                x = initialX, // Initial x position
+                y = y, // Initial y position
+                initialX = initialX, // Reference position for sine wave
+                color = color, // Circle color
+                radius = radius, // Circle size
+                velocity = velocity, // Upward speed
+                amplitude = amplitude, // Wave width
+                frequency = frequency, // Wave frequency
+                phase = phase, // Starting position in wave
+                isPopped = false // Not popped initially
+            ))
+            invalidate() // Request redraw
+        }
+    }
+
 }
