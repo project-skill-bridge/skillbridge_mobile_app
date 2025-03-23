@@ -10,7 +10,7 @@ const GamesLayout = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="circle-burst-advanced/game-screen"
+        name="circle-burst/game-screen"
         options={{ headerShown: false }}
       />
       <Stack.Screen
@@ -30,10 +30,11 @@ const GamesLayout = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="circle-burst-beginner/game-screen"
+        name="voccational-trainning/stiching"
         options={{ headerShown: false }}
       />
     </Stack>
+    
   );
 };
 
