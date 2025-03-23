@@ -101,6 +101,26 @@ class HandIdentifier (
         detectAsync(BitmapImageBuilder(rotatedBitmap).build(), SystemClock.uptimeMillis()) // Process image
     }
 
+    private fun detectAsync(mpImage: MPImage, frameTime: Long) {
+        handLandmarker?.detectAsync(mpImage, frameTime) // Send to ML model for processing
+    }
+
+    /* ================ Result Handling Section ================ 
+     * Callback methods for processing detection results and errors
+     * Relays landmark data to game components through listener interface
+     */
+    private fun returnLivestreamResult(result: HandLandmarkerResult, input: MPImage) {
+        val inferenceTime = SystemClock.uptimeMillis() - result.timestampMs() // Calculate processing time
+        handLandmarkerHelperListener.onResults( // Send results to listener
+            ResultBundle( // Package data into result bundle
+                listOf(result), // Include detection results
+                inferenceTime, // Include processing time
+                input.height, // Include image height
+                input.width // Include image width
+            )
+        )
+    }
+
     companion object {
         const val TAG = "HandLandmarkerHelper" // Logging tag
         private const val MP_HAND_LANDMARKER_TASK = "hand_landmarker.task" // Model file name
