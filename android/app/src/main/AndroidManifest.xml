@@ -63,5 +63,10 @@
         android:screenOrientation="fullUser"
         android:exported="false"/>
 
+    <activity
+        android:name=".circlobrustGame.circlobrustGameActivities.Level5ActivityClass"
+        android:screenOrientation="fullUser"
+        android:exported="false"/>
+
   </application>
 </manifest>
