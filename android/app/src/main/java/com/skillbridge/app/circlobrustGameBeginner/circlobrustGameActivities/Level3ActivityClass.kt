@@ -47,3 +47,55 @@ class Level3ActivityClass : AppCompatActivity() {
         private const val DEFAULT_AUDIO_DURATION_MS = 30000L // Default time limit if audio loading fails
     }
 
+    /* ================ Activity Lifecycle Section ================ 
+     * Methods for controlling the activity lifecycle - creation, destruction
+     */
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        val audioPosition = intent.getIntExtra("AUDIO_POSITION", 0) // Resume audio from saved position
+
+        try {
+            mediaPlayer = MediaPlayer.create(this, R.raw.background_music).apply {
+                isLooping = false // Music plays only once for time limit
+                seekTo(audioPosition) // Start from previous position if returning
+                start()
+
+                setOnCompletionListener { mp ->
+                    lifecycleScope.launch {
+                        if (score < 10 && !gameEnded) {
+                            gameEnded = true
+                            goToLevel3LossActivity() // Fail level if music ends before target score reached
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace() // Log any media player errors
+        }
+
+        val fragment = CameraPanel.newInstance(CameraPanel.ACTIVITY3) // Create camera fragment for hand tracking
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .commit()
+
+        binding.levelNumberView.text = "$LEVEL" // Display level number in UI
+
+        score = intent.getIntExtra("INITIAL_SCORE", 0) // Get score from previous state if available
+        val timeString = intent.getStringExtra("FORMATTED_TIME") ?: "00:00" // Get time from previous state
+        val (seconds, millis) = parseTimeString(timeString) // Parse saved time string
+        timeInSeconds = seconds
+        milliseconds = millis
+
+        updateScoreInUi() // Initialize score display
+        updateTimeInUi() // Initialize timer display
+
+        startTimer() // Start the gameplay timer
+        startCountdownTimer() // Start the level countdown
+
+        binding.playButton.setOnClickListener {
+            onBackPressed() // Show exit confirmation dialog when back button pressed
+        }
+    }
+
