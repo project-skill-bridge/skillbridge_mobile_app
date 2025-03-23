@@ -90,4 +90,22 @@ class Level4LogicClass @JvmOverloads constructor(
         addNewCircleIfNeeded() // Add initial circle
     }
 
+    private fun addNewCircleIfNeeded() {
+        // Only add if we have less than maximum circles
+        if (circles.count { !it.isPopped } < MAX_CIRCLES) {
+            val colors = listOf(Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, Color.CYAN, Color.MAGENTA) // Available colors
+            val radius = (30f..80f).randomFloat() // Random size
+            val initialX = (radius..(width - radius)).randomFloat() // Initial horizontal position
+            val y = height + radius // Start below screen
+            val color = colors.random() // Pick random color
+            val velocity = (10f..15f).randomFloat() // Vertical movement speed
+            
+            // Sine wave parameters
+            val amplitude = (width / 10f..width / 5f).randomFloat() // Control wave width
+            val frequency = (0.005f..0.015f).randomFloat() // Control wave frequency
+            val phase = (0f..2f * Math.PI.toFloat()).randomFloat() // Random starting phase
+            
+            // Rotation parameters
+            val rotationSpeed = (-5f..20f).randomFloat() // Negative values rotate counterclockwise
+            
 }
