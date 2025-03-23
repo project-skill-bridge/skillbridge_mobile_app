@@ -54,4 +54,12 @@ class Level1LogicClass @JvmOverloads constructor(
         isAntiAlias = true // Enable smooth edges
     }
 
+    /* ================ Game Constants Section ================ 
+     * Configuration values for game mechanics
+     * Controls game difficulty and behavior
+     */
+    private val MAX_CIRCLES = 4 // Maximum circles on screen at once
+    private var lastCircleTime = 0L // Last time a circle was created
+    private val CIRCLE_SPAWN_INTERVAL = 1500L // 1.5 seconds between new circles
+
 }

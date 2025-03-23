@@ -63,4 +63,16 @@ class Level4LogicClass @JvmOverloads constructor(
     private var lastCircleTime = 0L // Last time a circle was created
     private val CIRCLE_SPAWN_INTERVAL = 3000L // 3 seconds between new circles
 
+    /* ================ Update Mechanism Section ================ 
+     * Runnable for continuous game updates
+     * Handles animation frame timing and game state progression
+     */
+    private val updateRunnable = object : Runnable {
+        override fun run() {
+            updateCircle() // Move and rotate circles
+            checkCollisions() // Check for finger-circle interactions
+            customHandler.postDelayed(this, 32) // ~30 fps animation rate
+        }
+    }
+
 }
