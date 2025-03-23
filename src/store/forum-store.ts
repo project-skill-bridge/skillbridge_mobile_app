@@ -4,6 +4,28 @@ import { ForumPost, ForumComment } from '../types/forum-types';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 
+// Helper function to safely convert Firestore timestamps
+const safeTimestamp = (timestamp: any): number => {
+  if (!timestamp) return Date.now();
+
+  // For React Native Firebase timestamps
+  if (timestamp && timestamp.toDate && typeof timestamp.toDate === 'function') {
+    return timestamp.toDate().getTime();
+  }
+
+  // For server timestamps that are already numbers
+  if (typeof timestamp === 'number') {
+    return timestamp;
+  }
+
+  // For any other timestamp-like object
+  if (timestamp && timestamp.seconds) {
+    return timestamp.seconds * 1000;
+  }
+
+  return Date.now();
+};
+
 interface ForumState {
   posts: ForumPost[];
   comments: Record<string, ForumComment[]>;
@@ -25,25 +47,32 @@ export const useForumStore = create<ForumState & {
   fetchPosts: async () => {
     set({ loading: true, error: null });
     try {
-      // Using collectionGroup to query across all post collections
+      // Fetch posts from the top-level posts collection
       const postsSnapshot = await firestore()
-        .collectionGroup('posts')
+        .collection('posts')
         .orderBy('createdAt', 'desc')
         .get();
-      
+
       const posts = postsSnapshot.docs.map(doc => {
         const data = doc.data();
         return {
           id: doc.id,
           ...data,
-          createdAt: data.createdAt?.toMillis() || Date.now()
+          createdAt: safeTimestamp(data.createdAt),
+          updatedAt: safeTimestamp(data.updatedAt),
+          // Ensure other expected fields are present
+          title: data.title || '',
+          content: data.content || '',
+          authorId: data.authorId || '',
+          authorName: data.authorName || 'Anonymous',
+          commentCount: data.commentCount || 0
         } as ForumPost;
       });
 
       set({ posts, loading: false });
     } catch (error) {
       console.error('Error fetching posts:', error);
-      set({ 
+      set({
         error: 'Failed to load posts. Please check your connection.',
         loading: false
       });
@@ -53,19 +82,24 @@ export const useForumStore = create<ForumState & {
   fetchComments: async (postId: string) => {
     set({ loading: true, error: null });
     try {
-      // Using collectionGroup with a where clause to filter by postId
+      // Fetch comments from the nested subcollection
       const commentsSnapshot = await firestore()
-        .collectionGroup('comments')
-        .where('postId', '==', postId)
+        .collection('posts')
+        .doc(postId)
+        .collection('comments')
         .orderBy('createdAt', 'asc')
         .get();
-      
+
       const comments = commentsSnapshot.docs.map(doc => {
         const data = doc.data();
         return {
           id: doc.id,
-          ...data,
-          createdAt: data.createdAt?.toMillis() || Date.now()
+          postId,
+          authorId: data.userId || '', // Map userId to authorId for consistency
+          authorName: data.authorName || 'Anonymous',
+          content: data.text || '', // Map text to content for consistency
+          createdAt: safeTimestamp(data.createdAt),
+          updatedAt: safeTimestamp(data.updatedAt)
         } as ForumComment;
       });
 
@@ -76,7 +110,7 @@ export const useForumStore = create<ForumState & {
       }));
     } catch (error) {
       console.error('Error fetching comments:', error);
-      set((state) => ({ 
+      set((state) => ({
         ...state,
         error: 'Failed to load comments',
         loading: false
@@ -89,39 +123,38 @@ export const useForumStore = create<ForumState & {
     try {
       const user = auth().currentUser;
       if (!user) throw new Error('User not authenticated');
-      
-      // Generate a unique ID for the post
-      const postId = firestore().collection('_').doc().id;
-      
+
+      const now = firestore.FieldValue.serverTimestamp();
+
       const postData = {
         authorId: user.uid,
         authorName: user.displayName || 'Anonymous',
         title,
         content,
-        createdAt: firestore.FieldValue.serverTimestamp(),
-        commentCount: 0,
-        postId, // Include postId in the document for queries
+        createdAt: now,
+        updatedAt: now,
+        commentCount: 0
       };
-      
-      // Add to the nested collection structure matching your security rules
-      await firestore()
-      .collection('forum/posts')
-      .doc(postId) 
-      .set(postData);
-        
+
+      // Add document to the posts collection
+      const postRef = await firestore()
+        .collection('posts')
+        .add(postData);
+
       const newPost = {
-        id: postId,
+        id: postRef.id,
         ...postData,
         createdAt: Date.now(),
+        updatedAt: Date.now(),
       } as ForumPost;
-      
+
       set((state) => ({
         ...state,
         posts: [newPost, ...state.posts],
         loading: false
       }));
-      
-      return postId;
+
+      return postRef.id;
     } catch (error) {
       console.error('Error creating post:', error);
       set({ error: 'Failed to create post', loading: false });
@@ -134,51 +167,45 @@ export const useForumStore = create<ForumState & {
     try {
       const user = auth().currentUser;
       if (!user) throw new Error('User not authenticated');
-      
-      // Generate a unique ID for the comment
-      const commentId = firestore().collection('_').doc().id;
-      
+
+      const now = firestore.FieldValue.serverTimestamp();
+
       const commentData = {
+        userId: user.uid, // Using userId as per your schema
+        authorName: user.displayName || 'Anonymous',
+        text: content,    // Using text as per your schema
+        createdAt: now,
+        updatedAt: now,
+      };
+
+      // Add to the comments subcollection under the specific post
+      const commentRef = await firestore()
+        .collection('posts')
+        .doc(postId)
+        .collection('comments')
+        .add(commentData);
+
+      // Try to update the post's comment count
+      try {
+        await firestore()
+          .collection('posts')
+          .doc(postId)
+          .update({
+            commentCount: firestore.FieldValue.increment(1)
+          });
+      } catch (updateError) {
+        console.error('Could not update comment count:', updateError);
+      }
+
+      // Update local state for UI
+      const newComment = {
+        id: commentRef.id,
         postId,
         authorId: user.uid,
         authorName: user.displayName || 'Anonymous',
         content,
-        createdAt: firestore.FieldValue.serverTimestamp(),
-      };
-      
-      // Add to the nested collection structure matching your security rules
-      await firestore()
-        .collection('forum')
-        .doc('comments')
-        .collection(commentId)
-        .doc(commentId) // Use the same ID for the document
-        .set(commentData);
-        
-      // Update the post's comment count
-      // Note: This is tricky with the nested structure - you may need a different approach
-      try {
-        // Try to find the post document to update its comment count
-        const postDocs = await firestore()
-          .collectionGroup('posts')
-          .where('postId', '==', postId)
-          .limit(1)
-          .get();
-          
-        if (!postDocs.empty) {
-          const postDoc = postDocs.docs[0];
-          const postRef = postDoc.ref;
-          await postRef.update({
-            commentCount: firestore.FieldValue.increment(1)
-          });
-        }
-      } catch (updateError) {
-        console.log('Could not update comment count:', updateError);
-      }
-      
-      const newComment = {
-        id: commentId,
-        ...commentData,
         createdAt: Date.now(),
+        updatedAt: Date.now(),
       } as ForumComment;
       
       set((state) => {
