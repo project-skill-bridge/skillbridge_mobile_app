@@ -85,4 +85,31 @@ class Level2LogicClass @JvmOverloads constructor(
         addNewCircleIfNeeded() // Add initial circle
     }
 
+    private fun addNewCircleIfNeeded() {
+        // Only add if we have less than maximum circles
+        if (circles.count { !it.isPopped } < MAX_CIRCLES) {
+            val colors = listOf(Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, Color.CYAN, Color.MAGENTA) // Available colors
+            val radius = (35f..80f).randomFloat() // Random size (slightly larger than Level 1)
+            val x = (radius..(width - radius)).randomFloat() // Random horizontal position
+            val color = colors.random() // Pick random color
+            val velocity = (15f..23f).randomFloat() // Faster vertical speed than Level 1
+            val horizontalVelocity = (-3f..3f).randomFloat() // Random horizontal movement
+            
+            // Randomly choose whether circle comes from top or bottom (50% chance each)
+            val isMovingUp = Math.random() < 0.5 // Determine movement direction
+            
+            // Set Y position based on direction
+            val y = if (isMovingUp) {
+                // For upward-moving circles, start below the screen
+                (height + radius..(height * 2).toFloat()).randomFloat() // Start below screen
+            } else {
+                // For downward-moving circles, start above the screen
+                (-radius * 2..0f).randomFloat() // Start above screen
+            }
+            
+            circles.add(Circle(x, y, color, radius, velocity, horizontalVelocity, isMovingUp)) // Create new circle
+            invalidate() // Request redraw
+        }
+    }
+
 }
