@@ -69,4 +69,13 @@ class Level2LogicClass @JvmOverloads constructor(
             customHandler.postDelayed(this, 32) // ~30 fps animation rate
         }
     }
+
+    /* ================ Initialization Section ================ 
+     * Methods for setting up the game environment
+     * Handles view size changes and initial circle creation
+     */
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh) // Call parent method
+        initializeCircle() // Reset circle collection on size change
+    }
 }
