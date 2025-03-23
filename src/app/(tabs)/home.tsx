@@ -6,9 +6,9 @@ import { hp, wp } from "@/src/utils/common";
 import { StyleSheet, Text, View } from "react-native";
 import HomeProgress from "@/src/components/home-progress";
 import GameSliderContainer from "@/src/components/game/game-slider-container";
-import AnimatedAvatar from "@/src/components/animated-avatar";
 import Modal from "@/src/components/ui/modal";
 import { ModalState } from "@/src/types/type";
+import FinnCharacter from "@/src/components/FinnCharacter/FinnCharacter";
 
 const HomeScreen = () => {
   const { user } = useUserStore();
@@ -36,7 +36,7 @@ const HomeScreen = () => {
     <View style={styles.container}>
       <Text style={styles.welcomeText}>Hi {user?.name} 👋</Text>
       <HomeProgress />
-      <AnimatedAvatar />
+      <FinnCharacter />
       <GameSliderContainer />
       <Modal
         type={isVisible.type}
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: wp(6),
     paddingVertical: hp(4),
-    gap: hp(2),
+    gap: hp(2.5),
     backgroundColor: "#FFF",
     height: "100%",
   },

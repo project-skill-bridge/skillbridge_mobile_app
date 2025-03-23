@@ -21,8 +21,11 @@ import { theme } from "@/src/constants/Theme";
 import { Fonts } from "@/src/constants/Fonts";
 import Loader from "@/src/components/ui/loader";
 import { Lotties } from "@/src/constants/Lottie";
+import FinnVoiceTntro from "@/src/components/FinnCharacter/FinnGame";
 
 type ImageKeys = `level${1 | 2 | 3 | 4}Badge`;
+const welcomeMessage = "Hi there! Welcome to Mind Match game where your mind skills will be put to the test!";
+
 
 const MainScreen = () => {
   const router = useRouter();
@@ -204,6 +207,18 @@ const MainScreen = () => {
             </View>
           </View>
         )}
+
+        <View style={styles.finnOverlayContainer}>
+          <FinnVoiceTntro
+            gameId="Mind"
+            buttonText={welcomeMessage}  
+            IntroText={welcomeMessage}  
+            displayText={welcomeMessage} 
+            language="en-US"
+            speed="normal"
+            voiceType="child"
+          />
+        </View>
       </SafeAreaView>
     </ImageBackground>
   );
@@ -364,5 +379,13 @@ const styles = StyleSheet.create({
   badge: {
     width: "50%",
     height: "100%",
+  },
+  finnOverlayContainer: {
+    position: "absolute",
+    bottom: 390,
+    right: 0,
+    width: "100%",
+    zIndex: 10,
+    pointerEvents: "box-none",
   },
 });

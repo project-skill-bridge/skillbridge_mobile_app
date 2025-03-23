@@ -5,7 +5,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -122,12 +121,12 @@ const ProfileScreen = () => {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerText}>Your Profile</Text>
         <Button onPress={logOutHandler} style={styles.logout} variant="icon">
-          <Icons.LogOut size={20} color="black" />
+          <Icons.LogOut size={20} color="red" />
         </Button>
       </View>
 
@@ -226,7 +225,7 @@ const ProfileScreen = () => {
           message={isVisible.message}
         />
       </View>
-    </ScrollView>
+    </View>
   );
 };
 
@@ -236,7 +235,7 @@ const styles = StyleSheet.create({
   container: {
     height: "100%",
     paddingHorizontal: wp(5),
-    paddingVertical: hp(2),
+    paddingVertical: hp(4),
   },
   header: {
     flexDirection: "row",
@@ -247,9 +246,10 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: hp(3),
     fontWeight: theme.fontWeights.bold,
+    color: theme.colors.primary,
   },
   logout: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: "50%",
   },
   imageContainer: {
@@ -267,20 +267,20 @@ const styles = StyleSheet.create({
     borderRadius: "50%",
   },
   userInforContainer: {
-    gap: hp(2),
+    gap: hp(5),
     backgroundColor: "white",
     paddingHorizontal: wp(3),
     paddingVertical: hp(2),
     borderRadius: 16,
   },
   inputGroupContainer: {
-    gap: hp(1.5),
+    gap: hp(2.5),
   },
   inputGroup: {
-    gap: hp(0.2),
+    gap: hp(0.5),
   },
   button: {
-    borderRadius: 10,
+    borderRadius: 15,
   },
   verifyText: {
     color: "red",

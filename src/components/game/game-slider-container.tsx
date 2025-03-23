@@ -1,6 +1,7 @@
 import * as React from "react";
+
 import { FlatList, StyleSheet, Text, View, ViewToken } from "react-native";
-import { hp } from "../../utils/common";
+import { hp, wp } from "../../utils/common";
 import { gameInfo } from "@/src/data/gameInfo";
 import GameCard from "./game-card";
 import SliderActiveDot from "./slider-active-dot";
@@ -8,7 +9,6 @@ import { theme } from "@/src/constants/Theme";
 
 const GameSliderContainer = () => {
   const [currentIndex, setCurrentIndex] = React.useState(0);
-  const sliderRef = React.useRef<FlatList>(null);
 
   const viewableItemsChanged = React.useRef(
     ({
@@ -17,15 +17,15 @@ const GameSliderContainer = () => {
       viewableItems: Array<ViewToken>;
       changed: Array<ViewToken>;
     }) => {
-      if (viewableItems.length > 0 && viewableItems[0].index !== null) {
-        setCurrentIndex(viewableItems[0].index ?? 0);
-      }
+      setCurrentIndex(viewableItems[0].index || 0);
     }
   ).current;
 
   const viewConfig = React.useRef({
-    viewAreaCoveragePercentThreshold: 50, // Ensures the item is at least 50% visible before updating the index
+    viewAreaCoveragePercentThreshold: 0,
   }).current;
+
+  const sliderRef = React.useRef<FlatList>(null);
 
   return (
     <View style={styles.container}>
@@ -34,7 +34,12 @@ const GameSliderContainer = () => {
         <FlatList
           data={gameInfo}
           renderItem={({ item }) => (
-            <GameCard id={item.id} path={item.path} image={item.image} />
+            <GameCard
+              id={item.id}
+              path={item.path}
+              image={item.image}
+              isGif={item.isGif || false}
+            />
           )}
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -44,6 +49,7 @@ const GameSliderContainer = () => {
           onViewableItemsChanged={viewableItemsChanged}
           viewabilityConfig={viewConfig}
           ref={sliderRef}
+          contentContainerStyle={styles.flatListContent}
         />
       </View>
       <SliderActiveDot length={gameInfo.length} currentIndex={currentIndex} />
@@ -65,5 +71,9 @@ const styles = StyleSheet.create({
     fontSize: hp(2.5),
     fontWeight: "bold",
     color: theme.colors.primaryText,
+  },
+  flatListContent: {
+    paddingHorizontal: wp(2),
+    alignItems: "center",
   },
 });
