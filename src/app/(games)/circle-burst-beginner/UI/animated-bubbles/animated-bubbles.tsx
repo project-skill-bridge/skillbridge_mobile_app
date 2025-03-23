@@ -138,3 +138,20 @@ const AnimatedBubble: React.FC<AnimatedBubbleProps> = ({
       ]).start(() => {
         // Animation completion callback - reset and restart
 
+        // Reset position to starting point
+        bubblePosition.setValue({ x: startPosition, y: height + 100 });
+        // Reset opacity to invisible
+        opacity.setValue(0);
+        // Reset scale to initial small size
+        scale.setValue(0.3);
+        // Restart the animation loop
+        startAnimation();
+      });
+    };
+
+    // Start the initial animation
+    startAnimation();
+
+    // No cleanup needed - animation stops when component unmounts
+  }, [delay, duration, startPosition, bubblePosition, opacity, scale]);
+
