@@ -66,7 +66,7 @@ class Level2ActivityClass : AppCompatActivity() {
 
                 setOnCompletionListener { mp ->
                     lifecycleScope.launch {
-                        if (score < 12 && !gameEnded) {
+                        if (score < 10 && !gameEnded) {
                             gameEnded = true
                             goToLevel2LossActivity() // End game if music ends and score target not reached
                         }
@@ -165,7 +165,7 @@ class Level2ActivityClass : AppCompatActivity() {
             }
 
 
-            if (score < 12 && !gameEnded) {
+            if (score < 10 && !gameEnded) {
                 gameEnded = true
                 goToLevel2LossActivity() // Fail if target score not reached when time expires
             }
@@ -176,7 +176,7 @@ class Level2ActivityClass : AppCompatActivity() {
      * Core game mechanics including score tracking and level completion
      */
     private fun checkScore() {
-        if (score >= 12 && !gameEnded) {
+        if (score >= 10 && !gameEnded) {
             gameEnded = true
             countdownJob?.cancel()
             goToLevel2CompleteActivity() // Success when target score is reached
