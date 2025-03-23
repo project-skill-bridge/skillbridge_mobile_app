@@ -239,4 +239,10 @@ class CirclobrustGameModule(reactContext: ReactApplicationContext) : ReactContex
             .emit("Activity2Result", params)
     }
 
+    private fun getCurrentFormattedTime(): String {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        return dateFormat.format(Date())
+    }
+
+
 }
