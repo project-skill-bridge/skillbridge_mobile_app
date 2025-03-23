@@ -87,3 +87,17 @@ class PermissionsPanel : Fragment() {
     }
 
     /* ================ Utility Section ================ 
+     * Static helper methods for permission management
+     * Provides convenience functions for permission checking
+     */
+    companion object {
+
+        /** Convenience method used to check if all permissions required by this app are granted */
+        fun hasPermissions(context: Context) = PERMISSIONS_REQUIRED.all {
+            ContextCompat.checkSelfPermission(
+                context,
+                it
+            ) == PackageManager.PERMISSION_GRANTED
+        }
+    }
+}
