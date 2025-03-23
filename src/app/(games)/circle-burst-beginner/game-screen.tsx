@@ -1186,3 +1186,30 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 15,
   },
 
+  /* Bottom Section Styles */
+  bottomContainer: {
+    height: 340, // Fixed height
+    position: "relative",
+    zIndex: 5,
+    overflow: "hidden", // For wave animation
+  },
+  gradientOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 50, // Gradient height
+  },
+  bottomContent: {
+    flex: 1,
+    justifyContent: "flex-end",
+    alignItems: "center",
+    paddingBottom: 40, // Space at bottom
+    paddingTop: 40, // Space at top
+  },
+  levelText: {
+    color: "#EBEF00", // Bright yellow
+    fontSize: 22,
+    fontFamily: "Montserrat-SemiBold",
+    marginBottom: 10, // Space before button
+  },
