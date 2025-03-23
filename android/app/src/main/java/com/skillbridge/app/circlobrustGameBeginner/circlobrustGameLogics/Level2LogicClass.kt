@@ -30,4 +30,19 @@ class Level2LogicClass @JvmOverloads constructor(
 
     var circlePoppedListener: OnCirclePoppedListener? = null // Listener for score updates
 
+    /* ================ Data Model Section ================ 
+     * Circle model with enhanced properties for Level 2
+     * Adds horizontal velocity and movement direction parameters
+     */
+    private data class Circle(
+        var x: Float, // Horizontal position on screen
+        var y: Float, // Vertical position on screen
+        val color: Int, // Circle color
+        val radius: Float, // Circle size
+        val velocity: Float, // Vertical movement speed
+        val horizontalVelocity: Float, // Horizontal velocity component
+        val isMovingUp: Boolean, // Direction flag
+        var isPopped: Boolean = false // Whether circle has been popped
+    )
+
 }

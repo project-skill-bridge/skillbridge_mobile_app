@@ -30,4 +30,21 @@ class Level5LogicClass @JvmOverloads constructor(
 
     var circlePoppedListener: OnCirclePoppedListener? = null // Listener for score updates
 
+    /* ================ Data Model Section ================ 
+     * Circle model with advanced properties for rapid sine wave movement
+     * Includes faster velocity values for the most challenging level
+     */
+    private data class Circle(
+        var x: Float, // Current horizontal position
+        var y: Float, // Current vertical position
+        val initialX: Float, // Starting X position for sine wave
+        val color: Int, // Circle color
+        val radius: Float, // Circle size
+        val velocity: Float, // Vertical movement speed (higher than previous levels)
+        val amplitude: Float, // Controls width of sine wave
+        val frequency: Float, // Controls frequency of sine wave
+        val phase: Float, // Starting phase of sine wave
+        var isPopped: Boolean = false // Whether circle has been popped
+    )
+
 }

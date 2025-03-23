@@ -30,4 +30,18 @@ class Level1LogicClass @JvmOverloads constructor(
 
     var circlePoppedListener: OnCirclePoppedListener? = null // Listener for score updates
 
+    /* ================ Data Model Section ================ 
+     * Circle model defining properties of each game object
+     * Tracks position, appearance, movement, and state
+     */
+    private data class Circle(
+        var x: Float, // Horizontal position on screen
+        var y: Float, // Vertical position on screen
+        val color: Int, // Circle color
+        val radius: Float, // Circle size
+        val velocity: Float, // Movement speed
+        val isMovingUp: Boolean, // Direction flag (up/down)
+        var isPopped: Boolean = false // Whether circle has been popped
+    )
+
 }
