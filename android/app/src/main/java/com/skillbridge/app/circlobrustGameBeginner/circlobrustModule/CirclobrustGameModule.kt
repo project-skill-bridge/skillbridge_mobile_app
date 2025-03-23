@@ -188,4 +188,11 @@ class CirclobrustGameModule(reactContext: ReactApplicationContext) : ReactContex
             .emit("NavigateToActivity2", null)
     }
 
+    @ReactMethod
+    fun emitNavigateToActivity3() {
+        val reactContext = reactApplicationContext
+        reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+            .emit("NavigateToActivity3", null)
+    }
+
 }
