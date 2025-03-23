@@ -104,3 +104,18 @@ class Level1ActivityClass : AppCompatActivity() {
         }
     }
 
+    /* ================ Utility Section ================ 
+     * Helper methods for time calculation and string formatting
+     */
+    private fun parseTimeString(timeString: String): Pair<Int, Int> {
+        return try {
+            val parts = timeString.split(":")
+            val seconds = parts[0].toIntOrNull() ?: 0
+            val millisecondsPart = parts.getOrNull(1)?.toIntOrNull() ?: 0
+            val milliseconds = millisecondsPart * 10
+            Pair(seconds, milliseconds)
+        } catch (e: Exception) {
+            Pair(0, 0)
+        }
+    }
+
