@@ -112,4 +112,30 @@ class Level2LogicClass @JvmOverloads constructor(
         }
     }
 
+    /* ================ Game Logic Section ================ 
+     * Core mechanics for circle movement and spawning
+     * Handles both vertical and horizontal movement with boundary physics
+     */
+    private fun updateCircle() {
+        // Check if it's time to spawn a new circle
+        val currentTime = System.currentTimeMillis() // Get current time
+        if (currentTime - lastCircleTime >= CIRCLE_SPAWN_INTERVAL) { // Check if interval passed
+            addNewCircleIfNeeded() // Create new circle if needed
+            lastCircleTime = currentTime // Reset timer
+        }
+        
+        // Update existing circles
+        circles.forEach { circle ->
+            // Vertical movement based on direction
+            if (circle.isMovingUp) {
+                circle.y -= circle.velocity // Move up
+            } else {
+                circle.y += circle.velocity // Move down
+            }
+            
+            // Horizontal movement (same for both directions)
+            circle.x += circle.horizontalVelocity // Apply horizontal movement
+            
+            // Handle horizontal boundaries - bounce off walls
+            if (circle.x - circle.radius <= 0 || circle.x + circle.radius >= width) { // Hit left or right edge
 }
