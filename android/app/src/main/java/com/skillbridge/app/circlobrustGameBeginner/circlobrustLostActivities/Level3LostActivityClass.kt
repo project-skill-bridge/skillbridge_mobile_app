@@ -73,4 +73,9 @@ class Level3LostActivityClass : AppCompatActivity() {
             .load(gifUriloss) // Load the loss animation GIF
             .into(gifViewloss) // Display in the ImageView
 
+
+        playOneTimeSound(R.raw.loss) // Play initial defeat sound
+        playLoopingSound(R.raw.loss_loop) // Start looping sad music
+
+    }
 }
