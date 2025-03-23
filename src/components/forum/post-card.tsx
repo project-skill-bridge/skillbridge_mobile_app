@@ -39,26 +39,31 @@ export default function PostCard({ post }: PostCardProps) {
   };
 
   return (
-    <TouchableOpacity style={styles.container} onPress={handlePress}>
+    <TouchableOpacity style={styles.container} onPress={handlePress} activeOpacity={0.7}>
       <View style={styles.header}>
         <Text style={styles.title}>{post.title}</Text>
         {isAuthor && (
-          <TouchableOpacity onPress={handleDelete} style={styles.deleteButton}>
+          <TouchableOpacity onPress={handleDelete} style={styles.deleteButton} hitSlop={{top: 10, right: 10, bottom: 10, left: 10}}>
             <Text style={styles.deleteButtonText}>Delete</Text>
           </TouchableOpacity>
         )}
       </View>
+      
       <Text style={styles.author}>Posted by {post.authorName}</Text>
       <Text style={styles.date}>
         {new Date(post.createdAt).toLocaleDateString()}
       </Text>
+      
       <Text style={styles.content} numberOfLines={3}>
         {post.content}
       </Text>
+      
       <View style={styles.footer}>
-        <Text style={styles.commentCount}>
-          {post.commentCount || 0} comments
-        </Text>
+        <View style={styles.commentBadge}>
+          <Text style={styles.commentCount}>
+            {post.commentCount || 0} comments
+          </Text>
+        </View>
       </View>
     </TouchableOpacity>
   );
@@ -66,57 +71,72 @@ export default function PostCard({ post }: PostCardProps) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
-    borderRadius: 8,
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
     padding: 16,
     marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.41,
-    elevation: 2,
+    shadowColor: '#6277bf',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 3,
+    borderWidth: 1,
+    borderColor: '#cad3ed',
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
   title: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 8,
     flex: 1,
+    color: '#6277bf',
   },
   deleteButton: {
-    backgroundColor: '#ff3b30',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
+    backgroundColor: '#e85454',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 20,
     marginLeft: 8,
   },
   deleteButtonText: {
-    color: '#fff',
+    color: '#ffffff',
     fontSize: 12,
+    fontWeight: 'bold',
   },
   author: {
     fontSize: 14,
-    color: '#666',
+    color: '#6277bf',
+    fontWeight: '500',
   },
   date: {
     fontSize: 12,
-    color: '#999',
-    marginBottom: 8,
+    color: '#6277bf',
+    opacity: 0.7,
+    marginBottom: 12,
   },
   content: {
-    fontSize: 16,
+    fontSize: 15,
     marginBottom: 16,
+    lineHeight: 22,
+    color: '#333333',
   },
   footer: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
   },
+  commentBadge: {
+    backgroundColor: '#cad3ed',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
   commentCount: {
-    fontSize: 14,
-    color: '#666',
+    fontSize: 12,
+    color: '#6277bf',
+    fontWeight: '600',
   },
 });

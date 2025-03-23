@@ -5,6 +5,7 @@ import { useRouter } from 'expo-router';
 import { useForumStore } from '../../store/forum-store';
 import CreatePostForm from '../../components/forum/create-post-form';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Stack } from 'expo-router';
 
 export default function CreatePostScreen() {
   const { createPost } = useForumStore();
@@ -18,9 +19,14 @@ export default function CreatePostScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['bottom']}>
-      <CreatePostForm onSubmit={handleSubmit} />
-    </SafeAreaView>
+    <>
+      {}
+      <Stack.Screen options={{ headerShown: false }} />
+      
+      <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+        <CreatePostForm onSubmit={handleSubmit} />
+      </SafeAreaView>
+    </>
   );
 }
 

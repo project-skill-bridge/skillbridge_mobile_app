@@ -1,47 +1,65 @@
 // src/app/(tabs)/forum.tsx
-import React, { useEffect } from 'react';
-import { View, FlatList, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import { useRouter } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useForumStore } from '../../store/forum-store';
 import PostCard from '../../components/forum/post-card';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Icons } from '../../constants/Icons';
+import { useRouter } from 'expo-router';
 
 export default function ForumScreen() {
-  const { posts, fetchPosts, loading, error } = useForumStore();
   const router = useRouter();
-
+  const { posts, fetchPosts, loading, error } = useForumStore();
+  const [refreshing, setRefreshing] = useState(false);
+  
   useEffect(() => {
     fetchPosts();
   }, []);
-
-  const handleCreatePost = () => {
-    router.push('/(externalPages)/create-post');
+  
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await fetchPosts();
+    setRefreshing(false);
+  };
+  
+  const navigateToCreatePost = () => {
+    router.push('/create-post');
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['bottom']}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.header}>
-        <Text style={styles.title}>Forum</Text>
-        <TouchableOpacity 
-          style={styles.createButton} 
-          onPress={handleCreatePost}
-        >
-          <Text style={styles.createButtonText}>Create Post</Text>
-        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Forum</Text>
       </View>
-
-      {error && (
-        <Text style={styles.errorText}>{error}</Text>
-      )}
-
+      
       <FlatList
         data={posts}
-        keyExtractor={item => item.id}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => <PostCard post={item} />}
         contentContainerStyle={styles.listContent}
-        refreshing={loading}
-        onRefresh={fetchPosts}
+        refreshControl={
+          <RefreshControl 
+            refreshing={refreshing || loading} 
+            onRefresh={handleRefresh}
+            colors={['#6277bf']}
+            tintColor="#6277bf"
+          />
+        }
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>
+              {error ? error : "No posts yet. Be the first to start a discussion!"}
+            </Text>
+          </View>
+        }
       />
+      
+      <TouchableOpacity 
+        style={styles.fabButton}
+        onPress={navigateToCreatePost}
+      >
+        <Icons.Plus size={24} color="#ffffff" />
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }
@@ -49,34 +67,46 @@ export default function ForumScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#f5f5f7',
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     padding: 16,
+    backgroundColor: '#ffffff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#cad3ed',
   },
-  title: {
-    fontSize: 24,
+  headerTitle: {
+    fontSize: 20,
     fontWeight: 'bold',
-  },
-  createButton: {
-    backgroundColor: '#007bff', // Blue color matching your UI
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 4,
-  },
-  createButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
+    color: '#6277bf',
   },
   listContent: {
     padding: 16,
   },
-  errorText: {
-    color: 'red',
+  emptyContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 24,
+  },
+  emptyText: {
+    fontSize: 16,
+    color: '#666666',
     textAlign: 'center',
-    marginVertical: 8,
+  },
+  fabButton: {
+    position: 'absolute',
+    bottom: 24,
+    right: 24,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#6277bf',
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
 });

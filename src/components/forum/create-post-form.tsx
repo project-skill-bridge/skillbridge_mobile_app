@@ -27,7 +27,8 @@ export default function CreatePostForm({ onSubmit }: CreatePostFormProps) {
         style={styles.titleInput}
         value={title}
         onChangeText={setTitle}
-        placeholder="Enter post title"
+        placeholder="Enter a title"
+        placeholderTextColor="#6277bf80"
       />
       
       <Text style={styles.label}>Content</Text>
@@ -35,8 +36,9 @@ export default function CreatePostForm({ onSubmit }: CreatePostFormProps) {
         style={styles.contentInput}
         value={content}
         onChangeText={setContent}
-        placeholder="Write your post content here..."
+        placeholder="What's on your mind?"
         multiline
+        placeholderTextColor="#6277bf80"
       />
       
       <View style={styles.buttonContainer}>
@@ -55,7 +57,7 @@ export default function CreatePostForm({ onSubmit }: CreatePostFormProps) {
           onPress={handleSubmit}
           disabled={!title.trim() || !content.trim()}
         >
-          <Text style={styles.submitButtonText}>Create Post</Text>
+          <Text style={styles.submitButtonText}>Publish Post</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -64,67 +66,77 @@ export default function CreatePostForm({ onSubmit }: CreatePostFormProps) {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
+    padding: 20,
+    backgroundColor: '#ffffff',
   },
   header: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 24,
+    color: '#6277bf',
+    textAlign: 'center',
   },
   label: {
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 8,
+    color: '#6277bf',
   },
   titleInput: {
     borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 4,
+    borderColor: '#cad3ed',
+    borderRadius: 12,
     padding: 12,
-    marginBottom: 16,
+    marginBottom: 20,
     fontSize: 16,
+    color: '#6277bf',
+    backgroundColor: '#f8f9fd',
   },
   contentInput: {
     borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 4,
+    borderColor: '#cad3ed',
+    borderRadius: 12,
     padding: 12,
-    marginBottom: 24,
+    marginBottom: 30,
     height: 200,
     textAlignVertical: 'top',
     fontSize: 16,
+    color: '#6277bf',
+    backgroundColor: '#f8f9fd',
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   cancelButton: {
-    backgroundColor: '#999',
-    borderRadius: 4,
-    paddingVertical: 12,
+    backgroundColor: '#ff8f8f',
+    borderRadius: 25,
+    paddingVertical: 14,
     paddingHorizontal: 16,
     flex: 1,
     marginRight: 8,
+    alignItems: 'center',
   },
   cancelButtonText: {
-    color: '#fff',
-    textAlign: 'center',
+    color: '#ffffff',
     fontWeight: 'bold',
+    fontSize: 16,
   },
   submitButton: {
-    backgroundColor: '#007bff', // Blue color matching your UI
-    borderRadius: 4,
-    paddingVertical: 12,
+    backgroundColor: '#6277bf',
+    borderRadius: 25,
+    paddingVertical: 14,
     paddingHorizontal: 16,
     flex: 1,
     marginLeft: 8,
+    alignItems: 'center',
   },
   disabledButton: {
-    backgroundColor: '#b3d7ff',
+    backgroundColor: '#cad3ed',
   },
   submitButtonText: {
-    color: '#fff',
-    textAlign: 'center',
+    color: '#ffffff',
     fontWeight: 'bold',
+    fontSize: 16,
   },
 });
