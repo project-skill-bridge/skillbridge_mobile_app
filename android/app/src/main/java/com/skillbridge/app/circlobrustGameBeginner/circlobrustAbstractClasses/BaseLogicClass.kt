@@ -25,4 +25,19 @@ abstract class BaseLogicClass @JvmOverloads constructor(
     context: Context?, // Android context for resource access
     attrs: AttributeSet? = null // XML attributes for view customization
 ) : View(context, attrs) {
+     * Drawing tools for rendering hand landmarks and connections
+     * Defines visual appearance of hand tracking visualization
+     */
+    protected val linePaint = Paint().apply {
+        color = ContextCompat.getColor(context!!, R.color.colorHandLines) // Color for hand connection lines
+        strokeWidth = LANDMARK_STROKE_WIDTH // Line thickness
+        style = Paint.Style.STROKE // Outline-only drawing style
+    }
+
+    protected val pointPaint = Paint().apply {
+        color = ContextCompat.getColor(context!!, R.color.colorPopPointer) // Color for hand landmark points
+        strokeWidth = LANDMARK_STROKE_WIDTH // Point size
+        style = Paint.Style.FILL // Filled drawing style
+    }
+
 }
