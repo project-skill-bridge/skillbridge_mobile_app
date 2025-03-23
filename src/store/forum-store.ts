@@ -1,10 +1,10 @@
-// src/store/forum-store.ts - Updated to work with existing permissions
+// src/store/forum-store.ts - with fixed type errors
 import { create } from 'zustand';
 import { ForumPost, ForumComment } from '../types/forum-types';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 
-interface ForumStore {
+interface ForumState {
   posts: ForumPost[];
   comments: Record<string, ForumComment[]>;
   loading: boolean;
@@ -16,7 +16,7 @@ interface ForumStore {
   createComment: (postId: string, content: string) => Promise<void>;
 }
 
-export const useForumStore = create<ForumStore>((set, get) => ({
+export const useForumStore = create<ForumState>((set, get) => ({
   posts: [],
   comments: {},
   loading: false,
@@ -25,76 +25,108 @@ export const useForumStore = create<ForumStore>((set, get) => ({
   fetchPosts: async () => {
     set({ loading: true, error: null });
     try {
-      const user = auth().currentUser;
-      if (!user) {
-        throw new Error('User not authenticated');
-      }
+      // Fetch global posts from a collection that's allowed by your rules
+      const globalPostsRef = firestore().collection('globalPosts');
+      const postsSnapshot = await globalPostsRef.orderBy('createdAt', 'desc').get();
       
-      // Access the global posts collection
-      // This assumes you have a collection in users/{currentUser}/app_data/forum/posts
-      const postsSnapshot = await firestore()
-        .collection('users')
-        .doc(user.uid)
-        .collection('app_data')
-        .doc('forum')
-        .collection('posts')
-        .orderBy('createdAt', 'desc')
-        .get();
-      
-      const posts = postsSnapshot.docs.map(doc => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          ...data,
-          createdAt: data.createdAt || Date.now(),
-        } as ForumPost;
-      });
+      const posts = postsSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as ForumPost[];
 
       set({ posts, loading: false });
     } catch (error) {
-      set({ error: 'Failed to load posts', loading: false });
       console.error('Error fetching posts:', error);
+      
+      // Try fallback approach if the first one fails
+      try {
+        const user = auth().currentUser;
+        if (!user) throw new Error('User not authenticated');
+        
+        // Try accessing through the user's document
+        const userPostsRef = firestore()
+          .collection('users')
+          .doc(user.uid)
+          .collection('forumPosts');
+          
+        const userPostsSnapshot = await userPostsRef.orderBy('createdAt', 'desc').get();
+        
+        const posts = userPostsSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as ForumPost[];
+        
+        set({ posts, loading: false });
+      } catch (fallbackError) {
+        set({ 
+          error: 'Failed to load posts. Please check your connection.',
+          loading: false 
+        });
+        console.error('Fallback error fetching posts:', fallbackError);
+      }
     }
   },
 
   fetchComments: async (postId: string) => {
     set({ loading: true, error: null });
     try {
-      const user = auth().currentUser;
-      if (!user) {
-        throw new Error('User not authenticated');
-      }
+      // Try to fetch from global comments
+      const commentsRef = firestore()
+        .collection('globalComments')
+        .where('postId', '==', postId);
+        
+      const commentsSnapshot = await commentsRef.orderBy('createdAt', 'asc').get();
       
-      // Access comments through user's document
-      const commentsSnapshot = await firestore()
-        .collection('users')
-        .doc(user.uid)
-        .collection('app_data')
-        .doc('forum')
-        .collection('comments')
-        .where('postId', '==', postId)
-        .orderBy('createdAt', 'asc')
-        .get();
-      
-      const comments = commentsSnapshot.docs.map(doc => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          ...data,
-          createdAt: data.createdAt || Date.now(),
-        } as ForumComment;
-      });
+      const comments = commentsSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as ForumComment[];
 
-      set(state => ({
-        comments: {
-          ...state.comments,
-          [postId]: comments
+      set((state: ForumState) => ({
+        ...state,
+        comments: { 
+          ...state.comments, 
+          [postId]: comments 
         },
         loading: false
       }));
     } catch (error) {
-      set({ error: 'Failed to load comments', loading: false });
       console.error('Error fetching comments:', error);
+      
+      // Try fallback approach
+      try {
+        const user = auth().currentUser;
+        if (!user) throw new Error('User not authenticated');
+        
+        // Try user's comments collection
+        const userCommentsRef = firestore()
+          .collection('users')
+          .doc(user.uid)
+          .collection('forumComments')
+          .where('postId', '==', postId);
+          
+        const userCommentsSnapshot = await userCommentsRef.orderBy('createdAt', 'asc').get();
+        
+        const comments = userCommentsSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as ForumComment[];
+        
+        set((state: ForumState) => ({
+          ...state,
+          comments: { 
+            ...state.comments, 
+            [postId]: comments 
+          },
+          loading: false
+        }));
+      } catch (fallbackError) {
+        set({ 
+          error: 'Failed to load comments',
+          loading: false 
+        });
+        console.error('Fallback error fetching comments:', fallbackError);
+      }
     }
   },
 
@@ -102,49 +134,75 @@ export const useForumStore = create<ForumStore>((set, get) => ({
     set({ loading: true, error: null });
     try {
       const user = auth().currentUser;
-      if (!user) {
-        throw new Error('User not authenticated');
-      }
+      if (!user) throw new Error('User not authenticated');
 
-      // Get user data
-      const userDoc = await firestore()
-        .collection('users')
-        .doc(user.uid)
-        .get();
-      
-      const userData = userDoc.data();
-      const authorName = userData?.displayName || user.displayName || 'Anonymous';
-
-      const newPost: Omit<ForumPost, 'id'> = {
+      const postData = {
         authorId: user.uid,
-        authorName,
+        authorName: user.displayName || 'Anonymous',
         title,
         content,
-        createdAt: Date.now(),
+        createdAt: firestore.FieldValue.serverTimestamp(),
         commentCount: 0,
       };
 
-      // Store the post in the user's collection
-      const docRef = await firestore()
-        .collection('users')
-        .doc(user.uid)
-        .collection('app_data')
-        .doc('forum')
-        .collection('posts')
-        .add(newPost);
+      // Try adding to global posts
+      const postRef = await firestore().collection('globalPosts').add(postData);
       
-      // Update local state
-      const createdPost = { id: docRef.id, ...newPost } as ForumPost;
-      set(state => ({
-        posts: [createdPost, ...state.posts],
+      const newPost = {
+        id: postRef.id,
+        ...postData,
+        createdAt: Date.now(), // Use current time for UI until server timestamp syncs
+      } as ForumPost;
+      
+      set((state: ForumState) => ({
+        ...state,
+        posts: [newPost, ...state.posts],
         loading: false
       }));
       
-      return docRef.id;
+      return postRef.id;
     } catch (error) {
-      set({ error: 'Failed to create post', loading: false });
       console.error('Error creating post:', error);
-      return '';
+      
+      // Try fallback to user's collection
+      try {
+        const user = auth().currentUser;
+        if (!user) throw new Error('User not authenticated');
+        
+        const postData = {
+          authorId: user.uid,
+          authorName: user.displayName || 'Anonymous',
+          title,
+          content,
+          createdAt: firestore.FieldValue.serverTimestamp(),
+          commentCount: 0,
+        };
+        
+        // Add to user's posts collection
+        const userPostRef = await firestore()
+          .collection('users')
+          .doc(user.uid)
+          .collection('forumPosts')
+          .add(postData);
+          
+        const newPost = {
+          id: userPostRef.id,
+          ...postData,
+          createdAt: Date.now(),
+        } as ForumPost;
+        
+        set((state: ForumState) => ({
+          ...state,
+          posts: [newPost, ...state.posts],
+          loading: false
+        }));
+        
+        return userPostRef.id;
+      } catch (fallbackError) {
+        set({ error: 'Failed to create post', loading: false });
+        console.error('Fallback error creating post:', fallbackError);
+        return '';
+      }
     }
   },
 
@@ -152,70 +210,113 @@ export const useForumStore = create<ForumStore>((set, get) => ({
     set({ loading: true, error: null });
     try {
       const user = auth().currentUser;
-      if (!user) {
-        throw new Error('User not authenticated');
-      }
+      if (!user) throw new Error('User not authenticated');
 
-      // Get user data
-      const userDoc = await firestore()
-        .collection('users')
-        .doc(user.uid)
-        .get();
-      
-      const userData = userDoc.data();
-      const authorName = userData?.displayName || user.displayName || 'Anonymous';
-
-      const newComment: Omit<ForumComment, 'id'> = {
+      const commentData = {
         postId,
         authorId: user.uid,
-        authorName,
+        authorName: user.displayName || 'Anonymous',
         content,
-        createdAt: Date.now(),
+        createdAt: firestore.FieldValue.serverTimestamp(),
       };
 
-      // Add the comment to the user's collection
-      const commentRef = await firestore()
-        .collection('users')
-        .doc(user.uid)
-        .collection('app_data')
-        .doc('forum')
-        .collection('comments')
-        .add(newComment);
+      // Try adding to global comments
+      const commentRef = await firestore().collection('globalComments').add(commentData);
       
-      // Update the post's comment count
-      await firestore()
-        .collection('users')
-        .doc(user.uid)
-        .collection('app_data')
-        .doc('forum')
-        .collection('posts')
-        .doc(postId)
-        .update({
-          commentCount: firestore.FieldValue.increment(1)
-        });
+      // Try updating the post's comment count
+      await firestore().collection('globalPosts').doc(postId).update({
+        commentCount: firestore.FieldValue.increment(1)
+      });
       
-      // Update local state
-      const createdComment = { id: commentRef.id, ...newComment } as ForumComment;
-      set(state => {
+      const newComment = {
+        id: commentRef.id,
+        ...commentData,
+        createdAt: Date.now(),
+      } as ForumComment;
+      
+      set((state: ForumState) => {
         const updatedPosts = state.posts.map(post => 
           post.id === postId 
-            ? { ...post, commentCount: post.commentCount + 1 } 
+            ? { ...post, commentCount: (post.commentCount || 0) + 1 } 
             : post
         );
         
         const postComments = state.comments[postId] || [];
         return {
+          ...state,
           posts: updatedPosts,
           comments: {
             ...state.comments,
-            [postId]: [...postComments, createdComment]
+            [postId]: [...postComments, newComment]
           },
           loading: false
         };
       });
     } catch (error) {
-      set({ error: 'Failed to create comment', loading: false });
       console.error('Error creating comment:', error);
+      
+      // Try fallback to user's collection
+      try {
+        const user = auth().currentUser;
+        if (!user) throw new Error('User not authenticated');
+        
+        const commentData = {
+          postId,
+          authorId: user.uid,
+          authorName: user.displayName || 'Anonymous',
+          content,
+          createdAt: firestore.FieldValue.serverTimestamp(),
+        };
+        
+        // Add to user's comments collection
+        const userCommentRef = await firestore()
+          .collection('users')
+          .doc(user.uid)
+          .collection('forumComments')
+          .add(commentData);
+          
+        // Try updating the post's comment count
+        try {
+          await firestore()
+            .collection('users')
+            .doc(user.uid)
+            .collection('forumPosts')
+            .doc(postId)
+            .update({
+              commentCount: firestore.FieldValue.increment(1)
+            });
+        } catch (updateError) {
+          console.log('Could not update comment count, but comment was created');
+        }
+        
+        const newComment = {
+          id: userCommentRef.id,
+          ...commentData,
+          createdAt: Date.now(),
+        } as ForumComment;
+        
+        set((state: ForumState) => {
+          const updatedPosts = state.posts.map(post => 
+            post.id === postId 
+              ? { ...post, commentCount: (post.commentCount || 0) + 1 } 
+              : post
+          );
+          
+          const postComments = state.comments[postId] || [];
+          return {
+            ...state,
+            posts: updatedPosts,
+            comments: {
+              ...state.comments,
+              [postId]: [...postComments, newComment]
+            },
+            loading: false
+          };
+        });
+      } catch (fallbackError) {
+        set({ error: 'Failed to create comment', loading: false });
+        console.error('Fallback error creating comment:', fallbackError);
+      }
     }
   }
 }));
