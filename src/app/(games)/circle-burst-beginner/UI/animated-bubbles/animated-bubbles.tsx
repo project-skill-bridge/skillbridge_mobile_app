@@ -83,3 +83,32 @@ const AnimatedBubble: React.FC<AnimatedBubbleProps> = ({
   // Scale starts at 0.3 (30% of final size)
   const scale = React.useRef(new Animated.Value(0.3)).current;
 
+  /**
+   * Set up and start the bubble animation sequence
+   * Uses useEffect to trigger animation on component mount
+   */
+  React.useEffect(() => {
+    /**
+     * Defines and initiates the animation sequence
+     * Creates a self-repeating animation loop
+     */
+    const startAnimation = () => {
+      Animated.sequence([
+        // Step 1: Wait for the specified delay
+        Animated.delay(delay),
+
+        // Step 2: Run these animations in parallel
+        Animated.parallel([
+          // Position animation - move the bubble upward with slight horizontal variation
+          Animated.timing(bubblePosition, {
+            toValue: {
+              // Add random horizontal drift of ±50px
+              x: startPosition + (Math.random() * 100 - 50),
+              // Move to above the screen
+              y: -100,
+            },
+            duration: duration,
+            easing: Easing.linear, // Constant speed
+            useNativeDriver: true, // Hardware acceleration
+          }),
+
