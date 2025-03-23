@@ -9,19 +9,20 @@ const StreakScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>🔥 Streak Tracker</Text>
-      <CircularProgress
+      <Text style={styles.title}>Your progress</Text>
+      <View style={styles.achievements}><CircularProgress
         value={(progress / maxprogress) * 100}
-        radius={50}
+        radius={55}
         duration={1000}
-        progressValueColor={"#FF4500"}
+        progressValueColor={"#e85454"}
         maxValue={100}
         title={"Progress"}
         titleColor={"#6277bf"}
         titleStyle={{ fontWeight: "bold" }}
-      />
-      <Text style={styles.streakCount}>{progress} Days</Text>
-      <Text style={styles.motivation}>Keep going! You're doing great! 🚀</Text>
+        /></View>
+      <Text style={styles.streakCount}> // Game name</Text>
+      <Text style={styles.streakCount}> Day {progress}</Text>
+      <Text style={styles.txt}>Keep going! You're doing great! 🚀</Text>
       <View style={styles.achievements}>
         <Text style={styles.achievementTitle}>Recent Achievements</Text>
         <Text>✅ --------</Text>
@@ -46,19 +47,22 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 10,
     paddingTop: 20,
+    paddingBottom:20,
     color: "#6277bf"
   },
   streakCount: {
     fontSize: 20,
     fontWeight: "600",
-    color: "#FF4500",
-    marginBottom: 10,
+    color: "#e85454",
+    paddingTop: 15,
+   
   },
-  motivation: {
+  txt: {
     fontSize: 16,
     fontStyle: "italic",
     color: "#555",
     marginBottom: 20,
+    paddingTop: 15,
   },
   achievements: {
     backgroundColor: "#FFF",
@@ -74,5 +78,18 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 5,
-  },
+    textAlign: "center", // Centers text inside the box
+},
+achievements: {
+    backgroundColor: "#FFF",
+    padding: 15,
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
+    width: "80%",
+    alignItems: "center", // Centers all child elements inside this box
+},
+
 });
