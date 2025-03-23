@@ -15,6 +15,12 @@ import com.skillbridge.app.circlobrustGame.circlobrustGameActivities.Level5Activ
 
 class CirclobrustGameModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) , ActivityEventListener {
 
+    private var promise: Promise? = null
+
+    init {
+        reactContext.addActivityEventListener(this) // Score update
+        instance = this // Route management
+    }
 
     companion object {
         private var instance: MyNativeModules? = null
