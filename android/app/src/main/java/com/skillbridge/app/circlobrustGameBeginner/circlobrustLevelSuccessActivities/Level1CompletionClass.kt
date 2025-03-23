@@ -91,4 +91,21 @@ class Level1CompletionClass : AppCompatActivity() {
     }
 
 
+    /* ================ Navigation Section ================ 
+     * Methods for navigating between screens and passing data
+     */
+    fun emitNavigateToActivity2() {
+        MyNativeModules.getInstance()?.emitNavigateToActivity2() // Signal React Native to navigate to Level 2
+    }
+
+    override fun onBackPressed() {
+        // Don't allow multiple results to be emitted
+        val intent = Intent() // Create result intent
+        intent.putExtra("FINAL_SCORE", 0) // Reset score when exiting
+        intent.putExtra("LEVEL", 2) // Indicate next level
+        setResult(RESULT_OK, intent) // Set activity result
+        MyNativeModules.getInstance()?.emitActivity2Result(score, LEVEL, "00:00", 0) // Signal React Native
+        finish() // Close this activity
+    }
+
 }
