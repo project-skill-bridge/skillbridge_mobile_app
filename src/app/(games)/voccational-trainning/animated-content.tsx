@@ -19,6 +19,25 @@ export interface StepsProps {
 }
 
 /**
+ * AnimatedContent component
+ * Displays a step-by-step vocational training guide with animations and voice narration
+ *
+ * @param {StepsProps} props - Contains the steps array with text, images, and descriptions
+ * @returns {JSX.Element} Rendered component
+ */
+const AnimatedContent = ({ steps }: StepsProps) => {
+  const router = useRouter();
+  const [stepNo, setStepNo] = useState(0);
+  const scale = useSharedValue(1);
+
+  /**
+   * Creates animated style for the image scaling effect
+   */
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }));
+
+/**
  * Component styles
  */
 const styles = StyleSheet.create({
