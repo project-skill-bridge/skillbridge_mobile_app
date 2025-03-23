@@ -74,4 +74,9 @@ class Level5LostActivityClass : AppCompatActivity() {
             .into(gifViewloss) // Display in the ImageView
 
 
+        playOneTimeSound(R.raw.loss) // Play initial defeat sound
+        playLoopingSound(R.raw.loss_loop) // Start looping sad music
+
+    }
+
 }
