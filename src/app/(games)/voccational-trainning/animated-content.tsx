@@ -65,6 +65,11 @@ const AnimatedContent = ({ steps }: StepsProps) => {
             contentFit="contain"
           />
         </Animated.View>
+
+        <TypeWriter style={styles.stepDes} typing={1}>
+          {steps[stepNo].description}
+        </TypeWriter>
+
 /**
  * Component styles
  */
