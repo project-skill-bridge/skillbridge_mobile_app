@@ -177,3 +177,55 @@ const AnimatedBubble: React.FC<AnimatedBubbleProps> = ({
   );
 };
 
+/* ================ STYLES ================ */
+/**
+ * Base styles for individual bubbles
+ */
+const styles = StyleSheet.create({
+  bubble: {
+    position: "absolute", // Allow positioning anywhere within container
+    backgroundColor: "#6979c9", // Soft blue color for bubbles
+    opacity: 0.5, // Base opacity (further modified by animation)
+  },
+});
+
+/* ================ MAIN COMPONENT ================ */
+/**
+ * AnimatedBubbles - Container component that renders multiple bubbles
+ *
+ * Creates a field of floating bubbles with randomized properties for
+ * a dynamic, lively background effect.
+ *
+ * @param {AnimatedBubblesProps} props - Component configuration
+ * @returns {JSX.Element} Container with multiple animated bubbles
+ */
+const AnimatedBubbles: React.FC<AnimatedBubblesProps> = ({
+  numberOfBubbles = 15, // Default to 15 bubbles if not specified
+}) => {
+  // Generate random horizontal positions for all bubbles
+  // Using useMemo to avoid regenerating positions on every render
+  const bubblePositions = React.useMemo(
+    () =>
+      Array.from(
+        { length: numberOfBubbles },
+        // Random position anywhere along screen width
+        () => Math.random() * width
+      ),
+    [numberOfBubbles] // Regenerate only if bubble count changes
+  );
+
+  return (
+    <View style={bubblesContainerStyle.bubblesContainer}>
+      {/* Map each position to a bubble component with randomized properties */}
+      {bubblePositions.map((position, index) => (
+        <AnimatedBubble
+          key={index}
+          size={10 + Math.random() * 50} // Random size between 10-60px
+          delay={index * 200} // Stagger start times by 200ms per bubble
+          duration={5000 + Math.random() * 5000} // Random duration between 5-10 seconds
+          startPosition={position}
+        />
+      ))}
+    </View>
+  );
+};
