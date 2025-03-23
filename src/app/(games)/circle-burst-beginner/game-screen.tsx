@@ -1024,3 +1024,12 @@ const styles = StyleSheet.create({
     opacity: 0.5, // Semi-transparent
   },
 
+  /* Header Styles */
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    paddingBottom: 20,
+    zIndex: 10, // Above background elements
+  },
