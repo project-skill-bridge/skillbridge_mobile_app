@@ -81,4 +81,18 @@ class Level5CompletionClass : AppCompatActivity() {
         mediaPlayerLoop = null // Clear reference
     }
 
+    /* ================ Navigation Section ================ 
+     * Methods for navigating back to game menu
+     * Communicates completion status to React Native layer
+     */
+    override fun onBackPressed() {
+        // Don't allow multiple results to be emitted
+        val intent = Intent() // Create result intent
+        intent.putExtra("FINAL_SCORE", 0) // Reset score when exiting
+        intent.putExtra("LEVEL", 1) // Indicate return to level 1 (game complete)
+        setResult(RESULT_OK, intent) // Set activity result
+        MyNativeModules.getInstance()?.emitActivity2Result(score, LEVEL, "00:00", 0) // Signal React Native
+        finish() // Close this activity
+    }
+
 }
