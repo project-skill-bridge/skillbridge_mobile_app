@@ -86,4 +86,22 @@ class Level3CompletionClass : AppCompatActivity() {
         mediaPlayerLoop = null // Clear reference
     }
 
+    /* ================ Navigation Section ================ 
+     * Methods for navigating between game levels and screens
+     * Communicates with React Native layer through native modules
+     */
+    fun emitNavigateToActivity4() {
+        MyNativeModules.getInstance()?.emitNavigateToActivity4() // Signal React Native to navigate to Level 4
+    }
+
+    override fun onBackPressed() {
+        // Don't allow multiple results to be emitted
+        val intent = Intent() // Create result intent
+        intent.putExtra("FINAL_SCORE", 0) // Reset score when exiting
+        intent.putExtra("LEVEL", 4) // Indicate next level
+        setResult(RESULT_OK, intent) // Set activity result
+        MyNativeModules.getInstance()?.emitActivity2Result(score, LEVEL, "00:00", 0) // Signal React Native
+        finish() // Close this activity
+    }
+
 }
