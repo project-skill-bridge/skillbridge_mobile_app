@@ -154,3 +154,26 @@ const AnimatedLogo = () => {
       ])
     ).start();
 
+    // Hand rotation animation - complete 360° rotation
+    Animated.loop(
+      Animated.timing(handRotateAnim, {
+        toValue: 1, // Represents a full rotation (mapped to 360° via interpolation)
+        duration: 8000, // 8 seconds for one full rotation
+        easing: Easing.linear, // Constant speed rotation
+        useNativeDriver: true,
+      })
+    ).start();
+
+    // Banner shine animation - sweeping highlight effect
+    Animated.loop(
+      Animated.timing(bannerShineAnim, {
+        toValue: width, // Move from left edge (-width) to right edge (width)
+        duration: 3000, // 3 seconds for the shine to sweep across
+        easing: Easing.ease, // Slight acceleration/deceleration
+        useNativeDriver: true,
+        delay: 2000, // Wait 2 seconds between shine animations
+      })
+    ).start();
+
+    // No cleanup needed - animations stop automatically on unmount
+  }, []);
