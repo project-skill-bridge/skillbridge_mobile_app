@@ -127,9 +127,9 @@ const ProgressScreen = () => {
       <Text style={styles.streakCount}>Tap and type</Text>
 
       <Spacer size={30} />
-      
+
 <Text style={styles.txt}>Take your time</Text>
-<Text style={styles.txt}>You're doing great 🚀</Text>
+<Text style={styles.txt}>You're doing great </Text>
     </View>
   );
 };
@@ -171,11 +171,11 @@ const styles = StyleSheet.create({
   image:{
     width: 150,
     height:150,
-    paddingTop: 287,
-    left: 20,
+    paddingTop: 300,
+    left: 10,
     resizeMode: "contain",
     position: "absolute",
-    transform: [{rotate: "-16deg"}]
+    transform: [{rotate: "-17deg"}]
 
   },
   achievementTitle: {
