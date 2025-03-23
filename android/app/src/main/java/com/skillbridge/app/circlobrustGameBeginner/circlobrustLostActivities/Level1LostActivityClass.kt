@@ -73,4 +73,13 @@ class Level1LostActivityClass : AppCompatActivity() {
         Glide.with(this)
             .load(gifUriloss) // Load the loss animation GIF
             .into(gifViewloss) // Display in the ImageView
+
+        playOneTimeSound(R.raw.loss) // Play initial defeat sound
+        playLoopingSound(R.raw.loss_loop) // Start looping sad music
+    }
+
+    /* ================ Sound Management Section ================ 
+     * Methods for controlling background music and defeat sound effects
+     * Handles both one-time and looping playback patterns
+     */
 }
