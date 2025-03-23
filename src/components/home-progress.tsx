@@ -61,20 +61,16 @@ const HomeProgress = () => {
         });
 
         //   // Calculate the average progress
-        //   const avgProgress = gameCount > 0 ? totalProgress / gameCount : 0;
-        //   setAverageProgress(avgProgress);
-        // } else {
-        //   console.log("No games found!");
-        // }
-      } catch (error) {
-        console.error("Error getting games:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+           const avgProgress = gameCount > 0 ? totalProgress / gameCount : 0;
+           setAverageProgress(avgProgress);
+           } else {
+           console.log("No games found!");
+         }
+         
+      
 
-    fetchGameProgress();
-  }, []);
+    //fetchGameProgress();
+  //}, []);
 
 
   // // Total number of levels in your game
