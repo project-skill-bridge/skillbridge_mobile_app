@@ -517,6 +517,27 @@ export default function GameScreen() {
     "Montserrat-SemiBold": Fonts.Coiny,
   });
 
+  /**
+   * Handles cleanup when navigating away from screen
+   * Ensures audio resources are properly released
+   */
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("beforeRemove", async () => {
+      try {
+        if (soundRef.current) {
+          await soundRef.current.stopAsync();
+          await soundRef.current.unloadAsync();
+          soundRef.current = undefined;
+          Speech.stop();
+        }
+      } catch (error) {
+        console.log("Navigation cleanup error:", error);
+      }
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
 
 export default function GameScreen(): JSX.Element {
   const router = useRouter();
