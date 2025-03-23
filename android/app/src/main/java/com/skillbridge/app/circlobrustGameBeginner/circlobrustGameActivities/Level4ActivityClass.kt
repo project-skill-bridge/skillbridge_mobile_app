@@ -16,7 +16,7 @@ import androidx.appcompat.app.AlertDialog
 import android.media.MediaPlayer
 import com.skillbridge.app.circlobrustGameBeginner.circlobrustLevelSuccessActivities.Level4CompletionClass
 import com.skillbridge.app.circlobrustGameBeginner.circlobrustLostActivities.Level4LostActivityClass
-import com.skillbridge.app.circlobrustGameBeginner.MyNativeModules
+import com.skillbridge.app.circlobrustGameBeginner.circlobrustModule.CirclobrustBeginnerGameModule
 import com.skillbridge.app.R
 
 
@@ -224,7 +224,7 @@ class Level4ActivityClass : AppCompatActivity() {
                 putExtra("AUDIO_POSITION", audioPosition) // Return audio position
             }
             setResult(RESULT_OK, intent)
-            MyNativeModules.getInstance()?.emitActivity2Result(score, LEVEL, formattedTime, audioPosition) // Signal to React Native
+            CirclobrustBeginnerGameModule.getInstance()?.emitActivity2Result(score, LEVEL, formattedTime, audioPosition) // Signal to React Native
             finish()
             dialog.dismiss() // Close dialog
         }
