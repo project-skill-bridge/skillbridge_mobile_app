@@ -54,4 +54,17 @@ class HandIdentifier (
                 .build() // Finalize options
 
             handLandmarker = HandLandmarker.createFromOptions(context, options) // Create detector with options
+        } catch (e: Exception) {
+            handLandmarkerHelperListener.onError( // Report initialization error
+                "Hand Landmarker failed to initialize: ${e.message}"
+            )
+            Log.e(TAG, "MP initialization error: ${e.message}") // Log the error
+        }
+    }
+
+    fun clearHandLandmarker() {
+        handLandmarker?.close() // Release model resources
+        handLandmarker = null // Clear reference
+    }
+
 }
