@@ -244,3 +244,21 @@ class Level3ActivityClass : AppCompatActivity() {
         return "$secondsFormatted:$millisecondsFormatted" // Return formatted time string
     }
 
+    /* ================ Cleanup Section ================ 
+     * Resource management and proper disposal of system resources
+     */
+    override fun onDestroy() {
+        super.onDestroy()
+
+        mediaPlayer?.let {
+            if (it.isPlaying) {
+                it.stop() // Stop playback if still active
+            }
+            it.release() // Release media player resources
+        }
+        mediaPlayer = null // Clear reference
+        timerJob?.cancel() // Cancel timer coroutines
+        countdownJob?.cancel()
+    }
+}
+
