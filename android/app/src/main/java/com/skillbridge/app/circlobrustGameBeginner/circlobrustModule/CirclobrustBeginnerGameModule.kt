@@ -23,9 +23,9 @@ class CirclobrustBeginnerGameModule(reactContext: ReactApplicationContext) : Rea
     }
 
     companion object {
-        private var instance: MyNativeModules? = null
+        private var instance: CirclobrustBeginnerGameModule? = null
 
-        fun getInstance(): MyNativeModules? {
+        fun getInstance(): CirclobrustBeginnerGameModule? {
             return instance
         }
     }
