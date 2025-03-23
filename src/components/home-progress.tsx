@@ -41,11 +41,11 @@ const HomeProgress = () => {
           console.log("No user document found!");
           return;
         }
- //console.log(`User ID: ${user.uid}`, userDocSnap.data());
+        //console.log(`User ID: ${user.uid}`, userDocSnap.data());
 
         // Reference to 'games' subcollection for this user
-        const gamesCollectionRef = collection(userDocRef, "games");
-        const gamesSnapshot = await getDocs(gamesCollectionRef);
+        //const gamesCollectionRef = collection(userDocRef, "games");
+        //const gamesSnapshot = await getDocs(gamesCollectionRef);
 
         let totalProgress = 0;
         let gameCount = 0;
