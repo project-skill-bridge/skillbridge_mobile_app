@@ -97,4 +97,11 @@ class Level2LostActivityClass : AppCompatActivity() {
         mediaPlayerLoop?.start() // Start playing
     }
 
+    private fun stopLoopingSound() {
+        mediaPlayerLoop?.stop() // Stop playback if active
+        mediaPlayerLoop?.release() // Release resources
+        mediaPlayerLoop = null // Clear reference
+    }
+
+    /* ================ UI Update Section ================ 
 }
