@@ -16,7 +16,7 @@ import androidx.appcompat.app.AlertDialog
 import android.media.MediaPlayer
 import com.skillbridge.app.circlobrustGameBeginner.circlobrustLevelSuccessActivities.Level1CompletionClass
 import com.skillbridge.app.circlobrustGameBeginner.circlobrustLostActivities.Level1LostActivityClass
-import  com.skillbridge.app.circlobrustGameBeginner.MyNativeModules
+import  com.skillbridge.app.circlobrustGameBeginner.circlobrustModule.CirclobrustBeginnerGameModule
 import com.skillbridge.app.R
 
 
@@ -67,7 +67,7 @@ class Level1ActivityClass : AppCompatActivity() {
                     lifecycleScope.launch {
                         if (!gameEnded) {
                             gameEnded = true
-                            if (score < 15) goToLevel1LossActivity() // Fail if score too low
+                            if (score < 10) goToLevel1LossActivity() // Fail if score too low
                             else goToLevel1CompleteActivity() // Success otherwise
                         }
                     }
@@ -164,7 +164,7 @@ class Level1ActivityClass : AppCompatActivity() {
 
             if (!gameEnded) {
                 gameEnded = true
-                if (score < 15) {
+                if (score < 10) {
                     goToLevel1LossActivity() // Fail if score too low
                 } else {
                     goToLevel1CompleteActivity() // Success if score high enough
@@ -177,7 +177,7 @@ class Level1ActivityClass : AppCompatActivity() {
      * Core game mechanics including score tracking and level completion
      */
     private fun checkScore() {
-        if (score >= 15 && !gameEnded) { // Check for target score
+        if (score >= 10 && !gameEnded) { // Check for target score
             gameEnded = true
             countdownJob?.cancel() // Stop countdown on success
             goToLevel1CompleteActivity() // Navigate to success screen
@@ -231,7 +231,7 @@ class Level1ActivityClass : AppCompatActivity() {
                 putExtra("AUDIO_POSITION", audioPosition) // Return audio position
             }
             setResult(RESULT_OK, intent)
-            MyNativeModules.getInstance()?.emitActivity2Result(score, LEVEL, formattedTime, audioPosition) // Signal to React Native
+            CirclobrustBeginnerGameModule.getInstance()?.emitActivity2Result(score, LEVEL, formattedTime, audioPosition) // Signal to React Native
             finish()
             dialog.dismiss() // Close dialog
         }

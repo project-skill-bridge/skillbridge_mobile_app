@@ -1,10 +1,10 @@
-package com.skillbridge.app.circlobrustGameBeginner
+package com.skillbridge.app
 
 import com.facebook.react.ReactPackage
 import com.facebook.react.bridge.NativeModule
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.uimanager.ViewManager
-import com.skillbridge.app.circlobrustGameBeginner.CirclobrustBeginnerGameModule
+import com.skillbridge.app.circlobrustGameBeginner.circlobrustModule.CirclobrustBeginnerGameModule
 
 
 class GamePackageBeginnerLevel : ReactPackage {

@@ -31,7 +31,7 @@ class CirclobrustBeginnerGameModule(reactContext: ReactApplicationContext) : Rea
     }
 
     override fun getName(): String {
-        return "BeginnerGameModule"
+        return "CirclobrustBeginnerGameModule"
     }
 
     @ReactMethod

@@ -75,10 +75,10 @@ const { width, height } = Dimensions.get("window");
 /* ================ NATIVE MODULE SETUP ================ */
 /**
  * Access to native code functionality through the bridge
- * BeginnerGameModule provides methods to launch different game activities
+ * CirclobrustBeginnerGameModule provides methods to launch different game activities
  */
-const { BeginnerGameModule } = NativeModules;
-const eventEmitter = new NativeEventEmitter(BeginnerGameModule);
+const { CirclobrustBeginnerGameModule } = NativeModules;
+const eventEmitter = new NativeEventEmitter(CirclobrustBeginnerGameModule);
 
 /* ================ GAME LEVEL CONFIGURATION ================ */
 /**
@@ -161,10 +161,10 @@ export default function GameScreen() {
     try {
       // Dynamically construct the method name based on activity number
       const methodName =
-        `showActivity${activityNumber}Screen` as keyof typeof BeginnerGameModule;
+        `showActivity${activityNumber}Screen` as keyof typeof CirclobrustBeginnerGameModule;
 
       // Call the native method with current game state
-      const result = await BeginnerGameModule[methodName](
+      const result = await CirclobrustBeginnerGameModule[methodName](
         score,
         formattedTime,
         audioPosition
@@ -956,7 +956,7 @@ export default function GameScreen() {
 
             {/* SVG Background Decoration */}
             <ImageBackground
-              source={Images.circlobrustMainScreen} 
+              source={Images.circlobrustMainScreen}
               style={styles.imageBackground}
               resizeMode="cover"
             >

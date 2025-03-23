@@ -14,8 +14,6 @@
         android:layout_height="match_parent">
 
         <!-- Background Animations -->
-
-
         <ImageView
             android:id="@+id/gifViewlevel1"
             android:layout_width="0dp"

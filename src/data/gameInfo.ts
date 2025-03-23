@@ -8,7 +8,7 @@ export const gameInfo = [
   },
   {
     id: 2,
-    path: "/circle-burst-beginner/game-screen",
+    path: "/circle-burst-advanced/game-screen",
     image: Images.game2,
   },
   {
@@ -24,8 +24,9 @@ export const gameInfo = [
   },
   {
     id: 5,
-    path: "/circle-burst-advanced/game-screen",
-    image: Images.game2,
-  },
+    path:"/circle-burst-beginner/game-screen",
+    image: Images.game5,
+  }
+  
 
 ] as const;

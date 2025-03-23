@@ -13,7 +13,7 @@ import com.facebook.react.bridge.ReactApplicationContext // For React Native int
 import com.facebook.react.bridge.ReactContext // For React Native context
 import com.facebook.react.modules.core.DeviceEventManagerModule // For sending events to React Native
 import android.media.MediaPlayer // For sound playback
-import  com.skillbridge.app.circlobrustGameBeginner.MyNativeModules // Custom bridge to React Native
+import  com.skillbridge.app.circlobrustGameBeginner.circlobrustModule.CirclobrustBeginnerGameModule // Custom bridge to React Native
 import com.skillbridge.app.R // Resource references
 
 /* ================ Activity Class Section ================ 
@@ -95,7 +95,7 @@ class Level1CompletionClass : AppCompatActivity() {
      * Methods for navigating between screens and passing data
      */
     fun emitNavigateToActivity2() {
-        MyNativeModules.getInstance()?.emitNavigateToActivity2() // Signal React Native to navigate to Level 2
+        CirclobrustBeginnerGameModule.getInstance()?.emitNavigateToActivity2() // Signal React Native to navigate to Level 2
     }
 
     override fun onBackPressed() {
@@ -104,7 +104,7 @@ class Level1CompletionClass : AppCompatActivity() {
         intent.putExtra("FINAL_SCORE", 0) // Reset score when exiting
         intent.putExtra("LEVEL", 2) // Indicate next level
         setResult(RESULT_OK, intent) // Set activity result
-        MyNativeModules.getInstance()?.emitActivity2Result(score, LEVEL, "00:00", 0) // Signal React Native
+        CirclobrustBeginnerGameModule.getInstance()?.emitActivity2Result(score, LEVEL, "00:00", 0) // Signal React Native
         finish() // Close this activity
     }
 
