@@ -79,11 +79,11 @@ const HomeProgress = () => {
     }, []);
 
 
-  // // Total number of levels in your game
-  // const totalLevels = 5;
+  //  This should dynamically reflect game progress
+     const completedLevels = 2;
 
-  // // This should dynamically reflect game progress
-  // const completedLevels = 2;
+  //  This should dynamically reflect game progress
+  //  const completedLevels = 2;
 
   // Calculate and cap progress percentage
   //const rawPercentage = (completedLevels / totalLevels) * 100;
