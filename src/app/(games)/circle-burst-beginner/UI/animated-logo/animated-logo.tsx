@@ -307,3 +307,12 @@ const styles = StyleSheet.create({
     transform: [{ rotate: "45deg" }], // Angled diagonal shine
   },
 
+  /* Content Layout Styles */
+  bannerContent: {
+    flexDirection: "row", // Arrange elements horizontally
+    alignItems: "center", // Center vertically
+    justifyContent: "center", // Center horizontally
+    width: "100%",
+    paddingHorizontal: 20,
+  },
+
