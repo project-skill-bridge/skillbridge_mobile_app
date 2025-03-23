@@ -44,8 +44,8 @@ class Level1ActivityClass : AppCompatActivity() {
      * Configuration values for the game level
      */
     companion object {
-        private const val LEVEL = 1
-        private const val DEFAULT_AUDIO_DURATION_MS = 30000L
+        private const val LEVEL = 1 // Current level identifier
+        private const val DEFAULT_AUDIO_DURATION_MS = 30000L // Fallback duration for music
     }
 
 
