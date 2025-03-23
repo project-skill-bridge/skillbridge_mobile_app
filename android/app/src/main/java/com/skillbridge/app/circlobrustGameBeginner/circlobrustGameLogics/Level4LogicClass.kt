@@ -207,4 +207,68 @@ class Level4LogicClass @JvmOverloads constructor(
         circles.removeAll { it.isPopped } // Remove all popped circles
     }
 
+    /* ================ Drawing Section ================ 
+     * Rendering methods for game elements and hand tracking
+     * Applies rotation transformations to circles for visual effects
+     */
+    override fun draw(canvas: Canvas) {
+        super.draw(canvas) // Draw base class content (background)
+
+        results?.let { handLandmarkerResult ->
+            for (landmark in handLandmarkerResult.landmarks()) { // For each detected hand
+                for ((index, normalizedLandmark) in landmark.withIndex()) {
+                    val x = normalizedLandmark.x() * imageWidth * scaleFactor // Convert to screen coordinates
+                    val y = normalizedLandmark.y() * imageHeight * scaleFactor // Convert to screen coordinates
+                    canvas.drawPoint(x, y, pointPaint) // Draw all hand landmarks
+
+                    if (index == 8) { // Index fingertip (landmark 8)
+                        canvas.drawCircle(x, y, 30f, pointPaint) // Highlight fingertip with larger circle
+                    }
+                }
+
+                HandLandmarker.HAND_CONNECTIONS.forEach { // Draw lines between landmarks
+                    canvas.drawLine(
+                        landmark[it.start()].x() * imageWidth * scaleFactor, // Start X
+                        landmark[it.start()].y() * imageHeight * scaleFactor, // Start Y
+                        landmark[it.end()].x() * imageWidth * scaleFactor, // End X
+                        landmark[it.end()].y() * imageHeight * scaleFactor, // End Y
+                        linePaint // Use configured line paint
+                    )
+                }
+            }
+        }
+        drawCircle(canvas) // Draw the game circles
+    }
+
+    private fun drawCircle(canvas: Canvas) {
+        circles.forEach { circle ->
+            if (!circle.isPopped) { // Only draw active circles
+                circlePaint.color = circle.color // Set current circle color
+                
+                // Save the canvas state before applying transformations
+                canvas.save() // Store current canvas state
+                
+                // Translate to the circle's center
+                canvas.translate(circle.x, circle.y) // Move canvas origin to circle center
+                
+                // Apply rotation around the center
+                canvas.rotate(circle.rotation) // Rotate canvas by circle's rotation angle
+                
+                // Draw the circle
+                canvas.drawCircle(0f, 0f, circle.radius, circlePaint) // Draw at translated origin (center)
+                
+                // Draw a line to show rotation (optional)
+                val linePaint = Paint().apply { // Create paint for rotation indicator
+                    color = Color.WHITE // White line
+                    strokeWidth = 5f // Line thickness
+                    style = Paint.Style.STROKE // Outline-only style
+                }
+                canvas.drawLine(0f, 0f, 0f, -circle.radius, linePaint) // Draw line from center to top
+                
+                // Restore canvas to its original state
+                canvas.restore() // Reset transformations
+            }
+        }
+    }
+
 }
