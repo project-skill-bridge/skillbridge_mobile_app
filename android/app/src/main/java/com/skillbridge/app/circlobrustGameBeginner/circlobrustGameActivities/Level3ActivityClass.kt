@@ -1,8 +1,3 @@
-package com.skillbridge.app.circlobrustGame.circlobrustGameActivities
-
-class Level3ActivityCB {
-}}
-
 package com.skillbridge.app.circlobrustGameBeginner.circlobrustGameActivities
 
 // Imports for Android components, UI elements, media playback, coroutines and navigation functionality
@@ -43,4 +38,12 @@ class Level3ActivityClass : AppCompatActivity() {
     private var countdownJob: Job? = null // Coroutine job for level countdown
 
     private var gameEnded = false // Flag to prevent multiple game over triggers
+
+    /* ================ Constants Section ================ 
+     * Configuration values for the game level
+     */
+    companion object {
+        private const val LEVEL = 3 // Current level identifier
+        private const val DEFAULT_AUDIO_DURATION_MS = 30000L // Default time limit if audio loading fails
+    }
 
