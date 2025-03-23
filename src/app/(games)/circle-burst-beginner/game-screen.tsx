@@ -441,6 +441,61 @@ export default function GameScreen() {
     loadSavedGame();
   }, [hasFetchedData]); // Dependency ensures this runs once when component mounts
 
+  /* ================ NAVIGATION HANDLERS ================ */
+  /**
+   * Handles navigation to home screen when navigationKey changes
+   * Stops speech and audio before navigating
+   */
+  useEffect(() => {
+    if (navigationKey > 0) {
+      router.push("/home");
+      Speech.stop();
+    }
+  }, [navigationKey]);
+
+  /**
+   * Sets up event listeners for navigation between different game activities
+   * Allows the native code to request specific level launches
+   */
+  useEffect(() => {
+    // Register listeners for each activity navigation event
+    const subscription1 = eventEmitter.addListener(
+      "NavigateToActivity1",
+      openLoginScreen
+    );
+    const subscription2 = eventEmitter.addListener(
+      "NavigateToActivity2",
+      openActivity2Screen
+    );
+    const subscription3 = eventEmitter.addListener(
+      "NavigateToActivity3",
+      openActivity3Screen
+    );
+    const subscription4 = eventEmitter.addListener(
+      "NavigateToActivity4",
+      openActivity4Screen
+    );
+    const subscription5 = eventEmitter.addListener(
+      "NavigateToActivity5",
+      openActivity5Screen
+    );
+
+    // Cleanup all subscriptions on unmount
+    return () => {
+      subscription1.remove();
+      subscription2.remove();
+      subscription3.remove();
+      subscription4.remove();
+      subscription5.remove();
+    };
+  }, [
+    openLoginScreen,
+    openActivity2Screen,
+    openActivity3Screen,
+    openActivity4Screen,
+    openActivity5Screen,
+  ]);
+
 
 export default function GameScreen(): JSX.Element {
   const router = useRouter();
