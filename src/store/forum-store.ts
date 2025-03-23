@@ -105,7 +105,7 @@ export const useForumStore = create<ForumState & {
       
       // Add to the nested collection structure matching your security rules
       await firestore()
-      .collection('forum')
+      .collection('forum/posts')
       .doc(postId) 
       .set(postData);
         
