@@ -802,6 +802,16 @@ export default function GameScreen() {
       })
     ).start();
 
+    // Wave animation - for bottom gradient
+    Animated.loop(
+      Animated.timing(waveAnim, {
+        toValue: 1,
+        duration: 2000,
+        easing: Easing.inOut(Easing.ease),
+        useNativeDriver: true,
+      })
+    ).start();
+
 
 export default function GameScreen(): JSX.Element {
   const router = useRouter();
