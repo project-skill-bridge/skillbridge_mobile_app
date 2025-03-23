@@ -48,4 +48,58 @@ class Level2ActivityClass : AppCompatActivity() {
         private const val DEFAULT_AUDIO_DURATION_MS = 30000L // Fallback duration if media player fails
     }
 
+    /* ================ Activity Lifecycle Section ================ 
+     * Methods for controlling the activity lifecycle - creation, destruction
+     */
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        val audioPosition = intent.getIntExtra("AUDIO_POSITION", 0) // Retrieve previous position if returning from another level
+
+        try {
+            mediaPlayer = MediaPlayer.create(this, R.raw.background_music).apply {
+                isLooping = false
+                seekTo(audioPosition) // Resume from previous position
+                start()
+
+
+                setOnCompletionListener { mp ->
+                    lifecycleScope.launch {
+                        if (score < 12 && !gameEnded) {
+                            gameEnded = true
+                            goToLevel2LossActivity() // End game if music ends and score target not reached
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        val fragment = CameraPanel.newInstance(CameraPanel.ACTIVITY2)
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .commit()
+
+        binding.levelNumberView.text = "$LEVEL"
+
+
+        score = intent.getIntExtra("INITIAL_SCORE", 0) // Restore previous score if coming from another activity
+        val timeString = intent.getStringExtra("FORMATTED_TIME") ?: "00:00"
+        val (seconds, millis) = parseTimeString(timeString)
+        timeInSeconds = seconds
+        milliseconds = millis
+
+        updateScoreInUi()
+        updateTimeInUi()
+
+        startTimer()
+        startCountdownTimer()
+
+        binding.playButton.setOnClickListener {
+            onBackPressed() // Show exit confirmation dialog
+        }
+    }
+
 }
