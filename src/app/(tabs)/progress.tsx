@@ -86,6 +86,10 @@ const ProgressScreen = () => {
         console.log(`Total Progress for Game 1: ${progressGame1}%`);
         console.log(`Total Progress for Game 2: ${progressGame2}%`);
 
+        // If you're using React state, update it
+        setgame1Progress(progressGame1);
+        setgame2Progress(progressGame2);
+
 
       }catch (error) {
 
