@@ -8,6 +8,14 @@
   <uses-permission android:name="android.permission.VIBRATE"/>
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
   <uses-feature android:name="android.hardware.camera"/>
+  <!-- Enable instant app support -->
+  <dist:module dist:instant="true" />
+
+
+  <!-- Declare features -->
+  <uses-feature android:name="android.hardware.camera" />
+
+
   <queries>
     <intent>
       <action android:name="android.intent.action.VIEW"/>
