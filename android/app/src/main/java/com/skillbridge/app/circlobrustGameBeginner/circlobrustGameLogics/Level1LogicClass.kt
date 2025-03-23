@@ -136,4 +136,22 @@ class Level1LogicClass @JvmOverloads constructor(
                 circle.y += circle.velocity // Move downward
             }
             
+            // Check if balloon moved off screen
+            if ((circle.isMovingUp && circle.y + circle.radius < 0) || // Off top
+                (!circle.isMovingUp && circle.y - circle.radius > height)) { // Off bottom
+                
+                // Reset position based on direction
+                if (circle.isMovingUp) {
+                    circle.y = height + circle.radius // Reset to bottom
+                } else {
+                    circle.y = -circle.radius // Reset to top
+                }
+                
+                // Randomize X position when resetting
+                circle.x = (0f + circle.radius..width - circle.radius).randomFloat() // New horizontal position
+            }
+        }
+        invalidate() // Request redraw with updated positions
+    }
+
 }
