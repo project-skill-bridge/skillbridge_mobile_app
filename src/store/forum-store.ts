@@ -1,4 +1,4 @@
-// Updated forum-store.ts implementation that works with existing security rules
+// src/store/forum-store.ts - Updated to work with existing permissions
 import { create } from 'zustand';
 import { ForumPost, ForumComment } from '../types/forum-types';
 import firestore from '@react-native-firebase/firestore';
@@ -25,16 +25,17 @@ export const useForumStore = create<ForumStore>((set, get) => ({
   fetchPosts: async () => {
     set({ loading: true, error: null });
     try {
-      // Get current user
       const user = auth().currentUser;
       if (!user) {
         throw new Error('User not authenticated');
       }
-
-      // Access the global forum posts collection through a different path
-      // that your security rules might already allow
+      
+      // Access the global posts collection
+      // This assumes you have a collection in users/{currentUser}/app_data/forum/posts
       const postsSnapshot = await firestore()
-        .collection('public')
+        .collection('users')
+        .doc(user.uid)
+        .collection('app_data')
         .doc('forum')
         .collection('posts')
         .orderBy('createdAt', 'desc')
@@ -59,15 +60,16 @@ export const useForumStore = create<ForumStore>((set, get) => ({
   fetchComments: async (postId: string) => {
     set({ loading: true, error: null });
     try {
-      // Get current user
       const user = auth().currentUser;
       if (!user) {
         throw new Error('User not authenticated');
       }
-
-      // Access comments through the public collection
+      
+      // Access comments through user's document
       const commentsSnapshot = await firestore()
-        .collection('public')
+        .collection('users')
+        .doc(user.uid)
+        .collection('app_data')
         .doc('forum')
         .collection('comments')
         .where('postId', '==', postId)
@@ -100,12 +102,11 @@ export const useForumStore = create<ForumStore>((set, get) => ({
     set({ loading: true, error: null });
     try {
       const user = auth().currentUser;
-      
       if (!user) {
         throw new Error('User not authenticated');
       }
 
-      // Get user data from the user's document
+      // Get user data
       const userDoc = await firestore()
         .collection('users')
         .doc(user.uid)
@@ -123,9 +124,11 @@ export const useForumStore = create<ForumStore>((set, get) => ({
         commentCount: 0,
       };
 
-      // Store the post in the public forum collection
+      // Store the post in the user's collection
       const docRef = await firestore()
-        .collection('public')
+        .collection('users')
+        .doc(user.uid)
+        .collection('app_data')
         .doc('forum')
         .collection('posts')
         .add(newPost);
@@ -149,7 +152,6 @@ export const useForumStore = create<ForumStore>((set, get) => ({
     set({ loading: true, error: null });
     try {
       const user = auth().currentUser;
-      
       if (!user) {
         throw new Error('User not authenticated');
       }
@@ -171,16 +173,20 @@ export const useForumStore = create<ForumStore>((set, get) => ({
         createdAt: Date.now(),
       };
 
-      // Add the comment to the public forum collection
+      // Add the comment to the user's collection
       const commentRef = await firestore()
-        .collection('public')
+        .collection('users')
+        .doc(user.uid)
+        .collection('app_data')
         .doc('forum')
         .collection('comments')
         .add(newComment);
       
       // Update the post's comment count
       await firestore()
-        .collection('public')
+        .collection('users')
+        .doc(user.uid)
+        .collection('app_data')
         .doc('forum')
         .collection('posts')
         .doc(postId)
