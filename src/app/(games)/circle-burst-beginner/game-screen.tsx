@@ -812,6 +812,18 @@ export default function GameScreen() {
       })
     ).start();
 
+    // Banner shine animation - sliding highlight effect
+    Animated.loop(
+      Animated.timing(bannerShineAnim, {
+        toValue: width,
+        duration: 3000,
+        easing: Easing.ease,
+        useNativeDriver: true,
+        delay: 2000, // Wait between shine effects
+      })
+    ).start();
+  }, []);
+
 
 export default function GameScreen(): JSX.Element {
   const router = useRouter();
