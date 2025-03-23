@@ -275,3 +275,22 @@ const styles = StyleSheet.create({
   },
 
   /* Main Logo Banner Styles */
+  logoBox: {
+    width: "100%",
+    aspectRatio: 1.6, // Maintain consistent proportions (width:height)
+    backgroundColor: "#e63946", // Vibrant red background
+    borderRadius: 10, // Rounded corners
+    justifyContent: "center",
+    alignItems: "center",
+    // Shadow effects for depth
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 8, // Android shadow
+    overflow: "hidden", // Contain shine effect within bounds
+    borderWidth: 2, // Add border
+    borderColor: "#c1121f", // Darker red border for definition
+    position: "relative", // For absolute positioning of children
+  },
+
