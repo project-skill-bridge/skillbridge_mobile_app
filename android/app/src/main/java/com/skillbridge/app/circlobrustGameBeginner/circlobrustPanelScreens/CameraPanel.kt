@@ -137,4 +137,17 @@ class CameraPanel : Fragment(), HandIdentifier.LandmarkerListener {
         }
     }
 
+    private fun setUpCamera() {
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext()) // Get camera provider
+        cameraProviderFuture.addListener({ // Add listener for when provider is ready
+            cameraProvider = cameraProviderFuture.get() // Get camera provider
+            bindCameraUseCases() // Bind camera use cases
+        }, ContextCompat.getMainExecutor(requireContext())) // Run on main thread
+    }
+
+    @SuppressLint("UnsafeOptInUsageError") // Suppress warning for experimental API
+    private fun bindCameraUseCases() {
+        val cameraProvider = cameraProvider ?: return // Get provider or exit
+        val cameraSelector = CameraSelector.Builder().requireLensFacing(cameraFacing).build() // Configure camera
+
 }
