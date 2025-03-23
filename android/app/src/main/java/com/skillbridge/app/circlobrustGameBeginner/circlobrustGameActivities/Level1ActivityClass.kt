@@ -117,60 +117,57 @@ class Level1ActivityClass : AppCompatActivity() {
         }
     }
 
-
-     /* ================ UI Update Section ================ 
+    /* ================ UI Update Section ================ 
      * Methods responsible for refreshing UI elements with current game data
      */
     private fun updateTimeInUi() {
-
+        // Format time components with leading zeros
         val secondsFormatted = DecimalFormat("00").format(timeInSeconds)
         val millisecondsFormatted = DecimalFormat("00").format(milliseconds / 10)
 
-
+        // Display formatted time
         binding.timeTextView.text = "$secondsFormatted:$millisecondsFormatted"
     }
 
     fun updateScoreInUi() {
-        binding.scoreTextView.text = "$score"
+        binding.scoreTextView.text = "$score" // Update score display
     }
 
     /* ================ Timer Management Section ================ 
      * Handles time tracking and countdown for game progression
      */
     private fun startTimer() {
-        timerJob?.cancel()
+        timerJob?.cancel() // Cancel any existing timer
         timerJob = lifecycleScope.launch {
             while (isActive) {
-                delay(10)
+                delay(10) // Update every 10ms for smooth timing
                 milliseconds += 10
-                if (milliseconds >= 1000) {
+                if (milliseconds >= 1000) { // Roll over milliseconds to seconds
                     milliseconds = 0
                     timeInSeconds++
                 }
-                updateTimeInUi()
+                updateTimeInUi() // Update timer display
             }
         }
     }
 
     private fun startCountdownTimer() {
-        countdownJob?.cancel()
-        val audioDurationMs = mediaPlayer?.duration?.toLong() ?: DEFAULT_AUDIO_DURATION_MS
+        countdownJob?.cancel() // Cancel any existing countdown
+        val audioDurationMs = mediaPlayer?.duration?.toLong() ?: DEFAULT_AUDIO_DURATION_MS // Get music duration
         countdownJob = lifecycleScope.launch {
+            delay(10_000) // 10-second grace period before checking score
 
-            delay(10_000)
-
-
-            val startTime = System.currentTimeMillis()
+            val startTime = System.currentTimeMillis() // Track elapsed time
             while (System.currentTimeMillis() - startTime < audioDurationMs) {
-                delay(10)
+                delay(10) // Check time frequently but efficiently
             }
 
             if (!gameEnded) {
                 gameEnded = true
                 if (score < 15) {
-                    goToLevel1LossActivity()
+                    goToLevel1LossActivity() // Fail if score too low
                 } else {
-                    goToLevel1CompleteActivity()
+                    goToLevel1CompleteActivity() // Success if score high enough
                 }
             }
         }
@@ -217,47 +214,47 @@ class Level1ActivityClass : AppCompatActivity() {
      * Handling user input and navigation through the game
      */
     override fun onBackPressed() {
-        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_exit, null)
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_exit, null) // Create exit dialog
 
         val dialog = AlertDialog.Builder(this, R.style.CustomDialogTheme)
             .setView(dialogView)
             .create()
 
-
+        // Set up "Yes" button to exit level
         dialogView.findViewById<Button>(R.id.btn_yes).setOnClickListener {
-            val formattedTime = formatTimeToString()
-            val audioPosition = mediaPlayer?.currentPosition ?: 0
+            val formattedTime = formatTimeToString() // Format current time
+            val audioPosition = mediaPlayer?.currentPosition ?: 0 // Save audio position
             val intent = Intent().apply {
-                putExtra("FINAL_SCORE", score)
-                putExtra("LEVEL", LEVEL)
-                putExtra("FORMATTED_TIME", formattedTime)
-                putExtra("AUDIO_POSITION", audioPosition)
+                putExtra("FINAL_SCORE", score) // Return final score
+                putExtra("LEVEL", LEVEL) // Return level info
+                putExtra("FORMATTED_TIME", formattedTime) // Return formatted time
+                putExtra("AUDIO_POSITION", audioPosition) // Return audio position
             }
             setResult(RESULT_OK, intent)
-            MyNativeModules.getInstance()?.emitActivity2Result(score, LEVEL, formattedTime, audioPosition)
+            MyNativeModules.getInstance()?.emitActivity2Result(score, LEVEL, formattedTime, audioPosition) // Signal to React Native
             finish()
-            dialog.dismiss()
+            dialog.dismiss() // Close dialog
         }
 
-
+        // Set up "No" button to continue playing
         dialogView.findViewById<Button>(R.id.btn_no).setOnClickListener {
-            dialog.dismiss()
+            dialog.dismiss() // Dismiss dialog and continue game
         }
 
-
+        // Show the exit confirmation dialog
         dialog.show()
 
-
+        // Resize dialog to fit nicely on screen
         dialog.window?.setLayout(
-            (resources.displayMetrics.widthPixels * 0.8).toInt(),
+            (resources.displayMetrics.widthPixels * 0.8).toInt(), // 80% of screen width
             WindowManager.LayoutParams.WRAP_CONTENT
         )
     }
 
     private fun formatTimeToString(): String {
-        val secondsFormatted = DecimalFormat("00").format(timeInSeconds)
-        val millisecondsFormatted = DecimalFormat("00").format(milliseconds / 10)
-        return "$secondsFormatted:$millisecondsFormatted"
+        val secondsFormatted = DecimalFormat("00").format(timeInSeconds) // Format seconds with leading zeros
+        val millisecondsFormatted = DecimalFormat("00").format(milliseconds / 10) // Format as centiseconds
+        return "$secondsFormatted:$millisecondsFormatted" // Return formatted time string
     }
 
 
