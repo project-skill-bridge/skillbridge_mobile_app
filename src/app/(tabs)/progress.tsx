@@ -26,7 +26,7 @@ const ProgressScreen = () => {
         titleColor={"#6277bf"}
         titleStyle={{ fontWeight: "bold" }}
         /></View>
-      <Text style={styles.streakCount}> // Game name</Text>
+      <Text style={styles.streakCount}>Mind match</Text>
 
       <Spacer size={30} />
       
@@ -40,7 +40,7 @@ const ProgressScreen = () => {
         titleColor={"#6277bf"}
         titleStyle={{ fontWeight: "bold" }}
         /></View>
-      <Text style={styles.streakCount}> // Game name</Text>
+      <Text style={styles.streakCount}>Tap and type</Text>
 
 
       <Text style={styles.progressCount}> You are on Day {progress}</Text>
@@ -98,10 +98,11 @@ const styles = StyleSheet.create({
   image:{
     width: 150,
     height:150,
-    paddingTop: 286,
-    left: 10,
+    paddingTop: 305,
+    left: 20,
     resizeMode: "contain",
     position: "absolute",
+    transform: [{rotate: "-20deg"}]
 
   },
   //achievements: {
