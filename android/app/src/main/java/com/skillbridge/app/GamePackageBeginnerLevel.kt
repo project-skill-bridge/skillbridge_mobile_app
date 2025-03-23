@@ -8,3 +8,4 @@ import com.skillbridge.app.circlobrustGameBeginner.CirclobrustGameModule
 
 
 class GamePackageBeginnerLevel : ReactPackage {
+    override fun createNativeModules(p0: ReactApplicationContext): List<NativeModule> {
