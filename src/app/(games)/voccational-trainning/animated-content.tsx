@@ -1,3 +1,23 @@
+import React, { useState } from "react";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { Image } from "expo-image";
+import TypeWriter from "react-native-typewriter";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+} from "react-native-reanimated";
+import { useRouter } from "expo-router";
+
+import VoiceIntro from "./VoiceIntro";
+
+/**
+ * Props interface for the step data structure
+ */
+export interface StepsProps {
+  steps: { text: string; image: any; description: string; voiceNote: string }[];
+}
+
 /**
  * Component styles
  */
