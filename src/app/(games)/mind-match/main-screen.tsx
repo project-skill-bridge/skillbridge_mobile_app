@@ -30,9 +30,8 @@ const gameIntroText = [
   "You'll need to find matching pairs of cards by flipping them over two at a time.",
   "The fewer attempts you make to find all matches, the higher your score will be.",
   "This game helps improve memory, focus, and cognitive skills while having fun.",
-  "Are you ready to test your mind? Let's begin the challenge!"
+  "Are you ready to test your mind? Let's begin the challenge!",
 ];
-
 
 const MainScreen = () => {
   const router = useRouter();
@@ -216,12 +215,11 @@ const MainScreen = () => {
         )}
 
         <View style={styles.finnOverlayContainer}>
-        <FinnVoiceTntro
+          <FinnVoiceTntro
             gameId="Mind"
             buttonText=""
             IntroText={gameIntroText}
             displayText={gameIntroText}
-            onComplete={() => console.log("Introduction completed")}
             language="en-US"
             speed="normal"
             voiceType="child"

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect, useRef } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Image } from "expo-image";
@@ -18,13 +19,14 @@ import * as Font from "expo-font";
 import { Fonts } from "@/src/constants/Fonts";
 import { Images } from "@/src/constants/Images";
 import BufferingProgress from "../ui/buffering-progress";
+import { hp, wp } from "@/src/utils/common";
 
-const { width, height } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
 interface FinnVoiceIntroProps {
   gameId: string;
   buttonText: string;
-  IntroText: string | string[]; 
+  IntroText: string | string[];
   displayText: string | string[];
   onComplete?: () => void;
   language?: string;
@@ -34,7 +36,6 @@ interface FinnVoiceIntroProps {
 
 const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
   gameId,
-  buttonText = "",
   IntroText = "",
   displayText = "Let's Play!",
   onComplete = () => {},
@@ -43,8 +44,8 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
   voiceType = "adult",
 }) => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [isComplete, setIsComplete] = useState<boolean>(false);
-  const [isFirstVisit, setIsFirstVisit] = useState<boolean>(true);
+  // const [isComplete, setIsComplete] = useState<boolean>(false);
+  // const [isFirstVisit, setIsFirstVisit] = useState<boolean>(true);
   const [isTalking, setIsTalking] = useState<boolean>(false);
   const [showBubble, setShowBubble] = useState<boolean>(false);
   const [showButton, setShowButton] = useState<boolean>(false);
@@ -52,23 +53,23 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
   const [fontsLoaded, setFontsLoaded] = useState<boolean>(false);
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [sentencesReady, setSentencesReady] = useState<boolean>(false);
-  
+
   // States for handling sequential sentences
-  const [currentSentenceIndex, setCurrentSentenceIndex] = useState<number>(0);
+  // const [currentSentenceIndex, setCurrentSentenceIndex] = useState<number>(0);
   const [sentences, setSentences] = useState<string[]>([]);
   const [currentDisplayText, setCurrentDisplayText] = useState<string>("");
-  
+
   // Animation refs
   const bounceAnim = useRef(new Animated.Value(0)).current;
   const buttonAnim = useRef(new Animated.Value(0)).current;
-  
+
   // Draggable position animations
   const pan = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
-  
+
   // All backdrop-related animations use JS driver
   const backdropAnim = useRef(new Animated.Value(0)).current;
   const backdropScaleAnim = useRef(new Animated.Value(1.2)).current;
-  
+
   // Bubble animations (all using native driver)
   const bubbleOpacityAnim = useRef(new Animated.Value(0)).current;
   const bubbleScaleAnim = useRef(new Animated.Value(0.7)).current;
@@ -91,15 +92,16 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
   useEffect(() => {
     // Convert IntroText and displayText to arrays if they're not already
     const introArray = Array.isArray(IntroText) ? IntroText : [IntroText];
-    const displayArray = Array.isArray(displayText) ? displayText : [displayText];
-    
+    const displayArray = Array.isArray(displayText)
+      ? displayText
+      : [displayText];
+
     // Use the longer of the two arrays
-    const sentencesArray = introArray.length >= displayArray.length 
-      ? introArray 
-      : displayArray;
-    
+    const sentencesArray =
+      introArray.length >= displayArray.length ? introArray : displayArray;
+
     setSentences(sentencesArray);
-    
+
     // Set the initial display text
     if (sentencesArray.length > 0) {
       setCurrentDisplayText(sentencesArray[0]);
@@ -128,38 +130,40 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
     PanResponder.create({
       onStartShouldSetPanResponder: (_, gestureState) => {
         if (isTalking) return false;
-        
+
         return gestureState.dx > 5 || gestureState.dy > 5;
       },
       onMoveShouldSetPanResponder: (_, gestureState) => {
         if (isTalking) return false;
-        
+
         return gestureState.dx > 10 || gestureState.dy > 10;
       },
       onPanResponderGrant: () => {
         setIsDragging(true);
         pan.extractOffset();
       },
-      onPanResponderMove: Animated.event(
-        [null, { dx: pan.x, dy: pan.y }],
-        { useNativeDriver: false }
-      ),
+      onPanResponderMove: Animated.event([null, { dx: pan.x, dy: pan.y }], {
+        useNativeDriver: false,
+      }),
       onPanResponderRelease: () => {
         setIsDragging(false);
         pan.flattenOffset();
-        
-        const newPosition = { 
-          x: (pan.x as any)._value || 0, 
-          y: (pan.y as any)._value || 0 
+
+        const newPosition = {
+          x: (pan.x as any)._value || 0,
+          y: (pan.y as any)._value || 0,
         };
-        setPosition(newPosition);
+        // setPosition(newPosition);
         savePosition(newPosition);
       },
     })
   ).current;
 
   // Draggable position state
-  const [position, setPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  // const [position, setPosition] = useState<{ x: number; y: number }>({
+  //   x: 0,
+  //   y: 0,
+  // });
 
   const savePosition = async (pos: { x: number; y: number }) => {
     try {
@@ -174,10 +178,10 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
     try {
       const positionKey = `finn_position_${gameId}`;
       const savedPosition = await AsyncStorage.getItem(positionKey);
-      
+
       if (savedPosition) {
         const pos = JSON.parse(savedPosition);
-        setPosition(pos);
+        // setPosition(pos);
         pan.setValue({ x: pos.x, y: pos.y });
       }
     } catch (error) {
@@ -200,22 +204,25 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
 
     loadFonts();
     loadPosition();
-    
+
     const timer = setTimeout(() => {
-      setIsFirstVisit(false);
+      // setIsFirstVisit(false);
     }, 3000);
-    
+
     return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
     const testStorage = async () => {
       try {
-        await AsyncStorage.setItem('test_key', 'test_value');
-        const value = await AsyncStorage.getItem('test_key');
-        console.log('AsyncStorage test:', value === 'test_value' ? 'PASSED' : 'FAILED');
+        await AsyncStorage.setItem("test_key", "test_value");
+        const value = await AsyncStorage.getItem("test_key");
+        console.log(
+          "AsyncStorage test:",
+          value === "test_value" ? "PASSED" : "FAILED"
+        );
       } catch (error) {
-        console.error('AsyncStorage test error:', error);
+        console.error("AsyncStorage test error:", error);
       }
     };
     testStorage();
@@ -226,14 +233,14 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
       const storageKey = `hasVisited_${gameId}`;
       const hasVisited = await AsyncStorage.getItem(storageKey);
       const isFirst = hasVisited === null;
-      
-      setIsFirstVisit(isFirst);
-      
+
+      // setIsFirstVisit(isFirst);
+
       if (isFirst) {
         await AsyncStorage.setItem(storageKey, "true");
       }
-      
-      return isFirst; 
+
+      return isFirst;
     } catch (error) {
       console.error("Error checking first visit:", error);
       return false;
@@ -256,7 +263,7 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
           duration: 400,
           easing: Easing.bezier(0.16, 1, 0.3, 1),
           useNativeDriver: true,
-        })
+        }),
       ]).start(() => {
         if (callback) callback();
       });
@@ -273,7 +280,7 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
           duration: 300,
           easing: Easing.bezier(0.16, 1, 0.3, 1),
           useNativeDriver: true,
-        })
+        }),
       ]).start(() => {
         setShowBubble(false);
         if (callback) callback();
@@ -286,13 +293,13 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
       console.error("No sentences available to speak");
       return;
     }
-    
+
     if (indexToSpeak >= sentences.length) {
       // Completed all sentences - hide both bubble and backdrop
       setIsPlaying(false);
       setIsTalking(false);
-      setIsComplete(true);
-      
+      // setIsComplete(true);
+
       // Hide bubble first, then backdrop for better visual flow
       showBubbleWithAnimation(false, () => {
         // Once bubble is hidden, smoothly hide backdrop
@@ -301,17 +308,17 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
       });
       return;
     }
-    
+
     setIsTalking(true);
-    setCurrentSentenceIndex(indexToSpeak);
-    
+    // setCurrentSentenceIndex(indexToSpeak);
+
     // Show bubble with current sentence text
     setCurrentDisplayText(sentences[indexToSpeak]);
     showBubbleWithAnimation(true);
-    
+
     const { pitch, rate } = voiceSettings[voiceType];
     const speedMultiplier = speedSettings[speed];
-    
+
     Speech.speak(sentences[indexToSpeak], {
       language,
       rate: rate * speedMultiplier,
@@ -321,7 +328,7 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
         showBubbleWithAnimation(false, () => {
           // When bubble is hidden, move to next sentence
           const nextIndex = indexToSpeak + 1;
-          
+
           if (nextIndex < sentences.length) {
             // Wait a moment before showing next sentence
             setTimeout(() => {
@@ -331,8 +338,8 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
             // All sentences complete
             setIsPlaying(false);
             setIsTalking(false);
-            setIsComplete(true);
-            
+            // setIsComplete(true);
+
             // Hide backdrop at the end
             showBackdropWithAnimation(false);
             if (onComplete) onComplete();
@@ -344,7 +351,7 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
         setIsTalking(false);
         showBubbleWithAnimation(false);
         showBackdropWithAnimation(false);
-      }
+      },
     });
   };
 
@@ -352,7 +359,7 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
   const showBackdropWithAnimation = (show: boolean, callback?: () => void) => {
     if (show) {
       setShowBackdrop(true);
-      
+
       Animated.parallel([
         Animated.timing(backdropAnim, {
           toValue: 0.5,
@@ -364,7 +371,7 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
           duration: 600,
           easing: Easing.bezier(0.16, 1, 0.3, 1),
           useNativeDriver: false,
-        })
+        }),
       ]).start(() => {
         if (callback) callback();
       });
@@ -381,7 +388,7 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
           duration: 500,
           easing: Easing.bezier(0.16, 1, 0.3, 1),
           useNativeDriver: false,
-        })
+        }),
       ]).start(() => {
         setShowBackdrop(false);
         if (callback) callback();
@@ -394,7 +401,7 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
     if (show) {
       // Only show backdrop at the start
       showBackdropWithAnimation(true, callback);
-      
+
       // Bubble will be shown by speakCurrentSentence function
     } else {
       // Hide all elements
@@ -404,21 +411,21 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
 
   const startIntro = () => {
     if (isPlaying) return;
-    
+
     if (!sentencesReady || !sentences || sentences.length === 0) {
       console.error("No sentences available to speak");
       return;
     }
-    
+
     // Stop any ongoing speech first
     Speech.stop();
-    
+
     // Reset state
     setIsPlaying(true);
     showIntroElements(true);
     setShowButton(false);
-    setIsComplete(false);
-    
+    // setIsComplete(false);
+
     // Wait a moment for backdrop animation to settle, then start speaking
     setTimeout(() => {
       speakCurrentSentence(0);
@@ -428,22 +435,22 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
   const buttonIntro = () => {
     // Don't start if already playing
     if (isPlaying) return;
-    
+
     // Make sure sentences are loaded
     if (!sentencesReady || !sentences || sentences.length === 0) {
       console.error("No sentences available to speak");
       return;
     }
-    
+
     // Stop any ongoing speech first
     Speech.stop();
-    
+
     // Reset state
     setIsPlaying(true);
     showIntroElements(true);
     setShowButton(false);
-    setIsComplete(false);
-    
+    // setIsComplete(false);
+
     // Wait a moment for backdrop animation to settle, then start speaking
     setTimeout(() => {
       speakCurrentSentence(0);
@@ -454,7 +461,7 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
   const startBounceAnimation = () => {
     // Don't bounce during drag
     if (isDragging) return;
-    
+
     Animated.sequence([
       Animated.timing(bounceAnim, {
         toValue: 1,
@@ -478,24 +485,24 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
   const handleClose = () => {
     // Make sure speech stops completely
     Speech.stop();
-    
+
     showBubbleWithAnimation(false, () => {
       showBackdropWithAnimation(false, () => {
-    // Hide elements with animation
-      showIntroElements(false, () => {
-        // Set states to reflect closed state only after animations complete
-        setIsPlaying(false);
-        setIsTalking(false);
-        
-        // Reset sentence index
-        setCurrentSentenceIndex(0);
-        
-        // Call onComplete if provided
-        if (onComplete) onComplete();
-     });
-   });
-  });
-};
+        // Hide elements with animation
+        showIntroElements(false, () => {
+          // Set states to reflect closed state only after animations complete
+          setIsPlaying(false);
+          setIsTalking(false);
+
+          // Reset sentence index
+          // setCurrentSentenceIndex(0);
+
+          // Call onComplete if provided
+          if (onComplete) onComplete();
+        });
+      });
+    });
+  };
 
   // Button animation
   const animateButton = (show: boolean) => {
@@ -511,7 +518,7 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
   const handleFinnPress = () => {
     // Only handle press if not dragging
     if (isDragging) return;
-    
+
     // Toggle button state with animation
     const newButtonState = !showButton;
     setShowButton(newButtonState);
@@ -585,7 +592,7 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
               styles.backdrop,
               {
                 opacity: backdropAnim,
-                transform: [{ scale: backdropScaleAnim }]
+                transform: [{ scale: backdropScaleAnim }],
               },
             ]}
           />
@@ -596,21 +603,21 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
           style={[
             styles.draggableContainer,
             {
-              transform: [{ translateX: pan.x }, { translateY: pan.y }]
-            }
+              transform: [{ translateX: pan.x }, { translateY: pan.y }],
+            },
           ]}
           {...panResponder.panHandlers}
         >
           {/* Message section */}
           {showBubble && (
             <TouchableWithoutFeedback onPress={(e) => e.stopPropagation()}>
-              <Animated.View 
+              <Animated.View
                 style={[
                   styles.bubbleContainer,
                   {
                     opacity: bubbleOpacityAnim,
-                    transform: [{ scale: bubbleScaleAnim }]
-                  }
+                    transform: [{ scale: bubbleScaleAnim }],
+                  },
                 ]}
               >
                 <View
@@ -672,8 +679,8 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
             ]}
           >
             {showButton && (
-              <TouchableOpacity 
-                style={styles.voiceButton} 
+              <TouchableOpacity
+                style={styles.voiceButton}
                 onPress={buttonIntro}
                 activeOpacity={0.7}
               >
@@ -683,11 +690,11 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
           </Animated.View>
 
           {/* Finn character - Separate TouchableOpacity not using panHandlers */}
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={(e) => {
               // Prevent event propagation to stop accidental touches
               e.stopPropagation();
-              
+
               // Only handle press if not already talking
               if (!isTalking) {
                 handleFinnPress();
@@ -702,7 +709,9 @@ const FinnVoiceIntro: React.FC<FinnVoiceIntroProps> = ({
                 {
                   width: responsiveSizes.characterSize,
                   height: responsiveSizes.characterSize,
-                  transform: isDragging ? [] : [{ translateY: bounceTransform }],
+                  transform: isDragging
+                    ? []
+                    : [{ translateY: bounceTransform }],
                 },
               ]}
             >
@@ -727,10 +736,10 @@ const styles = StyleSheet.create({
   },
   backdrop: {
     position: "absolute",
-    width: Dimensions.get('window').width * 5,  
-    height: Dimensions.get('window').height * 5, 
-    left: Dimensions.get('window').width * -2,  
-    top: Dimensions.get('window').height * -2, 
+    width: Dimensions.get("window").width * 5,
+    height: Dimensions.get("window").height * 5,
+    left: Dimensions.get("window").width * -2,
+    top: Dimensions.get("window").height * -2,
     backgroundColor: "black",
     zIndex: 5,
   },
@@ -763,8 +772,8 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 4,
     marginRight: 0,
     position: "relative",
-    width: 180,
-    height: 150,
+    width: wp(50),
+    height: hp(20),
     right: 54,
   },
   thoughtText: {
@@ -777,8 +786,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: 40,
     position: "absolute",
-    right: -40, 
-    bottom: 25, 
+    right: -40,
+    bottom: 25,
   },
   dot1: {
     width: 12,
@@ -817,7 +826,7 @@ const styles = StyleSheet.create({
     top: 30,
   },
   characterContainer: {
-    zIndex: 15, 
+    zIndex: 15,
   },
   character: {
     width: "100%",
@@ -834,7 +843,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.2)",
     justifyContent: "center",
     alignItems: "center",
-    zIndex: 20, 
+    zIndex: 20,
   },
   closeButtonText: {
     color: "white",
@@ -846,7 +855,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     zIndex: 15,
     position: "absolute",
-    top: -20, 
+    top: -20,
   },
   voiceButton: {
     backgroundColor: "rgba(66, 133, 244, 0.9)",
