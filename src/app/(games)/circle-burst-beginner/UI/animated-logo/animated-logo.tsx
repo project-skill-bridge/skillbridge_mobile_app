@@ -258,3 +258,20 @@ const AnimatedLogo = () => {
   );
 };
 
+/* ================ STYLES ================ */
+/**
+ * Component styles using StyleSheet for optimal performance
+ * Organized by visual element for maintainability
+ */
+const styles = StyleSheet.create({
+  /* Container Styles */
+  logoContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    zIndex: 5, // Ensure logo appears above other elements
+    marginTop: -120, // Position adjustment
+  },
+
+  /* Main Logo Banner Styles */
