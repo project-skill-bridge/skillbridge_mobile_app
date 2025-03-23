@@ -1090,3 +1090,12 @@ const styles = StyleSheet.create({
     transform: [{ rotate: "45deg" }], // Diagonal shine
   },
 
+  /* Banner Content Styles */
+  bannerContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    paddingHorizontal: 20,
+  },
+
