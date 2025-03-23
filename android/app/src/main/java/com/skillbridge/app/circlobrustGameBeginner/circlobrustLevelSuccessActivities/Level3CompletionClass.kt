@@ -31,4 +31,24 @@ class Level3CompletionClass : AppCompatActivity() {
     private var mediaPlayerLoop: MediaPlayer? = null // For looping background music
     private var mediaPlayerOnce: MediaPlayer? = null // For one-time victory sound
 
+    /* ================ Activity Lifecycle Section ================ 
+     * Handles creation and destruction of the activity
+     * Sets up UI elements and attaches event listeners
+     */
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState) // Call parent implementation
+        setContentView(R.layout.activity_level_3_complete) // Set the layout for this screen
+        val continueButton = findViewById<Button>(R.id.continueButton) // Get reference to continue button
+        val exitButton = findViewById<Button>(R.id.exitButton) // Get reference to exit button
+
+        continueButton.setOnClickListener {
+            emitNavigateToActivity4() // Signal React Native to navigate to Level 4
+            finish() // Close this activity
+        }
+
+        exitButton.setOnClickListener {
+            onBackPressed() // Handle back button behavior
+            finish() // Close this activity
+        }
+
 }
