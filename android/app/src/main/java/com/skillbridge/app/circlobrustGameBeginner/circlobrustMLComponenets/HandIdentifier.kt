@@ -25,4 +25,11 @@ class HandIdentifier (
     val handLandmarkerHelperListener: LandmarkerListener // Callback interface for detection results
 ) {
     /* ================ Configuration Section ================ 
+    private val delegate = DELEGATE_CPU // Use CPU for processing (vs GPU)
+    private val maxNumHands = DEFAULT_NUM_HANDS // Maximum hands to detect (default: 1)
+    private val minHandDetectionConfidence = DEFAULT_HAND_DETECTION_CONFIDENCE // Confidence threshold for detection
+    private val minHandTrackingConfidence = DEFAULT_HAND_TRACKING_CONFIDENCE // Confidence threshold for tracking
+    private val minHandPresenceConfidence = DEFAULT_HAND_PRESENCE_CONFIDENCE // Confidence threshold for hand presence
+
+    /* ================ Initialization Section ================ 
 }
