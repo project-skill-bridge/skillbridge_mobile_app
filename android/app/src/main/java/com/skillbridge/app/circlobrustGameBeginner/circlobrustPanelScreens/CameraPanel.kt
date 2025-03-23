@@ -150,4 +150,18 @@ class CameraPanel : Fragment(), HandIdentifier.LandmarkerListener {
         val cameraProvider = cameraProvider ?: return // Get provider or exit
         val cameraSelector = CameraSelector.Builder().requireLensFacing(cameraFacing).build() // Configure camera
 
+        preview = Preview.Builder() // Build preview use case
+            .setTargetAspectRatio(AspectRatio.RATIO_4_3) // Set aspect ratio
+            .setTargetRotation(binding.viewFinder.display.rotation) // Set rotation
+            .build() // Create preview
+
+        imageAnalyzer = ImageAnalysis.Builder() // Build image analysis use case
+            .setTargetAspectRatio(AspectRatio.RATIO_4_3) // Set aspect ratio
+            .setTargetRotation(binding.viewFinder.display.rotation) // Set rotation
+            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST) // Only process latest frame
+            .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888) // Use RGBA format
+            .build() // Create analyzer
+            .also { // Configure analyzer
+                it.setAnalyzer(backgroundExecutor) { image -> detectHand(image) } // Set up frame analysis
+            }
 }
