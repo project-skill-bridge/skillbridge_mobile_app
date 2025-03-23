@@ -298,7 +298,13 @@ const MindMatchGame = () => {
 
   // Handle Card Press
   const handleCardPress = (index: number) => {
-    if (isChecking || deck[index].isFlipped || deck[index].isMatched) return;
+    if (
+      isChecking ||
+      deck[index].isFlipped ||
+      deck[index].isMatched ||
+      flippedCards.length >= 2
+    )
+      return;
 
     playSound(cardFlipSoundRef);
 

@@ -61,6 +61,7 @@ const HomeProgress = () => {
               resizeMode="cover"
               source={Lotties.streakFlame}
             />
+            {/* TODO: Place holder for streak -> ANIKA*/}
             <Text style={styles.streak}>3</Text>
           </View>
         </Link>
