@@ -128,3 +128,39 @@ class Level3ActivityClass : AppCompatActivity() {
         binding.scoreTextView.text = "$score" // Update score display
     }
 
+    /* ================ Timer Management Section ================ 
+     * Handles time tracking and countdown for game progression
+     */
+    private fun startTimer() {
+        timerJob?.cancel() // Cancel any existing timer
+        timerJob = lifecycleScope.launch {
+            while (isActive) {
+                delay(10) // Update every 10ms for smooth timing
+                milliseconds += 10
+                if (milliseconds >= 1000) { // Roll over milliseconds to seconds
+                    milliseconds = 0
+                    timeInSeconds++
+                }
+                updateTimeInUi() // Refresh timer display
+            }
+        }
+    }
+
+    private fun startCountdownTimer() {
+        countdownJob?.cancel() // Cancel any existing countdown
+        val audioDurationMs = mediaPlayer?.duration?.toLong() ?: DEFAULT_AUDIO_DURATION_MS // Get music duration
+        countdownJob = lifecycleScope.launch {
+            delay(10_000) // 10-second grace period before score check
+
+            val startTime = System.currentTimeMillis() // Track elapsed time
+            while (System.currentTimeMillis() - startTime < audioDurationMs) {
+                delay(10) // Check frequently but not too CPU intensive
+            }
+
+            if (score < 10 && !gameEnded) { // Check if target score not reached by time limit
+                gameEnded = true
+                goToLevel3LossActivity() // Navigate to failure screen
+            }
+        }
+    }
+
