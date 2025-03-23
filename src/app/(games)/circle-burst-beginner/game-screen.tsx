@@ -792,6 +792,16 @@ export default function GameScreen() {
       ])
     ).start();
 
+    // Hand rotation animation - full 360° rotation
+    Animated.loop(
+      Animated.timing(handRotateAnim, {
+        toValue: 1,
+        duration: 8000,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      })
+    ).start();
+
 
 export default function GameScreen(): JSX.Element {
   const router = useRouter();
