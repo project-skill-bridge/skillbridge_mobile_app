@@ -49,6 +49,22 @@ const AnimatedContent = ({ steps }: StepsProps) => {
       router.push("/(tabs)/home");
     }
   };
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.mainContent}>
+        <Text> Stitching Training </Text>
+        <Text style={styles.stepText}>
+          Step {stepNo + 1} : {steps[stepNo].text}{" "}
+        </Text>
+
+        <Animated.View style={[styles.imageContainer, animatedStyle]}>
+          <Image
+            source={steps[stepNo].image}
+            style={styles.image}
+            contentFit="contain"
+          />
+        </Animated.View>
 /**
  * Component styles
  */
