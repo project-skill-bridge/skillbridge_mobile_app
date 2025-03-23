@@ -108,3 +108,28 @@ const AnimatedLogo = () => {
   // Starts offscreen to the left (-width) and moves to the right (width)
   const bannerShineAnim = useRef(new Animated.Value(-width)).current;
 
+  /* ================ ANIMATION SETUP ================ */
+  /**
+   * Sets up and starts all animations when component mounts
+   * Creates looping animations for continuous visual interest
+   */
+  useEffect(() => {
+    // Pulse animation for the blue circle - creates a breathing effect
+    Animated.loop(
+      Animated.sequence([
+        // Scale up to 120% over 1 second
+        Animated.timing(pulseAnim, {
+          toValue: 1.2, // 20% larger
+          duration: 1000, // 1 second
+          easing: Easing.inOut(Easing.ease), // Smooth acceleration/deceleration
+          useNativeDriver: true, // Hardware acceleration
+        }),
+        // Scale back down to 100% over 1 second
+        Animated.timing(pulseAnim, {
+          toValue: 1, // Original size
+          duration: 1000, // 1 second
+          easing: Easing.inOut(Easing.ease),
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
