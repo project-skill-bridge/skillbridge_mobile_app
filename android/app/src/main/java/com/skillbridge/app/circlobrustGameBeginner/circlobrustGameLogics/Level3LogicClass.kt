@@ -88,4 +88,14 @@ class Level3LogicClass @JvmOverloads constructor(
         addNewCircleIfNeeded() // Add initial circle
     }
 
+    private fun addNewCircleIfNeeded() {
+        // Only add if we have less than maximum circles
+        if (circles.count { !it.isPopped } < MAX_CIRCLES) {
+            val colors = listOf(Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, Color.CYAN, Color.MAGENTA) // Available colors
+            val radius = (30f..80f).randomFloat() // Random size
+            val initialX = (radius..(width - radius)).randomFloat() // Initial horizontal position
+            val y = height + radius // Start below screen
+            val color = colors.random() // Pick random color
+            val velocity = (8f..15f).randomFloat() // Vertical movement speed
+            
 }
