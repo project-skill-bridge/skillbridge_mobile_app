@@ -229,3 +229,32 @@ const AnimatedLogo = () => {
                 },
               ]}
             >
+              <AnimatedHand color="#1d3557" />
+            </Animated.View>
+
+            {/* Blue circle that pulses */}
+            <Animated.View
+              style={[
+                styles.blueCircle,
+                { transform: [{ scale: pulseAnim }] }, // Breathing animation
+              ]}
+            />
+          </View>
+
+          {/* Right side with "CIRCLOBRUST" text */}
+          <View style={styles.textContainer}>
+            {/* Split into two parts for different styling */}
+            <Text style={styles.logoText}>CIRCLO</Text>
+            <Text style={[styles.logoText, styles.logoTextBold]}>BRUST</Text>
+          </View>
+        </View>
+        {/* Decorative corner elements - add visual polish */}
+        <View style={styles.bannerCorner1} /> {/* Top-left corner */}
+        <View style={styles.bannerCorner2} /> {/* Top-right corner */}
+        <View style={styles.bannerCorner3} /> {/* Bottom-left corner */}
+        <View style={styles.bannerCorner4} /> {/* Bottom-right corner */}
+      </Animated.View>
+    </View>
+  );
+};
+
