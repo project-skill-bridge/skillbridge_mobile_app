@@ -329,6 +329,68 @@ export default function GameScreen() {
     }
   };
 
+  /**
+   * Displays error alerts for Firebase operations
+   * Centralizes error handling for consistency
+   *
+   * @param {string} title - Alert title
+   * @param {string} message - Alert message
+   */
+  const handleGameError = (title: string, message: string) => {
+    Alert.alert(title, message);
+  };
+
+  /**
+   * Saves game data to Firebase
+   * Stores level, score, progress percentage, and timestamp
+   */
+  useEffect(() => {
+    const saveGameData = async () => {
+      try {
+        // Verify user is authenticated
+        const user = auth().currentUser;
+        if (!user) return; // Skip if not logged in
+
+        // Prepare game data objects
+        const levelBasedGameData = {
+          level: level,
+          score: score,
+        };
+
+        const totalGameProgressPercentage = {
+          totalGameProgressPercentage: getProgressPercentage(level),
+        };
+
+        const savedTime = {
+          timestamp: firestore.FieldValue.serverTimestamp(),
+        };
+
+        // Save to Firebase with merge strategy
+        await firestore()
+          .collection("users")
+          .doc(user.uid)
+          .collection("games")
+          .doc("circlo-brust")
+          .set(
+            {
+              ...levelBasedGameData,
+              ...totalGameProgressPercentage,
+              ...savedTime,
+            },
+            { merge: true } // Update only the provided fields
+          );
+      } catch (error) {
+        // Handle errors gracefully
+        handleGameError("Save Error", "Progress saved error");
+        console.error("Firebase save error:", error);
+      }
+    };
+
+    // Throttle saves to prevent excessive database writes
+    const saveTimeout = setTimeout(saveGameData, 1000);
+    return () => clearTimeout(saveTimeout);
+  }, [level, score]); // Only run when level or score changes
+
 
 export default function GameScreen(): JSX.Element {
   const router = useRouter();
