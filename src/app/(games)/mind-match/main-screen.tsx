@@ -24,8 +24,14 @@ import { Lotties } from "@/src/constants/Lottie";
 import FinnVoiceTntro from "@/src/components/FinnCharacter/FinnGame";
 
 type ImageKeys = `level${1 | 2 | 3 | 4}Badge`;
-const welcomeMessage = "Hi there! Welcome to Mind Match game where your mind skills will be put to the test!";
-
+const gameIntroText = [
+  "Hi there! Welcome to Mind Match game where your mind skills will be put to the test!",
+  "Mind Match is a memory game that challenges your recall abilities and concentration.",
+  "You'll need to find matching pairs of cards by flipping them over two at a time.",
+  "The fewer attempts you make to find all matches, the higher your score will be.",
+  "This game helps improve memory, focus, and cognitive skills while having fun.",
+  "Are you ready to test your mind? Let's begin the challenge!",
+];
 
 const MainScreen = () => {
   const router = useRouter();
@@ -211,9 +217,9 @@ const MainScreen = () => {
         <View style={styles.finnOverlayContainer}>
           <FinnVoiceTntro
             gameId="Mind"
-            buttonText={welcomeMessage}  
-            IntroText={welcomeMessage}  
-            displayText={welcomeMessage} 
+            buttonText=""
+            IntroText={gameIntroText}
+            displayText={gameIntroText}
             language="en-US"
             speed="normal"
             voiceType="child"
