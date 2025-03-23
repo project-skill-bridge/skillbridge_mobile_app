@@ -3,11 +3,9 @@
   "compilerOptions": {
     "strict": true,
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"]
     },
-     "module": "es2020"
+    "module": "es2020"
   },
   "include": [
     "**/*.ts",
@@ -15,6 +13,7 @@
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
     "babel.config.js",
-    "nativewind-env.d.ts"
+    "nativewind-env.d.ts",
+    "jest.config.ts"
   ]
 }
