@@ -1048,3 +1048,13 @@ const styles = StyleSheet.create({
     color: "#333", // Dark gray text
   },
 
+  /* Logo Container Styles */
+  logoContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    zIndex: 5,
+    marginTop: 20, // Space from header
+  },
+
