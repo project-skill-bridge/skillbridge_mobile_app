@@ -43,4 +43,15 @@ class HandIdentifier (
                 .build() // Finalize options
 
             val options = HandLandmarker.HandLandmarkerOptions.builder() // Create hand landmarker options
+                .setBaseOptions(baseOptions) // Apply base options
+                .setMinHandDetectionConfidence(minHandDetectionConfidence) // Set detection threshold
+                .setMinTrackingConfidence(minHandTrackingConfidence) // Set tracking threshold
+                .setMinHandPresenceConfidence(minHandPresenceConfidence) // Set presence threshold
+                .setNumHands(maxNumHands) // Set maximum hands to detect
+                .setRunningMode(runningMode) // Set to live stream mode
+                .setResultListener(this::returnLivestreamResult) // Set success callback
+                .setErrorListener(this::returnLivestreamError) // Set error callback
+                .build() // Finalize options
+
+            handLandmarker = HandLandmarker.createFromOptions(context, options) // Create detector with options
 }
