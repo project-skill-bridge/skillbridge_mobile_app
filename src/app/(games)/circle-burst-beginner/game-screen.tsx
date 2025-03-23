@@ -83,6 +83,19 @@ const { width, height } = Dimensions.get("window");
 const { LoginModule } = NativeModules;
 const eventEmitter = new NativeEventEmitter(LoginModule);
 
+/* ================ GAME LEVEL CONFIGURATION ================ */
+/**
+ * Mapping of level numbers to user-friendly level names
+ * These names are displayed in the UI and spoken by the voice assistant
+ */
+const levelNames: { [key: number]: string } = {
+  1: "Level 1 : Bubble Joy", // Introductory level
+  2: "Level 2 : Color Burst", // Intermediate level with more colors
+  3: "Level 3 : Speedy Dots", // Advanced level with faster elements
+  4: "Level 4 : Magic Circles", // Expert level with special effects
+  5: "Level 5 : Super Pop Rush", // Final challenge level
+};
+
 
 export default function GameScreen(): JSX.Element {
   const router = useRouter();
