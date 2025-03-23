@@ -88,3 +88,23 @@ const HandTouchingSVG = React.forwardRef(
   }
 );
 
+ * an animated hand that simulates the player interaction, and a
+ * sweeping shine effect to add visual interest.
+ *
+ * @returns {JSX.Element} The fully animated logo component
+ */
+const AnimatedLogo = () => {
+  /* ================ ANIMATION VALUES ================ */
+  // Animation for the blue circle pulsing effect (scale: 1.0 to 1.2)
+  const pulseAnim = useRef(new Animated.Value(1)).current;
+
+  // Animation for the hand movement (controls scaling between 0.9 and 1.1)
+  const handAnim = useRef(new Animated.Value(0)).current;
+
+  // Animation for hand rotation (0 to 360 degrees)
+  const handRotateAnim = useRef(new Animated.Value(0)).current;
+
+  // Animation for the shine effect that sweeps across the banner
+  // Starts offscreen to the left (-width) and moves to the right (width)
+  const bannerShineAnim = useRef(new Animated.Value(-width)).current;
+
