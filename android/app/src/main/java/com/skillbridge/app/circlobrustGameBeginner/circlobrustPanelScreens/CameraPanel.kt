@@ -55,4 +55,10 @@ class CameraPanel : Fragment(), HandIdentifier.LandmarkerListener {
     private lateinit var handLandmarkerHelper: HandIdentifier // ML model helper for hand tracking
     private lateinit var backgroundExecutor: ExecutorService // Background thread for image processing
 
+    private var preview: Preview? = null // Camera preview component
+    private var imageAnalyzer: ImageAnalysis? = null // Camera image analyzer
+    private var camera: Camera? = null // Camera hardware reference
+    private var cameraProvider: ProcessCameraProvider? = null // Camera lifecycle provider
+    private var cameraFacing = CameraSelector.LENS_FACING_FRONT // Default to front camera
+
 }
