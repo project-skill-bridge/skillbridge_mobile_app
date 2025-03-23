@@ -96,6 +96,31 @@ const levelNames: { [key: number]: string } = {
   5: "Level 5 : Super Pop Rush", // Final challenge level
 };
 
+/**
+ * Main GameScreen Component
+ *
+ * Manages the entire game experience including:
+ * - Game state (level, score, time)
+ * - Audio management (background music, speech)
+ * - Native activity integration
+ * - Animation and visual effects
+ * - Data persistence (AsyncStorage, Firebase)
+ *
+ * @returns {JSX.Element} The rendered game screen
+ */
+export default function GameScreen() {
+  /* ================ STATE VARIABLES ================ */
+  const router = useRouter(); // Navigation controller
+  const [score, setScore] = useState(0); // Player's current score
+  const [level, setLevel] = useState(1); // Current game level (1-5)
+  const [formattedTime, setFormattedTime] = useState(""); // Game timer in formatted display
+  const [audioPosition, setAudioPosition] = useState(0); // Position in background audio for resuming
+  const [hasFetchedData, setHasFetchedData] = useState(false); // Flag for initial data load
+  const [navigationKey, setNavigationKey] = useState(0); // Counter for navigation actions
+  const [isFirstRun, setIsFirstRun] = useState(true); // Flag for first-time players
+  const [spokenLevels, setSpokenLevels] = useState<number[]>([]); // Tracks which levels have been announced
+  const [isToggling, setIsToggling] = useState(false); // Track when toggle is in progress
+
 
 export default function GameScreen(): JSX.Element {
   const router = useRouter();
