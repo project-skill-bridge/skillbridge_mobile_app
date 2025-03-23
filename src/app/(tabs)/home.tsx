@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: wp(6),
     paddingVertical: hp(4),
-    gap: hp(2),
+    gap: hp(2.5),
     backgroundColor: "#FFF",
     height: "100%",
   },
