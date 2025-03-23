@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    tools:context=".circlobrustGame.circlobrustLevelSuccessActivities.Level1CompletionClass">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Background Animations -->
+
+
+        <ImageView
+            android:id="@+id/gifViewlevel1"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/backgroundImagelevel4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <!-- Main Content Container -->
+        <ImageView
+            android:id="@+id/backgroundImagelevel4"
+            android:layout_width="match_parent"
+            android:layout_height="229dp"
+            android:layout_marginTop="400dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/circlo_brust_background_level_4"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0"/>
+
+        <!-- Rest of your UI elements -->
+        <TextView
+            android:id="@+id/textView2level1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/congratulations_font"
+            android:text="Congratulations !"
+            android:textColor="#0F0E0E"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="60dp"/>
+
+        
+        <!-- Level 2 Unlocked Text -->
+        <TextView
+            android:id="@+id/textView3level1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/level_name_font"
+            android:text="Level 5 unlocked"
+            android:textColor="#800080"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/textView2level1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="20dp" />
+
+
+
+
+        <!-- Level Completed Badge -->
+
+        <!-- Game Level Name (Floating Dots) -->
+        <ImageView
+            android:id="@+id/LevelCompletedlevel3"
+            android:layout_width="250dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="28dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/level_4_completed_badge_4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.496"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textView3level1" />
+
+        <TextView
+            android:id="@+id/textView4level1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/game_level_name_font"
+            android:text="Super Pop Rush"
+            android:textColor="#800080"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/LevelCompletedlevel3"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="20dp" />
+
+        <!-- Level Progress Bar -->
+
+        <ImageView
+            android:id="@+id/winner_logolevel4"
+            android:layout_width="321dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="52dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/circlobrust_level_4_score_bar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.333"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textView4level1" />
+
+        <TextView
+            android:id="@+id/textViewpointslevel1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/points_font"
+            android:text="Points : 10/10"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/winner_logolevel4" />
+
+        <Button
+            android:id="@+id/continueButton"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/level1_continue_rounded_button"
+            android:padding="10dp"
+            android:text="Continue"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="50dp"
+            android:layout_marginEnd="30dp" />
+
+        <!-- Exit Button -->
+        <Button
+            android:id="@+id/exitButton"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/level1_exit_rounded_button"
+            android:padding="10dp"
+            android:text="Exit"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginBottom="50dp"
+            android:layout_marginStart="30dp" />
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

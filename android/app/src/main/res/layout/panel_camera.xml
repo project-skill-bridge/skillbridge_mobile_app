@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/camera_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.camera.view.PreviewView
+        android:id="@+id/viewFinder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:scaleType="fillStart" />
+
+    <com.skillbridge.app.circlobrustGame.circlobrustGameLogics.Level1LogicClass
+        android:id="@+id/Level1Graphics"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+    <com.skillbridge.app.circlobrustGame.circlobrustGameLogics.Level2LogicClass
+        android:id="@+id/Level2Graphics"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+    <com.skillbridge.app.circlobrustGame.circlobrustGameLogics.Level3LogicClass
+        android:id="@+id/Level3Graphics"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+    <com.skillbridge.app.circlobrustGame.circlobrustGameLogics.Level4LogicClass
+        android:id="@+id/Level4Graphics"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+    <com.skillbridge.app.circlobrustGame.circlobrustGameLogics.Level5LogicClass
+        android:id="@+id/Level5Graphics"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
