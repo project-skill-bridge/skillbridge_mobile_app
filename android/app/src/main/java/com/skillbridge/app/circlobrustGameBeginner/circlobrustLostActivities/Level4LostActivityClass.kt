@@ -90,4 +90,11 @@ class Level4LostActivityClass : AppCompatActivity() {
             it.release() // Release resources when sound finishes
         }
     }
+
+    private fun playLoopingSound(soundResId: Int) {
+        mediaPlayerLoop = MediaPlayer.create(this, soundResId) // Initialize player with music resource
+        mediaPlayerLoop?.isLooping = true // Enable looping playback
+        mediaPlayerLoop?.start() // Start playing
+    }
+
 }
