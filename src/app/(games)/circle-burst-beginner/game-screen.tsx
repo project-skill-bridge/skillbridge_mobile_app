@@ -63,7 +63,7 @@ import firestore from "@react-native-firebase/firestore"; // Firebase database
 // App-specific UI components, animations, and static assets
 import { Images } from "@/src/constants/Images"; // Image assets
 import { Fonts } from "@/src/constants/Fonts"; // Font assets
-import FinnVoiceTntro from "@/src/components/FinnCharacter/FinnGame"; // Character voice guide
+import FinnVoiceTntro from "@/src/components/Circlobrust Voice/FinnGame"; // Character voice guide
 import BufferingProgress from "@/src/components/ui/buffering-progress"; // Loading indicator
 import AnimatedBubbles from "@/src/app/(games)/circle-burst-beginner/UI/animated-bubbles/animated-bubbles"; // Background bubble animations
 import LogoAnimation from "@/src/app/(games)/circle-burst-beginner/UI/animated-logo/animated-logo"; // Game logo animation
