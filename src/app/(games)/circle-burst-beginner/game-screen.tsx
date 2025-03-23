@@ -1213,3 +1213,29 @@ const styles = StyleSheet.create({
     fontFamily: "Montserrat-SemiBold",
     marginBottom: 10, // Space before button
   },
+    borderRadius: 30, // Pill shape
+    elevation: 5, // Android shadow
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    transform: [{ translateY: 0 }],
+  },
+  resumeButtonText: {
+    color: "white",
+    fontSize: 18,
+    fontFamily: "Montserrat-Bold",
+  },
+
+  /* Gradient Container Styles */
+  gradientContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 1, // Below content
+  },
+  gradientFill: {
+    flex: 1,
+  },
