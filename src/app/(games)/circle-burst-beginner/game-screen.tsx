@@ -956,7 +956,7 @@ export default function GameScreen() {
 
             {/* SVG Background Decoration */}
             <ImageBackground
-              source={Images.BackgroundSVGcirclobrust}
+              source={Images.circlobrustMainScreen} 
               style={styles.imageBackground}
               resizeMode="cover"
             >
