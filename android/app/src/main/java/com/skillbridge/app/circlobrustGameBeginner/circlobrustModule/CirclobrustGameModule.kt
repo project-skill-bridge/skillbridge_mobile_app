@@ -147,4 +147,25 @@ class CirclobrustGameModule(reactContext: ReactApplicationContext) : ReactContex
         }
     }
 
+    private fun handleActivityResult(resultCode: Int, data: Intent?, requestCode: Int ) {
+        if (resultCode == Activity.RESULT_OK) {
+            val finalScore = data?.getIntExtra("FINAL_SCORE", 0) ?: 0
+            val levelScore = data?.getIntExtra("LEVEL", 1) ?: 1
+            val formattedTime = data?.getStringExtra("FORMATTED_TIME") ?: "00:00"
+            val audioPosition = data?.getIntExtra("AUDIO_POSITION", 0) ?: 0
+            val result = Arguments.createMap().apply {
+                putInt("finalScore", finalScore)
+                putInt("levelScore", levelScore)
+                putString("formattedTime", formattedTime)
+                putInt("audioPosition", audioPosition)
+            }
+            promise?.resolve(result)
+        } else {
+            promise?.reject("CANCELLED", "User cancelled the operation")
+        }
+        promise = null
+    }
+
+
+
 }
