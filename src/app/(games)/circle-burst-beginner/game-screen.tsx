@@ -1128,3 +1128,22 @@ const styles = StyleSheet.create({
     shadowRadius: 3, // Subtle shadow
   },
 
+  /* Logo Text Styles */
+  textContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginLeft: 10,
+  },
+  logoText: {
+    color: "#f1faee", // Off-white
+    fontSize: 28,
+    fontFamily: "Montserrat-SemiBold",
+    textAlign: "center",
+    textShadowColor: "rgba(0, 0, 0, 0.3)",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3, // Text shadow for depth
+  },
+  logoTextBold: {
+    fontFamily: "Montserrat-Bold",
+    color: "#ffd700", // Gold color for emphasis
+  },
