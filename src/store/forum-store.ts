@@ -105,11 +105,9 @@ export const useForumStore = create<ForumState & {
       
       // Add to the nested collection structure matching your security rules
       await firestore()
-        .collection('forum')
-        .doc('posts')
-        .collection(postId)
-        .doc(postId) // Use the same ID for the document
-        .set(postData);
+      .collection('forum')
+      .doc(postId) 
+      .set(postData);
         
       const newPost = {
         id: postId,
