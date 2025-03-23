@@ -1033,3 +1033,18 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     zIndex: 10, // Above background elements
   },
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20, // Circular button
+    backgroundColor: "#8de4a2", // Light green
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  headerTitle: {
+    marginLeft: 15,
+    fontSize: 20,
+    fontFamily: "Montserrat-Bold",
+    color: "#333", // Dark gray text
+  },
+
