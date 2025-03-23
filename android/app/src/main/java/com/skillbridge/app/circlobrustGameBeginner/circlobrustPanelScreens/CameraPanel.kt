@@ -257,6 +257,29 @@ class CameraPanel : Fragment(), HandIdentifier.LandmarkerListener {
         }
     }
 
+    /* ================ Hand Detection Section ================ 
+     * Methods for processing camera frames and detecting hands
+     * Passes images to ML component and handles results
+     */
+    private fun detectHand(imageProxy: ImageProxy) {
+        handLandmarkerHelper.detectLiveStream( // Send to hand detection
+            imageProxy = imageProxy, // Camera image
+            isFrontCamera = cameraFacing == CameraSelector.LENS_FACING_FRONT // Camera orientation
+        )
+    }
+
+    override fun onResults(resultBundle: HandIdentifier.ResultBundle) {
+        activity?.runOnUiThread { // Update UI on main thread
+            when (activitySource) {
+                ACTIVITY1 -> updateOverlay(binding.Level1Graphics, resultBundle) // Update Level 1 overlay
+                ACTIVITY2 -> updateOverlay(binding.Level2Graphics, resultBundle) // Update Level 2 overlay
+                ACTIVITY3 -> updateOverlay(binding.Level3Graphics, resultBundle) // Update Level 3 overlay
+                ACTIVITY4 -> updateOverlay(binding.Level4Graphics, resultBundle) // Update Level 4 overlay
+                ACTIVITY5 -> updateOverlay(binding.Level5Graphics, resultBundle) // Update Level 5 overlay
+            }
+        }
+    }
+
     private fun updateOverlay(
         overlay: View, // Use View as the base type
         resultBundle: HandIdentifier.ResultBundle
