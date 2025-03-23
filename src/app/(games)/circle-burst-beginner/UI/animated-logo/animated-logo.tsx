@@ -191,3 +191,15 @@ const AnimatedLogo = () => {
     outputRange: ["0deg", "360deg"], // Full circle rotation
   });
 
+  /* ================ RENDER ================ */
+  return (
+    <View style={styles.logoContainer}>
+      <Animated.View style={styles.logoBox}>
+        {/* Shine effect overlay - animated diagonal highlight */}
+        <Animated.View
+          style={[
+            styles.shineEffect,
+            { transform: [{ translateX: bannerShineAnim }] }, // Animated horizontal movement
+          ]}
+        />
+        {/* Banner content - hand, circle, and text */}
