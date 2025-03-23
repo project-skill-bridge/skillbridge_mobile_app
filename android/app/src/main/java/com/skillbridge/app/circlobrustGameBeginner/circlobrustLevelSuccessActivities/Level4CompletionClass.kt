@@ -104,4 +104,12 @@ class Level4CompletionClass : AppCompatActivity() {
         finish() // Close this activity
     }
 
+    /* ================ Cleanup Section ================ 
+     * Resource management for activity shutdown
+     * Ensures proper release of media resources
+     */
+    override fun onDestroy() {
+        super.onDestroy() // Call parent implementation
+        stopLoopingSound() // Stop and release music resources
+    }
 }
