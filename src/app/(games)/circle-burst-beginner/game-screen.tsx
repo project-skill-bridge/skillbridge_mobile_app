@@ -121,6 +121,38 @@ export default function GameScreen() {
   const [spokenLevels, setSpokenLevels] = useState<number[]>([]); // Tracks which levels have been announced
   const [isToggling, setIsToggling] = useState(false); // Track when toggle is in progress
 
+  /* ================ ACTIVITY RESULT HANDLER ================ */
+  /**
+   * Processes the result returned from native game activities
+   * Updates game state (score, level, time) and persists to storage
+   *
+   * @param {any} result - Data returned from native activity
+   */
+  const handleActivityResult = async (result: any) => {
+    // Skip if no result was returned
+    if (!result) return;
+
+    // Extract values from result, falling back to current values if missing
+    const newScore = result.finalScore ?? score;
+    const newLevel = result.levelScore ?? level;
+    const newFormattedTime = result.formattedTime ?? formattedTime;
+    const newAudioPosition = result.audioPosition ?? audioPosition;
+
+    // Update state with new values
+    setAudioPosition(newAudioPosition);
+    setScore(newScore);
+    setLevel(newLevel);
+    setFormattedTime(newFormattedTime);
+
+    // Persist all values to AsyncStorage for game continuity
+    await AsyncStorage.multiSet([
+      ["gameScore", newScore.toString()],
+      ["gameLevel", newLevel.toString()],
+      ["formattedTime", newFormattedTime],
+      ["audioPosition", newAudioPosition.toString()],
+    ]);
+  };
+
 
 export default function GameScreen(): JSX.Element {
   const router = useRouter();
