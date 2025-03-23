@@ -67,7 +67,7 @@ class Level1ActivityClass : AppCompatActivity() {
                     lifecycleScope.launch {
                         if (!gameEnded) {
                             gameEnded = true
-                            if (score < 15) goToLevel1LossActivity() // Fail if score too low
+                            if (score < 10) goToLevel1LossActivity() // Fail if score too low
                             else goToLevel1CompleteActivity() // Success otherwise
                         }
                     }
@@ -164,7 +164,7 @@ class Level1ActivityClass : AppCompatActivity() {
 
             if (!gameEnded) {
                 gameEnded = true
-                if (score < 15) {
+                if (score < 10) {
                     goToLevel1LossActivity() // Fail if score too low
                 } else {
                     goToLevel1CompleteActivity() // Success if score high enough
@@ -177,7 +177,7 @@ class Level1ActivityClass : AppCompatActivity() {
      * Core game mechanics including score tracking and level completion
      */
     private fun checkScore() {
-        if (score >= 15 && !gameEnded) { // Check for target score
+        if (score >= 10 && !gameEnded) { // Check for target score
             gameEnded = true
             countdownJob?.cancel() // Stop countdown on success
             goToLevel1CompleteActivity() // Navigate to success screen
