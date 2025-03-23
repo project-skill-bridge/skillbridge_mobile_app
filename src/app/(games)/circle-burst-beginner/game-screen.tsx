@@ -1176,3 +1176,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#c1121f",
     borderTopRightRadius: 15,
   },
+  bannerCorner4: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    width: 15,
+    height: 15,
+    backgroundColor: "#c1121f",
+    borderTopLeftRadius: 15,
+  },
+
