@@ -198,6 +198,53 @@ export default function GameScreen() {
   const openActivity5Screen = () => openActivityScreen(5); // Level 5
 
   /* ================ EVENT HANDLERS & LISTENERS ================ */
+  /**
+   * Handles results from Activity 2
+   * Updates game state and returns to home screen
+   */
+  useEffect(() => {
+    const handleActivity2Result = async (result: {
+      audioPosition: any;
+      finalScore: any;
+      levelScore: any;
+      formattedTime: any;
+    }) => {
+      // Extract values from the result
+      const newScore = result.finalScore;
+      const newLevel = result.levelScore;
+      const newFormattedTime = result.formattedTime;
+      const newAudioPosition = result.audioPosition;
+
+      // Update state with new values
+      setScore(newScore);
+      setLevel(newLevel);
+      setFormattedTime(newFormattedTime);
+      setAudioPosition(newAudioPosition);
+
+      // Persist to storage
+      await AsyncStorage.multiSet([
+        ["gameScore", newScore.toString()],
+        ["gameLevel", newLevel.toString()],
+        ["formattedTime", newFormattedTime],
+        ["audioPosition", newAudioPosition.toString()],
+      ]);
+
+      // Clean up and navigate
+      Speech.stop();
+      await stopBackgroundMusic();
+      router.push("/home");
+    };
+
+    // Register event listener
+    const subscription = eventEmitter.addListener(
+      "Activity2Result",
+      handleActivity2Result
+    );
+
+    // Cleanup function
+    return () => subscription.remove();
+  }, []); // Empty dependency array ensures this runs once on mount
+
 
 export default function GameScreen(): JSX.Element {
   const router = useRouter();
