@@ -553,6 +553,33 @@ export default function GameScreen() {
     let isMounted = true; // Flag to prevent state updates after unmount
 
     /**
+     * Loads and initializes background music
+     * Sets up looping and volume controls
+     */
+    const loadAudio = async () => {
+      try {
+        // Create and configure sound object
+        const { sound } = await Audio.Sound.createAsync(
+          require("@/assets/sounds/background-music-circlobrust.mp3"),
+          {
+            isLooping: true, // Loop continuously
+            volume: 0.5, // 50% volume
+          }
+        );
+
+        // Prevent state updates if component unmounted
+        if (!isMounted) return;
+
+        // Store sound reference and play if not muted
+        soundRef.current = sound;
+        if (!isMutedRef.current) {
+          await sound.playAsync();
+        }
+      } catch (error) {
+        console.log("Audio loading error:", error);
+      }
+    };
+
 
 export default function GameScreen(): JSX.Element {
   const router = useRouter();
