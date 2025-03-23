@@ -1058,3 +1058,22 @@ const styles = StyleSheet.create({
     marginTop: 20, // Space from header
   },
 
+  /* Logo Box Styles */
+  logoBox: {
+    width: "100%",
+    aspectRatio: 1.6, // Maintains consistent proportions
+    backgroundColor: "#e63946", // Vibrant red
+    borderRadius: 10, // Rounded corners
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 8, // Android shadow
+    overflow: "hidden", // For shine effect
+    borderWidth: 2,
+    borderColor: "#c1121f", // Darker red border
+    position: "relative", // For absolute child positioning
+  },
+
