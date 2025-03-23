@@ -79,4 +79,15 @@ class Level4LostActivityClass : AppCompatActivity() {
 
     }
 
+    /* ================ Sound Management Section ================ 
+     * Methods for controlling background music and defeat sound effects
+     * Handles both one-time and looping playback patterns
+     */
+    private fun playOneTimeSound(soundResId: Int) {
+        mediaPlayerOnce = MediaPlayer.create(this, soundResId) // Initialize player with sound resource
+        mediaPlayerOnce?.start() // Play the sound once
+        mediaPlayerOnce?.setOnCompletionListener {
+            it.release() // Release resources when sound finishes
+        }
+    }
 }
