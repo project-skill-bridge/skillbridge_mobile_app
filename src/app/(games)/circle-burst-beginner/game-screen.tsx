@@ -967,3 +967,28 @@ export default function GameScreen() {
                   {levelNames[level] || `Level ${level}`}
                 </Text>
 
+                {/* Play/Resume Button */}
+                <TouchableOpacity
+                  style={styles.resumeButton}
+                  onPress={async () => {
+                    await stopBackgroundMusic();
+                    handleResume();
+                  }}
+                >
+                  <Text style={styles.resumeButtonText}>
+                    {audioPosition > 0 ? "Resume Game" : "Play Now"}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </ImageBackground>
+          </View>
+        </>
+      ) : (
+        /* Loading State */
+        <View style={styles.loadingContainer}>
+          <BufferingProgress />
+        </View>
+      )}
+    </SafeAreaView>
+  );
+}
