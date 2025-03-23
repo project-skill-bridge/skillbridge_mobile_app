@@ -229,3 +229,16 @@ const AnimatedBubbles: React.FC<AnimatedBubblesProps> = ({
     </View>
   );
 };
+
+/**
+ * Container styles for the bubble field
+ */
+const bubblesContainerStyle = StyleSheet.create({
+  bubblesContainer: {
+    ...StyleSheet.absoluteFillObject, // Fill the entire parent container
+    overflow: "hidden", // Hide bubbles when they move outside the container
+  },
+});
+
+/* ================ EXPORT ================ */
+export default AnimatedBubbles;
