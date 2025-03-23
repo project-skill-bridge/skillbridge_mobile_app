@@ -654,6 +654,37 @@ export default function GameScreen() {
     };
   }, [navigation]);
 
+  /**
+   * Toggles audio mute state
+   * Pauses/resumes background music and speech
+   */
+  const toggleMute = async () => {
+    // Prevent multiple clicks while operation is in progress
+    if (isToggling || !soundRef.current) return;
+
+    try {
+      setIsToggling(true);
+
+      if (isMuted) {
+        // Unmuting - resume audio and speech
+        await soundRef.current.playAsync();
+      } else {
+        // Muting - pause audio and speech
+        await soundRef.current.pauseAsync();
+        Speech.stop();
+      }
+
+      // Update state after operation completes
+      setIsMuted(!isMuted);
+      isMutedRef.current = !isMuted; // Update ref immediately
+    } catch (error) {
+      console.log("Audio toggle error:", error);
+      // Handle error - show feedback to user if needed
+    } finally {
+      setIsToggling(false);
+    }
+  };
+
 
 export default function GameScreen(): JSX.Element {
   const router = useRouter();
