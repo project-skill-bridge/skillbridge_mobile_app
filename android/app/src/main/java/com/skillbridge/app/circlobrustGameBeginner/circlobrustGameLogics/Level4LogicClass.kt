@@ -271,4 +271,17 @@ class Level4LogicClass @JvmOverloads constructor(
         }
     }
 
+    /* ================ Lifecycle Section ================ 
+     * Methods for managing component lifecycle
+     * Handles resource allocation and cleanup
+     */
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow() // Call parent method
+        customHandler.post(updateRunnable) // Start game update loop
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow() // Call parent method
+        customHandler.removeCallbacks(updateRunnable) // Stop game update loop
+    }
 }
