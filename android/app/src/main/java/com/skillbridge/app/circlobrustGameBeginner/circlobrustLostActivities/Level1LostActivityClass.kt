@@ -102,4 +102,11 @@ class Level1LostActivityClass : AppCompatActivity() {
         mediaPlayerLoop = null // Clear reference
     }
 
+    /* ================ UI Update Section ================ 
+     * Methods for refreshing UI elements with current game data
+     * Displays final score on the loss screen
+     */
+    fun updateScoreInUi() {
+        binding.score.text = "$score" // Display score value in TextView
+    }
 }
