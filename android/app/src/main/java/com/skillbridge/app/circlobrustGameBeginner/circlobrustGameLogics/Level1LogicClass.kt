@@ -114,4 +114,26 @@ class Level1LogicClass @JvmOverloads constructor(
             invalidate() // Request redraw
         }
     }
+
+    /* ================ Game Logic Section ================ 
+     * Core game mechanics for circle movement and spawning
+     * Controls the flow and timing of game elements
+     */
+    private fun updateCircle() {
+        // Check if it's time to spawn a new circle
+        val currentTime = System.currentTimeMillis() // Get current time
+        if (currentTime - lastCircleTime >= CIRCLE_SPAWN_INTERVAL) { // Check if interval passed
+            addNewCircleIfNeeded() // Create new circle if needed
+            lastCircleTime = currentTime // Reset timer
+        }
+        
+        // Update existing circles
+        circles.forEach { circle ->
+            // Move up or down based on the direction flag
+            if (circle.isMovingUp) {
+                circle.y -= circle.velocity // Move upward
+            } else {
+                circle.y += circle.velocity // Move downward
+            }
+            
 }
