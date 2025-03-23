@@ -25,6 +25,17 @@ abstract class BaseLogicClass @JvmOverloads constructor(
     context: Context?, // Android context for resource access
     attrs: AttributeSet? = null // XML attributes for view customization
 ) : View(context, attrs) {
+
+    /* ================ Properties Section ================ 
+     * Shared variables for hand tracking results and display scaling
+     * Maintains state information used across all game levels
+     */
+    protected var results: HandLandmarkerResult? = null // Stores hand detection results
+    protected var scaleFactor: Float = 1f // Controls coordinate scaling for display
+    protected var imageWidth: Int = 1 // Width of processed camera image
+    protected var imageHeight: Int = 1 // Height of processed camera image
+
+    /* ================ Paint Configuration Section ================ 
      * Drawing tools for rendering hand landmarks and connections
      * Defines visual appearance of hand tracking visualization
      */
