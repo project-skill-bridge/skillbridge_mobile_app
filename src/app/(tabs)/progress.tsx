@@ -1,16 +1,16 @@
 import * as React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, } from "react-native";
 import { useState } from "react";
 import CircularProgress from "react-native-circular-progress-indicator";
 
 const StreakScreen = () => {
   const [progress, setprogress] = useState(5);
   const maxprogress = 10;
-
+  const Spacer = ({ size = 10 }) => <View style={{ height: size }} />;
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Your progress</Text>
-      <View style={styles.achievements}><CircularProgress
+      <View style={styles.achievement}><CircularProgress
         value={(progress / maxprogress) * 100}
         radius={55}
         duration={1000}
@@ -21,13 +21,33 @@ const StreakScreen = () => {
         titleStyle={{ fontWeight: "bold" }}
         /></View>
       <Text style={styles.streakCount}> // Game name</Text>
-      <Text style={styles.streakCount}> Day {progress}</Text>
-      <Text style={styles.txt}>Keep going! You're doing great! 🚀</Text>
-      <View style={styles.achievements}>
-        <Text style={styles.achievementTitle}>Recent Achievements</Text>
-        <Text>✅ --------</Text>
-        <Text>✅ --------</Text>
-      </View>
+
+      <Spacer size={30} />
+
+      <View style={styles.achievement}><CircularProgress
+        value={(progress / maxprogress) * 100}
+        radius={55}
+        duration={1000}
+        progressValueColor={"#e85454"}
+        maxValue={100}
+        title={"Progress"}
+        titleColor={"#6277bf"}
+        titleStyle={{ fontWeight: "bold" }}
+        /></View>
+      <Text style={styles.streakCount}> // Game name</Text>
+
+
+      <Text style={styles.progressCount}> You are on Day {progress}</Text>
+<Text style={styles.txt}>Keep going! You're doing great! 🚀</Text>
+
+{/* 
+<View style={styles.achievements}>
+  <Text style={styles.achievementTitle}>Recent Achievements</Text>
+  <Text>✅ --------</Text>
+  <Text>✅ --------</Text>
+</View>
+*/}
+
     </View>
   );
 };
@@ -53,9 +73,15 @@ const styles = StyleSheet.create({
   streakCount: {
     fontSize: 20,
     fontWeight: "600",
+    color: "#6277bf",
+    paddingTop: 15,
+    marginBottom: 15,
+  },
+  progressCount: {
+    fontSize: 30,
+    fontWeight: "600",
     color: "#e85454",
     paddingTop: 15,
-   
   },
   txt: {
     fontSize: 16,
@@ -77,18 +103,18 @@ const styles = StyleSheet.create({
   achievementTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    marginBottom: 5,
-    textAlign: "center", // Centers text inside the box
-},
-achievements: {
-    backgroundColor: "#FFF",
+    //marginBottom: 5,
+    //textAlign: "center", // Centers text inside the box
+  },
+  achievement: {
+    backgroundColor: "#FFFF",
     padding: 15,
     borderRadius: 10,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
+    shadowColor: "#cad3ed",
+    shadowOpacity: 1,
     shadowRadius: 5,
-    elevation: 3,
-    width: "80%",
+    elevation: 4,
+    width: "60%",
     alignItems: "center", // Centers all child elements inside this box
 },
 
