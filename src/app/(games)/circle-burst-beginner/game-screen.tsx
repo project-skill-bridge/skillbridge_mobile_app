@@ -602,6 +602,35 @@ export default function GameScreen() {
       }
     };
 
+    /**
+     * Handles screen losing focus
+     * Pauses audio and speech
+     */
+    const onBlur = () => {
+      if (soundRef.current) {
+        soundRef.current.pauseAsync();
+        Speech.stop();
+      }
+    };
+
+    /**
+     * Handles screen gaining focus
+     * Resumes audio if not muted
+     */
+    const onFocus = () => {
+      if (soundRef.current && !isMutedRef.current) {
+        soundRef.current.playAsync();
+      }
+    };
+
+    // Configure global audio mode for the app
+    Audio.setAudioModeAsync({
+      allowsRecordingIOS: false,
+      staysActiveInBackground: true,
+      playsInSilentModeIOS: true,
+      shouldDuckAndroid: true, // Lower volume when notifications occur
+    });
+
 
 export default function GameScreen(): JSX.Element {
   const router = useRouter();
