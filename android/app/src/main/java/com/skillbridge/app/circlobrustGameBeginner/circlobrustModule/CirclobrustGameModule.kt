@@ -221,4 +221,16 @@ class CirclobrustGameModule(reactContext: ReactApplicationContext) : ReactContex
             .emit("Activity1Result", params)
     }
 
+    // MyNativeModules.kt
+    fun emitActivity2Result(finalScore: Int, level: Int , formattedTime: String, audioPosition: Int) {
+        val params = Arguments.createMap().apply {
+            putInt("finalScore", finalScore)
+            putInt("levelScore", level)
+            putString("formattedTime", formattedTime)
+            putInt("audioPosition", audioPosition)
+        }
+        reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+            .emit("Activity2Result", params)
+    }
+
 }
