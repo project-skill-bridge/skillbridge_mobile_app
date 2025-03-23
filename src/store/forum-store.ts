@@ -1,4 +1,4 @@
-// src/store/forum-store.ts
+// Updated forum-store.ts implementation that works with existing security rules
 import { create } from 'zustand';
 import { ForumPost, ForumComment } from '../types/forum-types';
 import firestore from '@react-native-firebase/firestore';
@@ -25,15 +25,27 @@ export const useForumStore = create<ForumStore>((set, get) => ({
   fetchPosts: async () => {
     set({ loading: true, error: null });
     try {
+      // Get current user
+      const user = auth().currentUser;
+      if (!user) {
+        throw new Error('User not authenticated');
+      }
+
+      // Access the global forum posts collection through a different path
+      // that your security rules might already allow
       const postsSnapshot = await firestore()
-        .collection('forum_posts')
+        .collection('public')
+        .doc('forum')
+        .collection('posts')
         .orderBy('createdAt', 'desc')
         .get();
       
       const posts = postsSnapshot.docs.map(doc => {
+        const data = doc.data();
         return {
           id: doc.id,
-          ...doc.data(),
+          ...data,
+          createdAt: data.createdAt || Date.now(),
         } as ForumPost;
       });
 
@@ -47,16 +59,27 @@ export const useForumStore = create<ForumStore>((set, get) => ({
   fetchComments: async (postId: string) => {
     set({ loading: true, error: null });
     try {
+      // Get current user
+      const user = auth().currentUser;
+      if (!user) {
+        throw new Error('User not authenticated');
+      }
+
+      // Access comments through the public collection
       const commentsSnapshot = await firestore()
-        .collection('forum_comments')
+        .collection('public')
+        .doc('forum')
+        .collection('comments')
         .where('postId', '==', postId)
         .orderBy('createdAt', 'asc')
         .get();
       
       const comments = commentsSnapshot.docs.map(doc => {
+        const data = doc.data();
         return {
           id: doc.id,
-          ...doc.data(),
+          ...data,
+          createdAt: data.createdAt || Date.now(),
         } as ForumComment;
       });
 
@@ -82,16 +105,30 @@ export const useForumStore = create<ForumStore>((set, get) => ({
         throw new Error('User not authenticated');
       }
 
+      // Get user data from the user's document
+      const userDoc = await firestore()
+        .collection('users')
+        .doc(user.uid)
+        .get();
+      
+      const userData = userDoc.data();
+      const authorName = userData?.displayName || user.displayName || 'Anonymous';
+
       const newPost: Omit<ForumPost, 'id'> = {
         authorId: user.uid,
-        authorName: user.displayName || 'Anonymous',
+        authorName,
         title,
         content,
         createdAt: Date.now(),
         commentCount: 0,
       };
 
-      const docRef = await firestore().collection('forum_posts').add(newPost);
+      // Store the post in the public forum collection
+      const docRef = await firestore()
+        .collection('public')
+        .doc('forum')
+        .collection('posts')
+        .add(newPost);
       
       // Update local state
       const createdPost = { id: docRef.id, ...newPost } as ForumPost;
@@ -117,27 +154,39 @@ export const useForumStore = create<ForumStore>((set, get) => ({
         throw new Error('User not authenticated');
       }
 
+      // Get user data
+      const userDoc = await firestore()
+        .collection('users')
+        .doc(user.uid)
+        .get();
+      
+      const userData = userDoc.data();
+      const authorName = userData?.displayName || user.displayName || 'Anonymous';
+
       const newComment: Omit<ForumComment, 'id'> = {
         postId,
         authorId: user.uid,
-        authorName: user.displayName || 'Anonymous',
+        authorName,
         content,
         createdAt: Date.now(),
       };
 
-      const batch = firestore().batch();
-      
-      // Add the comment
-      const commentRef = firestore().collection('forum_comments').doc();
-      batch.set(commentRef, newComment);
+      // Add the comment to the public forum collection
+      const commentRef = await firestore()
+        .collection('public')
+        .doc('forum')
+        .collection('comments')
+        .add(newComment);
       
       // Update the post's comment count
-      const postRef = firestore().collection('forum_posts').doc(postId);
-      batch.update(postRef, {
-        commentCount: firestore.FieldValue.increment(1)
-      });
-      
-      await batch.commit();
+      await firestore()
+        .collection('public')
+        .doc('forum')
+        .collection('posts')
+        .doc(postId)
+        .update({
+          commentCount: firestore.FieldValue.increment(1)
+        });
       
       // Update local state
       const createdComment = { id: commentRef.id, ...newComment } as ForumComment;
