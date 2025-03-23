@@ -99,3 +99,18 @@ class Level3ActivityClass : AppCompatActivity() {
         }
     }
 
+    /* ================ Utility Section ================ 
+     * Helper methods for time calculation and string formatting
+     */
+    private fun parseTimeString(timeString: String): Pair<Int, Int> {
+        return try {
+            val parts = timeString.split(":") // Split time string into seconds and centiseconds
+            val seconds = parts[0].toIntOrNull() ?: 0 // Extract seconds or use 0 if invalid
+            val millisecondsPart = parts.getOrNull(1)?.toIntOrNull() ?: 0 // Extract centiseconds
+            val milliseconds = millisecondsPart * 10 // Convert centiseconds to milliseconds
+            Pair(seconds, milliseconds)
+        } catch (e: Exception) {
+            Pair(0, 0) // Return zeros if parsing fails
+        }
+    }
+
