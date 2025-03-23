@@ -67,6 +67,14 @@ const HomeProgress = () => {
           // If you're using React state, update it
           setAverageProgress(avgProgress);
 
+        } catch (error) {
+          console.error("Error getting games: ", error);
+        } finally {
+          // If using React state, update loading status
+          // setLoading(false);
+        }
+      };
+
     //fetchGameProgress();
   //}, []);
 
