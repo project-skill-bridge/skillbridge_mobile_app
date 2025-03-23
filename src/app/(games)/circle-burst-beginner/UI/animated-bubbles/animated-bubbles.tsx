@@ -155,3 +155,25 @@ const AnimatedBubble: React.FC<AnimatedBubbleProps> = ({
     // No cleanup needed - animation stops when component unmounts
   }, [delay, duration, startPosition, bubblePosition, opacity, scale]);
 
+  return (
+    <Animated.View
+      style={[
+        styles.bubble, // Base bubble style
+        {
+          // Dynamic styles based on props and animation values
+          width: size,
+          height: size,
+          borderRadius: size / 2, // Make perfectly circular
+          transform: [
+            // Apply position and scale transformations
+            { translateX: bubblePosition.x },
+            { translateY: bubblePosition.y },
+            { scale: scale },
+          ],
+          opacity: opacity, // Apply opacity animation
+        },
+      ]}
+    />
+  );
+};
+
