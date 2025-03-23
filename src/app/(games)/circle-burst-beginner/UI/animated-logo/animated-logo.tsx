@@ -177,3 +177,17 @@ const AnimatedLogo = () => {
 
     // No cleanup needed - animations stop automatically on unmount
   }, []);
+
+  /* ================ ANIMATION INTERPOLATIONS ================ */
+  // Convert handAnim (0-1) to a scaling factor (0.9-1.1)
+  const handScale = handAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0.9, 1.1], // 10% smaller to 10% larger
+  });
+
+  // Convert handRotateAnim (0-1) to rotation degrees (0-360)
+  const handRotate = handRotateAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["0deg", "360deg"], // Full circle rotation
+  });
+
