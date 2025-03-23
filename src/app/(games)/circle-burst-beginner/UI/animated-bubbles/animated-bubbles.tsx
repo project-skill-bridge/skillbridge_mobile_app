@@ -65,3 +65,21 @@ interface AnimatedBubblesProps {
  * @param {AnimatedBubbleProps} props - Configuration props for this bubble
  * @returns {JSX.Element} Animated bubble view
  */
+const AnimatedBubble: React.FC<AnimatedBubbleProps> = ({
+  size,
+  delay,
+  duration,
+  startPosition,
+}) => {
+  // Animation value references - using useRef to maintain instances across renders
+  const bubblePosition = React.useRef(
+    // Start position is below screen (y: height + 100) at specified x coordinate
+    new Animated.ValueXY({ x: startPosition, y: height + 100 })
+  ).current;
+
+  // Opacity starts at 0 (invisible)
+  const opacity = React.useRef(new Animated.Value(0)).current;
+
+  // Scale starts at 0.3 (30% of final size)
+  const scale = React.useRef(new Animated.Value(0.3)).current;
+
