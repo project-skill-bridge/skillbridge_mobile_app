@@ -325,3 +325,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 
+  /* Hand Animation Container Styles */
+  handContainer: {
+    position: "absolute",
+    width: 80,
+    height: 80,
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1, // Below circle
+  },
+
