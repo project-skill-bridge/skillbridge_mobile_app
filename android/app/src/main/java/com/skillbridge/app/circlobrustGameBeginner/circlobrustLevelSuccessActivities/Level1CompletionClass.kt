@@ -53,4 +53,17 @@ class Level1CompletionClass : AppCompatActivity() {
 
 
 
+        val gifView: ImageView = findViewById(R.id.gifViewlevel1) // Get reference to GIF container
+        val gifUri = "android.resource://$packageName/${R.raw.star}" // Create URI for star animation
+
+
+
+        Glide.with(this)
+            .load(gifUri) // Load the celebration GIF
+            .into(gifView) // Display in the ImageView
+
+        playOneTimeSound(R.raw.win) // Play initial victory sound
+        playLoopingSound(R.raw.win_loop) // Start looping celebration music
+
+    }
 }
