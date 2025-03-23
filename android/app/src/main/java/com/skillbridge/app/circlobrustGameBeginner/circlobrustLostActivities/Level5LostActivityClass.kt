@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity // Base activity class
 import com.bumptech.glide.Glide // Library for GIF loading
 import android.media.MediaPlayer // For audio playback
 import com.skillbridge.app.databinding.ActivityLevel5LossBinding // View binding for layout
-import com.skillbridge.app.circlobrustGameBeginner.MyNativeModules // Custom bridge to React Native
+import com.skillbridge.app.circlobrustGameBeginner.circlobrustModule.CirclobrustBeginnerGameModule // Custom bridge to React Native
 import com.skillbridge.app.R // App resources reference
 
 /* ================ Activity Class Section ================ 
@@ -54,7 +54,7 @@ class Level5LostActivityClass : AppCompatActivity() {
 
             // Set result and finish
             setResult(RESULT_OK, intent) // Set result for calling activity
-            MyNativeModules.getInstance()?.emitActivity1Result(0, 5, "00:00", 0) // Signal React Native
+            CirclobrustBeginnerGameModule.getInstance()?.emitActivity1Result(0, 5, "00:00", 0) // Signal React Native
             finish() // Close this activity
         }
 
@@ -120,7 +120,7 @@ class Level5LostActivityClass : AppCompatActivity() {
         intent.putExtra("FINAL_SCORE", 0) // Reset score for returning to menu
         intent.putExtra("LEVEL", 1) // Set level to retry
         setResult(RESULT_OK, intent) // Set result for calling activity
-        MyNativeModules.getInstance()?.emitActivity2Result(0, 5 , "00:00" , 0) // Signal React Native
+        CirclobrustBeginnerGameModule.getInstance()?.emitActivity2Result(0, 5 , "00:00" , 0) // Signal React Native
         finish() // Close this activity
     }
 
