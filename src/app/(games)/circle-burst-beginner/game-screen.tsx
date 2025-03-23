@@ -538,6 +538,21 @@ export default function GameScreen() {
     return unsubscribe;
   }, [navigation]);
 
+   * Ensures the muted state ref stays in sync with state
+   * Important for accessing correct state in async contexts
+   */
+  useEffect(() => {
+    isMutedRef.current = isMuted;
+  }, [isMuted]);
+
+  /**
+   * Loads and plays background music
+   * Handles app state changes (foreground/background)
+   */
+  useEffect(() => {
+    let isMounted = true; // Flag to prevent state updates after unmount
+
+    /**
 
 export default function GameScreen(): JSX.Element {
   const router = useRouter();
