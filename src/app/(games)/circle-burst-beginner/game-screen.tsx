@@ -992,3 +992,18 @@ export default function GameScreen() {
     </SafeAreaView>
   );
 }
+
+/* ================ STYLES ================ */
+/**
+ * Component styles using StyleSheet for optimal performance
+ * Organized by component section for maintainability
+ */
+const styles = StyleSheet.create({
+  /* Loading Screen Styles */
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#ffffff", // Clean white background
+  },
+
