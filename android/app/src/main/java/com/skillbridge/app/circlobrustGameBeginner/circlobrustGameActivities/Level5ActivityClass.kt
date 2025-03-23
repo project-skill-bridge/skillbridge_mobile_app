@@ -116,4 +116,20 @@ class Level5ActivityClass : AppCompatActivity() {
         }
     }
 
+    /* ================ UI Update Section ================ 
+     * Methods responsible for refreshing UI elements with current game data
+     */
+    private fun updateTimeInUi() {
+
+        val secondsFormatted = DecimalFormat("00").format(timeInSeconds)
+        val millisecondsFormatted = DecimalFormat("00").format(milliseconds / 10)
+
+
+        binding.timeTextView.text = "$secondsFormatted:$millisecondsFormatted"
+    }
+
+    fun updateScoreInUi() {
+        binding.scoreTextView.text = "$score"
+    }
+
 }
