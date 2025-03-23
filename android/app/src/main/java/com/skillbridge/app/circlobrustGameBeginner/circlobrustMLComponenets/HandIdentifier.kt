@@ -121,6 +121,14 @@ class HandIdentifier (
         )
     }
 
+    private fun returnLivestreamError(error: RuntimeException) {
+        handLandmarkerHelperListener.onError(error.message ?: "Unknown error occurred") // Report error
+    }
+
+    /* ================ Constants Section ================ 
+     * Shared configuration values and default settings
+     * Defines model paths and threshold values
+     */
     companion object {
         const val TAG = "HandLandmarkerHelper" // Logging tag
         private const val MP_HAND_LANDMARKER_TASK = "hand_landmarker.task" // Model file name
