@@ -172,4 +172,41 @@ class Level2ActivityClass : AppCompatActivity() {
         }
     }
 
+    /* ================ Game Logic Section ================ 
+     * Core game mechanics including score tracking and level completion
+     */
+    private fun checkScore() {
+        if (score >= 12 && !gameEnded) {
+            gameEnded = true
+            countdownJob?.cancel()
+            goToLevel2CompleteActivity() // Success when target score is reached
+        }
+    }
+
+    private fun goToLevel2CompleteActivity() {
+        timerJob?.cancel()
+        countdownJob?.cancel()
+        val intent = Intent(this, Level2CompletionClass::class.java)
+        startActivity(intent)
+        finish()
+    }
+
+    private fun goToLevel2LossActivity() {
+        timerJob?.cancel()
+        countdownJob?.cancel()
+        val intent = Intent(this, Level2LostActivityClass::class.java).apply {
+            putExtra("EXTRA_SCORE", score) // Pass final score to loss screen
+        }
+        startActivity(intent)
+        finish()
+    }
+
+    fun incrementScore() {
+        score++
+        runOnUiThread {
+            binding.scoreTextView.text = "$score"
+        }
+        checkScore() // Check if target score reached after each increment
+    }
+
 }
