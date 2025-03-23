@@ -538,6 +538,7 @@ export default function GameScreen() {
     return unsubscribe;
   }, [navigation]);
 
+  /**
    * Ensures the muted state ref stays in sync with state
    * Important for accessing correct state in async contexts
    */
@@ -577,6 +578,27 @@ export default function GameScreen() {
         }
       } catch (error) {
         console.log("Audio loading error:", error);
+      }
+    };
+
+    /**
+     * Handles app state changes (foreground/background)
+     * Pauses audio when app is backgrounded, resumes when foregrounded
+     *
+     * @param {string} nextAppState - The new app state
+     */
+    const handleAppStateChange = (nextAppState: string) => {
+      if (nextAppState === "background" && soundRef.current) {
+        // App going to background - pause audio and speech
+        soundRef.current.pauseAsync();
+        Speech.stop();
+      } else if (
+        nextAppState === "active" &&
+        soundRef.current &&
+        !isMutedRef.current
+      ) {
+        // App coming to foreground - resume audio if not muted
+        soundRef.current.playAsync();
       }
     };
 
