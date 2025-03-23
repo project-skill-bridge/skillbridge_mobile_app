@@ -182,4 +182,27 @@ class CameraPanel : Fragment(), HandIdentifier.LandmarkerListener {
      */
     private fun initializeOverlays() {
         val popSound = MediaPlayer.create(requireContext(), R.raw.pop_sound) // Create pop sound player
+
+    /* ================ Cleanup Section ================ 
+     * Methods for resource management and cleanup
+     * Ensures proper release of camera, executors, and media resources
+     */
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig) // Call parent implementation
+        imageAnalyzer?.targetRotation = binding.viewFinder.display.rotation // Update rotation
+    }
+
+    override fun onPause() {
+        super.onPause() // Call parent implementation
+        backgroundExecutor.execute { handLandmarkerHelper.clearHandLandmarker() } // Clean up ML resources
+    }
+
+    override fun onDestroyView() {
+        _binding = null // Clear binding reference
+        super.onDestroyView() // Call parent implementation
+        backgroundExecutor.shutdown() // Shut down executor
+        backgroundExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS) // Wait for shutdown
+        popSound?.release() // Release media player
+        popSound = null // Clear reference
+    }
 }
