@@ -26,7 +26,7 @@ const ProgressScreen = () => {
       try{
         
         //comment when user session created
-        const userId = "8S5GzpnTS7Q5lc8OuU4NTOZ0mZT2"; // Hardcoded user ID
+        const userId = "338KqomFDhYMtWd8xCXWIMwtg3v1"; // Hardcoded user ID
 
         const userDocRef = doc(db, "users", userId); // Reference to the hardcoded user's document
         const userDocSnap = await getDoc(userDocRef);
@@ -110,7 +110,7 @@ const ProgressScreen = () => {
         style={styles.image}
       />
       <View style={styles.achievement}><CircularProgress
-        value={(progress / maxprogress) * 100}
+        value={game1Progress}
         radius={55}
         duration={1000}
         progressValueColor={"#FF6347"}  
@@ -124,7 +124,7 @@ const ProgressScreen = () => {
       <Spacer size={30} />
       
       <View style={styles.achievement}><CircularProgress //second game progress circle
-        value={(progress / maxprogress) * 100}
+        value={game2Progress}
         radius={55}
         duration={1000}
         progressValueColor={"#e85454"}
