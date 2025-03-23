@@ -61,4 +61,17 @@ class CameraPanel : Fragment(), HandIdentifier.LandmarkerListener {
     private var cameraProvider: ProcessCameraProvider? = null // Camera lifecycle provider
     private var cameraFacing = CameraSelector.LENS_FACING_FRONT // Default to front camera
 
+    /* ================ Constants Section ================ 
+     * Static values and configuration parameters
+     * Provides identifiers for level tracking and logging
+     */
+    companion object {
+        private const val TAG = "Hand Landmarker" // Log tag for debugging
+        private const val ARG_ACTIVITY_SOURCE = "activity_source" // Bundle argument key
+         const val ACTIVITY1 = "Activity1" // Level 1 identifier
+         const val ACTIVITY2 = "Activity2" // Level 2 identifier
+         const val ACTIVITY3 = "Activity3" // Level 3 identifier
+         const val ACTIVITY4 = "Activity4" // Level 4 identifier
+         const val ACTIVITY5 = "Activity5" // Level 5 identifier
+
 }
