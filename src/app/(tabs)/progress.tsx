@@ -79,6 +79,13 @@ const ProgressScreen = () => {
           }
         });
 
+        // Calculate average progress for each game
+        const progressGame1 = gameCountGame1 > 0 ? totalProgressGame1 : 0;
+        const progressGame2 = gameCountGame2 > 0 ? totalProgressGame2 : 0;
+
+        console.log(`Total Progress for Game 1: ${progressGame1}%`);
+        console.log(`Total Progress for Game 2: ${progressGame2}%`);
+
 
       }catch (error) {
 
