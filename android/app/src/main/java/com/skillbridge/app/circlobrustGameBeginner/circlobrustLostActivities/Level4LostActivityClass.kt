@@ -123,4 +123,13 @@ class Level4LostActivityClass : AppCompatActivity() {
         MyNativeModules.getInstance()?.emitActivity2Result(0, 4 , "00:00" , 0) //emit2ma daala balamu - Signal React Native
         finish() // Close this activity
     }
+
+    /* ================ Cleanup Section ================ 
+     * Resource management for activity shutdown
+     * Ensures proper release of media resources
+     */
+    override fun onDestroy() {
+        super.onDestroy() // Call parent implementation
+        stopLoopingSound() // Stop and release music resources
+    }
 }
