@@ -182,6 +182,17 @@ class CameraPanel : Fragment(), HandIdentifier.LandmarkerListener {
      */
     private fun initializeOverlays() {
         val popSound = MediaPlayer.create(requireContext(), R.raw.pop_sound) // Create pop sound player
+        when (activitySource) {
+            ACTIVITY1 -> { // Level 1 setup
+                binding.Level1Graphics.visibility = View.VISIBLE // Show Level 1 overlay
+                binding.Level2Graphics.visibility = View.GONE // Hide Level 2 overlay
+                binding.Level3Graphics.visibility = View.GONE // Hide Level 3 overlay
+                binding.Level4Graphics.visibility = View.GONE // Hide Level 4 overlay
+                binding.Level5Graphics.visibility = View.GONE // Hide Level 5 overlay
+                binding.Level1Graphics.circlePoppedListener = object : Level1LogicClass.OnCirclePoppedListener {
+                    override fun onCirclePopped() { // When circle is popped
+                        popSound.start() // Play sound
+                        (activity as? Level1ActivityClass)?.incrementScore() // Increment score in activity
     private fun updateOverlay(
         overlay: View, // Use View as the base type
         resultBundle: HandIdentifier.ResultBundle
