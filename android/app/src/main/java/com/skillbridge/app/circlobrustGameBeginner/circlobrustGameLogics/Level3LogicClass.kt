@@ -197,6 +197,48 @@ class Level3LogicClass @JvmOverloads constructor(
         circles.removeAll { it.isPopped } // Remove all popped circles
     }
 
+    /* ================ Drawing Section ================ 
+     * Rendering methods for game elements and hand tracking
+     * Controls the visual presentation of the game state
+     */
+    override fun draw(canvas: Canvas) {
+        super.draw(canvas) // Draw base class content (background)
+
+        results?.let { handLandmarkerResult ->
+            for (landmark in handLandmarkerResult.landmarks()) { // For each detected hand
+                for ((index, normalizedLandmark) in landmark.withIndex()) {
+                    val x = normalizedLandmark.x() * imageWidth * scaleFactor // Convert to screen coordinates
+                    val y = normalizedLandmark.y() * imageHeight * scaleFactor // Convert to screen coordinates
+                    canvas.drawPoint(x, y, pointPaint) // Draw all hand landmarks
+
+                    if (index == 8) { // Index fingertip (landmark 8)
+                        canvas.drawCircle(x, y, 30f, pointPaint) // Highlight fingertip with larger circle
+                    }
+                }
+
+                HandLandmarker.HAND_CONNECTIONS.forEach { // Draw lines between landmarks
+                    canvas.drawLine(
+                        landmark[it.start()].x() * imageWidth * scaleFactor, // Start X
+                        landmark[it.start()].y() * imageHeight * scaleFactor, // Start Y
+                        landmark[it.end()].x() * imageWidth * scaleFactor, // End X
+                        landmark[it.end()].y() * imageHeight * scaleFactor, // End Y
+                        linePaint // Use configured line paint
+                    )
+                }
+            }
+        }
+        drawCircle(canvas) // Draw the game circles
+    }
+
+    private fun drawCircle(canvas: Canvas) {
+        circles.forEach { circle ->
+            if (!circle.isPopped) { // Only draw active circles
+                circlePaint.color = circle.color // Set current circle color
+                canvas.drawCircle(circle.x, circle.y, circle.radius, circlePaint) // Draw the circle
+            }
+        }
+    }
+
     /* ================ Lifecycle Section ================ 
      * Methods for managing component lifecycle
      * Handles resource allocation and cleanup
