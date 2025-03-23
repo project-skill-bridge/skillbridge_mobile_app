@@ -105,4 +105,13 @@ class CameraPanel : Fragment(), HandIdentifier.LandmarkerListener {
         }
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater, // Layout inflater service
+        container: ViewGroup?, // Parent container
+        savedInstanceState: Bundle? // Saved instance state
+    ): View {
+        _binding = PanelCameraBinding.inflate(inflater, container, false) // Inflate layout
+        return binding.root // Return root view
+    }
+
 }
