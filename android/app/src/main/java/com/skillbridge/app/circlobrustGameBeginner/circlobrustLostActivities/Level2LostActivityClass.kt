@@ -104,4 +104,11 @@ class Level2LostActivityClass : AppCompatActivity() {
     }
 
     /* ================ UI Update Section ================ 
+     * Methods for refreshing UI elements with current game data
+     * Displays final score on the loss screen
+     */
+    fun updateScoreInUi() {
+        binding.score.text = "$score" // Display score value in TextView
+    }
+
 }
