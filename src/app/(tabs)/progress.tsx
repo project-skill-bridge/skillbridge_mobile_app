@@ -123,17 +123,13 @@ const ProgressScreen = () => {
         titleColor={"#6277bf"}
         titleStyle={{ fontWeight: "bold" }}
         /></View>
+
       <Text style={styles.streakCount}>Tap and type</Text>
 
-<Text style={styles.txt}>Keep going! You're doing great 🚀</Text>
-
-{/* 
-<View style={styles.achievements}>
-  <Text style={styles.achievementTitle}>Recent Achievements</Text>
-  <Text>✅ --------</Text>
-  <Text>✅ --------</Text>
-</View>
-*/}
+      <Spacer size={30} />
+      
+<Text style={styles.txt}>Take your time</Text>
+<Text style={styles.txt}>You're doing great 🚀</Text>
     </View>
   );
 };
@@ -163,19 +159,14 @@ const styles = StyleSheet.create({
     paddingTop: 15,
     marginBottom: 15,
   },
-  /*progressCount: {
-    fontSize: 30,
-    fontWeight: "600",
-    color: "#e85454",
-    paddingTop: 15,
-  },*/
   txt: {
     fontSize: 19,
     fontStyle: "italic",
     fontWeight: "bold",
-    color: "#555",
-    marginBottom: 20,
+    color: "#e85454",
+    //marginBottom: 20,
     paddingTop: 15,
+    alignItems: "center",
   },
   image:{
     width: 150,
@@ -187,17 +178,6 @@ const styles = StyleSheet.create({
     transform: [{rotate: "-16deg"}]
 
   },
-  //achievements: {
-    //backgroundColor: "#FFF",
-    //padding: 15,
-    //borderRadius: 10,
-    //shadowColor: "#e85454", // Shadow color
-    //shadowOpacity: 0.2, // Shadow opacity (0 to 1)
-    //shadowRadius: 7, // Shadow radius (spread of the shadow)
-    //elevation: 10, // Elevation for Android shadow
-    //width: "80%",
-    //marginBottom: 20, // Add some spacing between the boxes
-  //},
   achievementTitle: {
     fontSize: 18,
     fontWeight: "bold",
