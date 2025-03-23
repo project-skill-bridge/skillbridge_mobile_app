@@ -1007,3 +1007,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff", // Clean white background
   },
 
+  /* Main Container Styles */
+  container: {
+    flex: 1,
+    backgroundColor: "#fff", // Consistent white background
+  },
+
