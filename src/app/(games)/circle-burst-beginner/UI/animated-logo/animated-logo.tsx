@@ -371,3 +371,14 @@ const styles = StyleSheet.create({
     color: "#ffd700", // Gold color for contrast
   },
 
+  /* Corner Decoration Styles */
+  // Top-left corner decoration
+  bannerCorner1: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: 15,
+    height: 15,
+    backgroundColor: "#c1121f", // Darker red
+    borderBottomRightRadius: 15, // Creates quarter-circle shape
+  },
