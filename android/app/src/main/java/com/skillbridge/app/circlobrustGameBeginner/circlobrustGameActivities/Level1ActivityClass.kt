@@ -18,3 +18,24 @@ import com.skillbridge.app.circlobrustGameBeginner.circlobrustLevelSuccessActivi
 import com.skillbridge.app.circlobrustGameBeginner.circlobrustLostActivities.Level1LostActivityClass
 import  com.skillbridge.app.circlobrustGameBeginner.MyNativeModules
 import com.skillbridge.app.R
+
+
+/* ================ Activity Class Section ================ 
+ * Main game activity for Level 1 of the Circlobrust Game
+ * Handles user interface, game mechanics, scoring, and level progression
+ * Manages background music playback and game timers
+ */
+class Level1ActivityClass : AppCompatActivity() {
+    /* ================ Properties Section ================ 
+     * Key variables for maintaining game state and UI components
+     */
+    private lateinit var binding: ActivityMainBinding
+    private var mediaPlayer: MediaPlayer? = null
+
+    private var score = 0
+    private var timeInSeconds = 0
+    private var milliseconds = 0
+    private var timerJob: Job? = null
+    private var countdownJob: Job? = null
+
+    private var gameEnded = false
