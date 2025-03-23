@@ -31,7 +31,7 @@ export default function CommentForm({ onSubmit }: CommentFormProps) {
         onPress={handleSubmit}
         disabled={!comment.trim()}
       >
-        <Text style={styles.buttonText}>Post</Text>
+        <Text style={styles.buttonText}>Comment</Text>
       </TouchableOpacity>
     </View>
   );
