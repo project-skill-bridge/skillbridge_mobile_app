@@ -69,4 +69,10 @@ class Level5CompletionClass : AppCompatActivity() {
         }
     }
 
+    private fun playLoopingSound(soundResId: Int) {
+        mediaPlayerLoop = MediaPlayer.create(this, soundResId) // Create player with music resource
+        mediaPlayerLoop?.isLooping = true // Enable looping playback
+        mediaPlayerLoop?.start() // Start playing
+    }
+
 }
