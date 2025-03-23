@@ -294,3 +294,16 @@ const styles = StyleSheet.create({
     position: "relative", // For absolute positioning of children
   },
 
+  /* Shine Effect Styles */
+  shineEffect: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: 60, // Width of shine streak
+    height: "300%", // Extra height for rotation effect
+    backgroundColor: "rgba(255, 255, 255, 0.3)", // Semi-transparent white
+    transform: [{ rotate: "45deg" }], // Angled diagonal shine
+  },
+
