@@ -100,7 +100,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="20dp" />
 
-        <!-- Level Progress Bar -->
+        
 
         <!-- Continue Button -->
 
@@ -122,7 +122,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:fontFamily="@font/points_font"
-            android:text="Points : 15/15"
+            android:text="Points : 10/10"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
