@@ -51,7 +51,15 @@ const ProgressScreen = () => {
           }
   
           console.log(`User ID: ${userId}`, userDocSnap.data());
-  
+
+          // Reference to 'games' subcollection for this user
+        const gamesCollectionRef = collection(userDocRef, "games");
+        const gamesSnapshot = await getDocs(gamesCollectionRef);
+
+        let totalProgress = 0;
+        let gameCount = 0;
+
+        console.log(`gamesSnapshot : ${gamesSnapshot}`);
 
       }catch (error) {
 
