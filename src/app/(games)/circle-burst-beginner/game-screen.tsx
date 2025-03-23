@@ -824,12 +824,27 @@ export default function GameScreen() {
     ).start();
   }, []);
 
+  // Animation interpolations for derived values
+  const handScale = handAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0.9, 1.1], // Scale between 90% and 110%
+  });
 
-export default function GameScreen(): JSX.Element {
-  const router = useRouter();
+  const handRotate = handRotateAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["0deg", "360deg"], // Rotate from 0 to 360 degrees
+  });
+
+  // Wave animation for bottom section
+  const waveTransform = waveAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [100, -50], // Move from below to above
+  });
+
+  /* ================ RENDER ================ */
+  // Wait for fonts to load before rendering
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
-    <View>
-      <Text>game-screen</Text>
-    </View>
-  )
-}
