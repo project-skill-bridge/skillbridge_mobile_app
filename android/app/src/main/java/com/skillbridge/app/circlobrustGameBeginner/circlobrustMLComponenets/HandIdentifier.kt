@@ -32,4 +32,15 @@ class HandIdentifier (
     private val minHandPresenceConfidence = DEFAULT_HAND_PRESENCE_CONFIDENCE // Confidence threshold for hand presence
 
     /* ================ Initialization Section ================ 
+     * Methods for setting up and configuring the hand landmark detector
+     * Handles model loading and configuration of detection parameters
+     */
+    fun setupHandLandmarker() {
+        try {
+            val baseOptions = BaseOptions.builder() // Create base options for the model
+                .setDelegate(if (delegate == DELEGATE_CPU) Delegate.CPU else Delegate.GPU) // Set processing hardware
+                .setModelAssetPath(MP_HAND_LANDMARKER_TASK) // Path to model file in assets
+                .build() // Finalize options
+
+            val options = HandLandmarker.HandLandmarkerOptions.builder() // Create hand landmarker options
 }
