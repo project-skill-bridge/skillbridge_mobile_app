@@ -75,10 +75,10 @@ const { width, height } = Dimensions.get("window");
 /* ================ NATIVE MODULE SETUP ================ */
 /**
  * Access to native code functionality through the bridge
- * LoginModule provides methods to launch different game activities
+ * BeginnerGameModule provides methods to launch different game activities
  */
-const { LoginModule } = NativeModules;
-const eventEmitter = new NativeEventEmitter(LoginModule);
+const { BeginnerGameModule } = NativeModules;
+const eventEmitter = new NativeEventEmitter(BeginnerGameModule);
 
 /* ================ GAME LEVEL CONFIGURATION ================ */
 /**
@@ -161,10 +161,10 @@ export default function GameScreen() {
     try {
       // Dynamically construct the method name based on activity number
       const methodName =
-        `showActivity${activityNumber}Screen` as keyof typeof LoginModule;
+        `showActivity${activityNumber}Screen` as keyof typeof BeginnerGameModule;
 
       // Call the native method with current game state
-      const result = await LoginModule[methodName](
+      const result = await BeginnerGameModule[methodName](
         score,
         formattedTime,
         audioPosition
