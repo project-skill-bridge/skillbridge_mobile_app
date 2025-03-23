@@ -209,4 +209,51 @@ class Level2ActivityClass : AppCompatActivity() {
         checkScore() // Check if target score reached after each increment
     }
 
+    /* ================ User Interaction Section ================ 
+     * Handling user input and navigation through the game
+     */
+    override fun onBackPressed() {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_exit, null)
+
+        val dialog = AlertDialog.Builder(this, R.style.CustomDialogTheme)
+            .setView(dialogView)
+            .create()
+
+
+        dialogView.findViewById<Button>(R.id.btn_yes).setOnClickListener {
+            val formattedTime = formatTimeToString()
+            val audioPosition = mediaPlayer?.currentPosition ?: 0
+            val intent = Intent().apply {
+                putExtra("FINAL_SCORE", score)
+                putExtra("LEVEL", LEVEL)
+                putExtra("FORMATTED_TIME", formattedTime)
+                putExtra("AUDIO_POSITION", audioPosition) // Save audio position for potential resume
+            }
+            setResult(RESULT_OK, intent)
+            MyNativeModules.getInstance()?.emitActivity2Result(score, LEVEL, formattedTime, audioPosition)
+            finish()
+            dialog.dismiss()
+        }
+
+
+        dialogView.findViewById<Button>(R.id.btn_no).setOnClickListener {
+            dialog.dismiss() // Continue playing if user cancels exit
+        }
+
+
+        dialog.show()
+
+
+        dialog.window?.setLayout(
+            (resources.displayMetrics.widthPixels * 0.8).toInt(), // Size dialog to 80% of screen width
+            WindowManager.LayoutParams.WRAP_CONTENT
+        )
+    }
+
+    private fun formatTimeToString(): String {
+        val secondsFormatted = DecimalFormat("00").format(timeInSeconds)
+        val millisecondsFormatted = DecimalFormat("00").format(milliseconds / 10)
+        return "$secondsFormatted:$millisecondsFormatted"
+    }
+
 }
