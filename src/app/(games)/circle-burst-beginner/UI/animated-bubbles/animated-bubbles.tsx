@@ -112,3 +112,29 @@ const AnimatedBubble: React.FC<AnimatedBubbleProps> = ({
             useNativeDriver: true, // Hardware acceleration
           }),
 
+          // Opacity animation - fade in then out
+          Animated.sequence([
+            // Fade in during first 20% of the animation
+            Animated.timing(opacity, {
+              toValue: 0.7, // Semi-transparent
+              duration: duration * 0.2,
+              useNativeDriver: true,
+            }),
+            // Fade out during remaining 80% of animation
+            Animated.timing(opacity, {
+              toValue: 0,
+              duration: duration * 0.8,
+              useNativeDriver: true,
+            }),
+          ]),
+
+          // Scale animation - grow from 30% to 100% size
+          Animated.timing(scale, {
+            toValue: 1, // Full size
+            duration: duration,
+            useNativeDriver: true,
+          }),
+        ]),
+      ]).start(() => {
+        // Animation completion callback - reset and restart
+
