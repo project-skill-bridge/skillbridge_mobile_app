@@ -2,6 +2,10 @@ import * as React from "react";
 import { StyleSheet, Text, View, Image, } from "react-native";
 import { useState } from "react";
 import CircularProgress from "react-native-circular-progress-indicator";
+import auth from "@react-native-firebase/auth";
+import firestore from "@react-native-firebase/firestore";
+
+
 
 const ProgressScreen = () => {
   const [progress, setprogress] = useState(5);
