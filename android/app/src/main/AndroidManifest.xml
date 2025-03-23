@@ -83,6 +83,7 @@
         android:screenOrientation="fullUser"
         android:exported="false"/>
 
+
     <activity
         android:name=".circlobrustGame.circlobrustLevelSuccessActivities.Level4CompletionClass"
         android:screenOrientation="fullUser"
@@ -96,6 +97,12 @@
 
     <activity
         android:name=".circlobrustGame.circlobrustLostActivities.Level1LostActivityClass"
+        android:screenOrientation="fullUser"
+        android:exported="false"/>
+
+
+    <activity
+        android:name=".circlobrustGame.circlobrustLostActivities.Level5LostActivityClass"
         android:screenOrientation="fullUser"
         android:exported="false"/>
 
