@@ -40,4 +40,13 @@ class Level5ActivityClass : AppCompatActivity() {
     
     private var gameEnded = false
 
+    /* ================ Constants Section ================ 
+     * Configuration values for the game level
+     */
+    companion object {
+        private const val LEVEL = 5
+        private const val DEFAULT_AUDIO_DURATION_MS = 30000L
+    }
+
+    /* ================ Activity Lifecycle Section ================ 
 }
