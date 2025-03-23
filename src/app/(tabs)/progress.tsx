@@ -4,6 +4,7 @@ import { useState } from "react";
 import CircularProgress from "react-native-circular-progress-indicator";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
+import { Bold } from "lucide-react-native";
 
 
 const ProgressScreen = () => {
@@ -124,7 +125,7 @@ const ProgressScreen = () => {
         /></View>
       <Text style={styles.streakCount}>Tap and type</Text>
 
-<Text style={styles.txt}>Keep going! You're doing great! 🚀</Text>
+<Text style={styles.txt}>Keep going! You're doing great 🚀</Text>
 
 {/* 
 <View style={styles.achievements}>
@@ -171,6 +172,7 @@ const styles = StyleSheet.create({
   txt: {
     fontSize: 19,
     fontStyle: "italic",
+    fontWeight: "bold",
     color: "#555",
     marginBottom: 20,
     paddingTop: 15,
@@ -178,11 +180,11 @@ const styles = StyleSheet.create({
   image:{
     width: 150,
     height:150,
-    paddingTop: 303,
+    paddingTop: 287,
     left: 20,
     resizeMode: "contain",
     position: "absolute",
-    transform: [{rotate: "-17deg"}]
+    transform: [{rotate: "-16deg"}]
 
   },
   //achievements: {
