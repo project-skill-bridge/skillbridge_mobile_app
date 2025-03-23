@@ -91,4 +91,29 @@ class HandIdentifier (
             postRotate(imageProxy.imageInfo.rotationDegrees.toFloat()) // Apply rotation based on camera orientation
             if (isFrontCamera) { // Mirror for front camera
                 postScale(-1f, 1f, imageProxy.width.toFloat(), imageProxy.height.toFloat()) // Horizontal flip
+    companion object {
+        const val TAG = "HandLandmarkerHelper" // Logging tag
+        private const val MP_HAND_LANDMARKER_TASK = "hand_landmarker.task" // Model file name
+        const val DELEGATE_CPU = 0 // CPU processing constant
+        const val DEFAULT_HAND_DETECTION_CONFIDENCE = 0.5F // Default detection threshold
+        const val DEFAULT_HAND_TRACKING_CONFIDENCE = 0.5F // Default tracking threshold
+        const val DEFAULT_HAND_PRESENCE_CONFIDENCE = 0.5F // Default presence threshold
+        const val DEFAULT_NUM_HANDS = 1 // Default number of hands to track
+    }
+
+    /* ================ Data Model Section ================ 
+     * Classes for representing detection results and callback interfaces
+     * Structures data for consumption by game components
+     */
+    data class ResultBundle( // Container for detection results
+        val results: List<HandLandmarkerResult>, // Hand landmark detection results
+        val inferenceTime: Long, // Time taken for detection
+        val inputImageHeight: Int, // Original image height
+        val inputImageWidth: Int, // Original image width
+    )
+
+    interface LandmarkerListener { // Callback interface for detection results
+        fun onError(error: String) // Called when an error occurs
+        fun onResults(resultBundle: ResultBundle) // Called when detection succeeds
+    }
 }
