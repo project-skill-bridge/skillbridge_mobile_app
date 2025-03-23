@@ -1213,6 +1213,12 @@ const styles = StyleSheet.create({
     fontFamily: "Montserrat-SemiBold",
     marginBottom: 10, // Space before button
   },
+
+  /* Play Button Styles */
+  resumeButton: {
+    backgroundColor: "#2ecc71", // Bright green
+    paddingVertical: 15,
+    paddingHorizontal: 60,
     borderRadius: 30, // Pill shape
     elevation: 5, // Android shadow
     shadowColor: "#000",
