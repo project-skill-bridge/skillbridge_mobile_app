@@ -182,6 +182,64 @@ class CameraPanel : Fragment(), HandIdentifier.LandmarkerListener {
      */
     private fun initializeOverlays() {
         val popSound = MediaPlayer.create(requireContext(), R.raw.pop_sound) // Create pop sound player
+    private fun updateOverlay(
+        overlay: View, // Use View as the base type
+        resultBundle: HandIdentifier.ResultBundle
+    ) {
+        when (overlay) {
+            is Level1LogicClass -> { // Level 1 specific update
+                overlay.setResults(
+                    resultBundle.results.first(), // Hand landmark results
+                    resultBundle.inputImageHeight, // Image height
+                    resultBundle.inputImageWidth, // Image width
+                    RunningMode.LIVE_STREAM // Running mode
+                )
+            }
+            is Level2LogicClass -> { // Level 2 specific update
+                overlay.setResults(
+                    resultBundle.results.first(), // Hand landmark results
+                    resultBundle.inputImageHeight, // Image height
+                    resultBundle.inputImageWidth, // Image width
+                    RunningMode.LIVE_STREAM // Running mode
+                )
+            }
+            is Level3LogicClass -> { // Level 3 specific update
+                overlay.setResults(
+                    resultBundle.results.first(), // Hand landmark results
+                    resultBundle.inputImageHeight, // Image height
+                    resultBundle.inputImageWidth, // Image width
+                    RunningMode.LIVE_STREAM // Running mode
+                )
+            }
+            is Level4LogicClass -> { // Level 4 specific update
+                overlay.setResults(
+                    resultBundle.results.first(), // Hand landmark results
+                    resultBundle.inputImageHeight, // Image height
+                    resultBundle.inputImageWidth, // Image width
+                    RunningMode.LIVE_STREAM // Running mode
+                )
+            }
+            is Level5LogicClass -> { // Level 5 specific update
+                overlay.setResults(
+                    resultBundle.results.first(), // Hand landmark results
+                    resultBundle.inputImageHeight, // Image height
+                    resultBundle.inputImageWidth, // Image width
+                    RunningMode.LIVE_STREAM // Running mode
+                )
+            }
+        }
+        overlay.invalidate() // Request redraw of the overlay
+    }
+
+    /* ================ Error Handling Section ================ 
+     * Methods for handling and displaying errors to the user
+     * Provides feedback when hand tracking fails
+     */
+    override fun onError(error: String) {
+        activity?.runOnUiThread { // Update UI on main thread
+            Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show() // Show error toast
+        }
+    }
 
     /* ================ Cleanup Section ================ 
      * Methods for resource management and cleanup
