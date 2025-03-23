@@ -848,3 +848,34 @@ export default function GameScreen() {
   }
 
   return (
+    <SafeAreaView style={styles.container}>
+      {hasFetchedData ? (
+        <>
+          {/* Status Bar Configuration */}
+          <StatusBar barStyle="dark-content" />
+
+          {/* Animated Background Bubbles */}
+          <AnimatedBubbles />
+
+          {/* Top Navigation Header */}
+          <View style={styles.header}>
+            {/* Back Button */}
+            <TouchableOpacity style={styles.backButton} onPress={handleBack}>
+              <Ionicons name="arrow-back" size={24} color="#333" />
+            </TouchableOpacity>
+
+            {/* Title */}
+            <Text style={styles.headerTitle}>CIRCLOBRUST</Text>
+
+            {/* Mute/Unmute Button */}
+            <TouchableOpacity
+              style={[styles.muteButton, isToggling ? { opacity: 0.7 } : {}]}
+              onPress={toggleMute}
+              disabled={isToggling}
+            >
+              <Ionicons
+                name={isMuted ? "volume-mute" : "volume-medium"}
+                size={24}
+                color="#333"
+              />
+            </TouchableOpacity>
