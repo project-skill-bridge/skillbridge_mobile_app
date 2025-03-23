@@ -66,4 +66,15 @@ class Level1CompletionClass : AppCompatActivity() {
         playLoopingSound(R.raw.win_loop) // Start looping celebration music
 
     }
+
+    /* ================ Sound Management Section ================ 
+     * Methods for controlling background music and sound effects
+     */
+    private fun playOneTimeSound(soundResId: Int) {
+        mediaPlayerOnce = MediaPlayer.create(this, soundResId) // Initialize player with sound resource
+        mediaPlayerOnce?.start() // Play the sound
+        mediaPlayerOnce?.setOnCompletionListener {
+            it.release() // Release resources when sound finishes
+        }
+    }
 }
