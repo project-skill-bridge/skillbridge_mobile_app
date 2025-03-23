@@ -180,37 +180,37 @@ class Level1ActivityClass : AppCompatActivity() {
      * Core game mechanics including score tracking and level completion
      */
     private fun checkScore() {
-        if (score >= 15 && !gameEnded) {
+        if (score >= 15 && !gameEnded) { // Check for target score
             gameEnded = true
-            countdownJob?.cancel()
-            goToLevel1CompleteActivity()
+            countdownJob?.cancel() // Stop countdown on success
+            goToLevel1CompleteActivity() // Navigate to success screen
         }
     }
 
     private fun goToLevel1CompleteActivity() {
-        timerJob?.cancel()
+        timerJob?.cancel() // Stop all timers
         countdownJob?.cancel()
-        val intent = Intent(this, Level1CompletionClass::class.java)
+        val intent = Intent(this, Level1CompletionClass::class.java) // Create success screen intent
         startActivity(intent)
-        finish()
+        finish() // Close current activity
     }
 
     private fun goToLevel1LossActivity() {
-        timerJob?.cancel()
+        timerJob?.cancel() // Stop all timers
         countdownJob?.cancel()
         val intent = Intent(this, Level1LostActivityClass::class.java).apply {
-            putExtra("EXTRA_SCORE", score)
+            putExtra("EXTRA_SCORE", score) // Pass final score to loss screen
         }
         startActivity(intent)
-        finish()
+        finish() // Close current activity
     }
 
     fun incrementScore() {
-        score++
+        score++ // Increase score by 1
         runOnUiThread {
-            binding.scoreTextView.text = "$score"
+            binding.scoreTextView.text = "$score" // Update score display
         }
-        checkScore()
+        checkScore() // Check if target score reached
     }
 
     /* ================ User Interaction Section ================ 
