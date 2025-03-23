@@ -10,7 +10,7 @@ const ProgressScreen = () => {
 
   return ( //first game progress circle
     <View style={styles.container}> 
-      <Text style={styles.title}>Your progress</Text>
+      <Text style={styles.title}>Your progress so far</Text>
       {/* Image added after "Your progress" text */}
       <Image
         source={require("@/assets/gif/Normal-Finn.gif")} // Replace with your image path
@@ -42,8 +42,6 @@ const ProgressScreen = () => {
         /></View>
       <Text style={styles.streakCount}>Tap and type</Text>
 
-
-      <Text style={styles.progressCount}> You are on Day {progress}</Text>
 <Text style={styles.txt}>Keep going! You're doing great! 🚀</Text>
 
 {/* 
@@ -82,14 +80,14 @@ const styles = StyleSheet.create({
     paddingTop: 15,
     marginBottom: 15,
   },
-  progressCount: {
+  /*progressCount: {
     fontSize: 30,
     fontWeight: "600",
     color: "#e85454",
     paddingTop: 15,
-  },
+  },*/
   txt: {
-    fontSize: 16,
+    fontSize: 19,
     fontStyle: "italic",
     color: "#555",
     marginBottom: 20,
@@ -98,11 +96,11 @@ const styles = StyleSheet.create({
   image:{
     width: 150,
     height:150,
-    paddingTop: 305,
+    paddingTop: 303,
     left: 20,
     resizeMode: "contain",
     position: "absolute",
-    transform: [{rotate: "-20deg"}]
+    transform: [{rotate: "-17deg"}]
 
   },
   //achievements: {
