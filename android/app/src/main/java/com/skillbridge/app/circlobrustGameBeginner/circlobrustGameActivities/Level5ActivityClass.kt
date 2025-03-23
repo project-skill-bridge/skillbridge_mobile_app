@@ -132,4 +132,43 @@ class Level5ActivityClass : AppCompatActivity() {
         binding.scoreTextView.text = "$score"
     }
 
+    /* ================ Timer Management Section ================ 
+     * Handles time tracking and countdown for game progression
+     */
+    private fun startTimer() {
+        timerJob?.cancel()
+        timerJob = lifecycleScope.launch {
+            while (isActive) {
+                delay(10)
+                milliseconds += 10
+                if (milliseconds >= 1000) {
+                    milliseconds = 0
+                    timeInSeconds++
+                }
+                updateTimeInUi()
+            }
+        }
+    }
+
+    private fun startCountdownTimer() {
+        countdownJob?.cancel()
+        val audioDurationMs = mediaPlayer?.duration?.toLong() ?: DEFAULT_AUDIO_DURATION_MS
+        countdownJob = lifecycleScope.launch {
+
+            delay(10_000)
+
+
+            val startTime = System.currentTimeMillis()
+            while (System.currentTimeMillis() - startTime < audioDurationMs) {
+                delay(10)
+            }
+
+
+            if (score < 10 && !gameEnded) {
+                gameEnded = true
+                goToLevel5LossActivity()
+            }
+        }
+    }
+
 }
