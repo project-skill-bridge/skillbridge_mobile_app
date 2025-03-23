@@ -67,4 +67,23 @@ class HandIdentifier (
         handLandmarker = null // Clear reference
     }
 
+    fun isClose() = handLandmarker == null // Check if detector is closed/uninitialized
+
+    /* ================ Detection Section ================ 
+     * Methods for processing camera input and detecting hands
+     * Handles image transformation, orientation correction, and detection triggering
+     */
+    fun detectLiveStream(imageProxy: ImageProxy, isFrontCamera: Boolean) {
+        val bitmapBuffer = Bitmap.createBitmap( // Create bitmap from camera image
+            imageProxy.width, // Use image width
+            imageProxy.height, // Use image height
+            Bitmap.Config.ARGB_8888 // Use full color with alpha
+        )
+        imageProxy.use { bitmapBuffer.copyPixelsFromBuffer(imageProxy.planes[0].buffer) } // Copy pixel data
+        imageProxy.close() // Release image proxy resources
+
+        val matrix = Matrix().apply { // Create transformation matrix
+            postRotate(imageProxy.imageInfo.rotationDegrees.toFloat()) // Apply rotation based on camera orientation
+            if (isFrontCamera) { // Mirror for front camera
+                postScale(-1f, 1f, imageProxy.width.toFloat(), imageProxy.height.toFloat()) // Horizontal flip
 }
