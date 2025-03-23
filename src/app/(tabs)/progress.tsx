@@ -98,22 +98,23 @@ const styles = StyleSheet.create({
   image:{
     width: 150,
     height:150,
-    paddingTop: 280,
+    paddingTop: 286,
     left: 10,
     resizeMode: "contain",
     position: "absolute",
 
   },
-  achievements: {
-    backgroundColor: "#FFF",
-    padding: 15,
-    borderRadius: 10,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 3,
-    width: "80%",
-  },
+  //achievements: {
+    //backgroundColor: "#FFF",
+    //padding: 15,
+    //borderRadius: 10,
+    //shadowColor: "#e85454", // Shadow color
+    //shadowOpacity: 0.2, // Shadow opacity (0 to 1)
+    //shadowRadius: 7, // Shadow radius (spread of the shadow)
+    //elevation: 10, // Elevation for Android shadow
+    //width: "80%",
+    //marginBottom: 20, // Add some spacing between the boxes
+  //},
   achievementTitle: {
     fontSize: 18,
     fontWeight: "bold",
@@ -121,15 +122,16 @@ const styles = StyleSheet.create({
     //textAlign: "center", // Centers text inside the box
   },
   achievement: {
-    backgroundColor: "#FFFF",
+    backgroundColor: "#FFF",
     padding: 15,
     borderRadius: 10,
-    shadowColor: "#cad3ed",
-    shadowOpacity: 1,
-    shadowRadius: 5,
-    elevation: 4,
+    shadowColor: "#6277bf", // Dark shadow color (black)
+    shadowOpacity: 0.8, // Increase opacity to make shadow darker
+    shadowRadius: 10, // Increase the blur radius for a softer but darker shadow
+    elevation: 15, // Elevation for Android
     width: "60%",
     alignItems: "center", // Centers all child elements inside this box
-},
+  },
+  
 
 });
