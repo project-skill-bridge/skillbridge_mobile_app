@@ -13,7 +13,7 @@ const ProgressScreen = () => {
       <Text style={styles.title}>Your progress</Text>
       {/* Image added after "Your progress" text */}
       <Image
-        source={require("@/assets/gif/Talking-Finn.gif")} // Replace with your image path
+        source={require("@/assets/gif/Normal-Finn.gif")} // Replace with your image path
         style={styles.image}
       />
       <View style={styles.achievement}><CircularProgress
@@ -96,10 +96,10 @@ const styles = StyleSheet.create({
     paddingTop: 15,
   },
   image:{
-    width: 140,
-    height:140,
+    width: 150,
+    height:150,
     paddingTop: 280,
-    paddingRight: 160,
+    left: 10,
     resizeMode: "contain",
     position: "absolute",
 
