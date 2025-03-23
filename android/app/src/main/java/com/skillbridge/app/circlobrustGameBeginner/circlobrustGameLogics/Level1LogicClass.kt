@@ -154,4 +154,32 @@ class Level1LogicClass @JvmOverloads constructor(
         invalidate() // Request redraw with updated positions
     }
 
+    /* ================ Collision Detection Section ================ 
+     * Handles interaction between player's finger and game objects
+     * Triggers scoring events when collisions are detected
+     */
+    private fun checkCollisions() {
+        results?.let { handResults ->
+            handResults.landmarks().forEach { hand ->
+                val indexFingerTip = hand.get(8) // Get index fingertip landmark
+                val landmarkX = indexFingerTip.x() * imageWidth * scaleFactor // Convert to screen coordinates
+                val landmarkY = indexFingerTip.y() * imageHeight * scaleFactor // Convert to screen coordinates
+
+                circles.forEach { circle ->
+                    if (!circle.isPopped) { // Only check active circles
+                        val dx = landmarkX - circle.x // Horizontal distance
+                        val dy = landmarkY - circle.y // Vertical distance
+                        val distanceSquared = dx * dx + dy * dy // Square of distance (faster than sqrt)
+                        val detectionThreshold = circle.radius * 0.8f // Detection zone slightly smaller than visual size
+                        if (distanceSquared < detectionThreshold * detectionThreshold) { // Fingertip inside circle
+                            circle.isPopped = true // Mark as popped
+                            circlePoppedListener?.onCirclePopped() // Trigger score update
+                        }
+                    }
+                }
+            }
+        }
+        circles.removeAll { it.isPopped } // Remove all popped circles
+    }
+
 }
