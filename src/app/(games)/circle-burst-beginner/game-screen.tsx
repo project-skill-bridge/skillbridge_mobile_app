@@ -1099,3 +1099,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
 
+  /* Hand and Circle Animation Styles */
+  splatterContainer: {
+    position: "relative",
+    width: 80,
+    height: 80,
+    justifyContent: "center",
+    alignItems: "center",
+  },
