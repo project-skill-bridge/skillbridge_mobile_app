@@ -1147,3 +1147,32 @@ const styles = StyleSheet.create({
     fontFamily: "Montserrat-Bold",
     color: "#ffd700", // Gold color for emphasis
   },
+
+  /* Banner Corner Decorations */
+  bannerCorner1: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: 15,
+    height: 15,
+    backgroundColor: "#c1121f", // Dark red
+    borderBottomRightRadius: 15, // Quarter circle
+  },
+  bannerCorner2: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    width: 15,
+    height: 15,
+    backgroundColor: "#c1121f",
+    borderBottomLeftRadius: 15,
+  },
+  bannerCorner3: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    width: 15,
+    height: 15,
+    backgroundColor: "#c1121f",
+    borderTopRightRadius: 15,
+  },
