@@ -119,4 +119,25 @@ class Level3LogicClass @JvmOverloads constructor(
         }
     }
 
+    /* ================ Game Logic Section ================ 
+     * Core game mechanics for sine wave movement patterns
+     * Controls circle trajectory using mathematical wave functions
+     */
+    private fun updateCircle() {
+        // Check if it's time to spawn a new circle
+        val currentTime = System.currentTimeMillis() // Get current time
+        if (currentTime - lastCircleTime >= CIRCLE_SPAWN_INTERVAL) { // Check if interval passed
+            addNewCircleIfNeeded() // Create new circle if needed
+            lastCircleTime = currentTime // Reset timer
+        }
+        
+        // Update existing circles
+        circles.forEach { circle ->
+            // Vertical movement
+            circle.y -= circle.velocity // Move upward
+            
+            // Sine wave horizontal movement
+            circle.x = circle.initialX + circle.amplitude * 
+                       Math.sin((circle.frequency * circle.y + circle.phase).toDouble()).toFloat() // Calculate sine wave position
+            
 }
