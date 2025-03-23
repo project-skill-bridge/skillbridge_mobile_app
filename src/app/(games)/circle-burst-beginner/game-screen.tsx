@@ -1,6 +1,3 @@
-import { View, Text } from 'react-native'
-import React from 'react'
-import { useRouter } from 'expo-router';
 /**
  * =========================================================================
  * CircloBrust Game Screen Component
@@ -306,6 +303,31 @@ export default function GameScreen() {
     // Cleanup function
     return () => subscription.remove();
   }, []);
+
+  /* ================ FIREBASE DATA MANAGEMENT ================ */
+  /**
+   * Calculates the overall game progress percentage based on current level
+   * Used for displaying progress indicators and achievements
+   *
+   * @param {number} currentLevel - The player's current level (1-5)
+   * @returns {number} The overall game completion percentage (0-100)
+   */
+  const getProgressPercentage = (currentLevel: number) => {
+    switch (currentLevel) {
+      case 1:
+        return 0; // Just starting
+      case 2:
+        return 20; // 20% complete
+      case 3:
+        return 40; // 40% complete
+      case 4:
+        return 60; // 60% complete
+      case 5:
+        return 80; // 80% complete (100% when completed)
+      default:
+        return 0; // Default to 0 for safety
+    }
+  };
 
 
 export default function GameScreen(): JSX.Element {
