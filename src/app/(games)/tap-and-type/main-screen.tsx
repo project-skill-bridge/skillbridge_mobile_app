@@ -31,7 +31,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import FinnVoiceIntro from "@/src/components/FinnCharacter/FinnGame";
 
 type ImageKeys = `level${1 | 2 | 3 | 4}Badge`;
-const welcomeMessage = "Hi there! Welcome to Tap & Type game where your typing skills will be put to the test!";
+const gameIntroText = [
+  "Welcome to Tap & Type, the ultimate test of speed and accuracy!",
+  "In this game, you'll need to tap the correct letters as fast as possible.",
+  "Each level challenges your typing skills with increasing difficulty.",
+  "The faster and more accurately you type, the higher your score!",
+  "Tap & Type helps improve your typing speed, reflexes, and focus.",
+  "Are you ready to put your fingers to the test? Let’s get started!"
+];
 
 const INITIAL_HEARTS = 10;
 
@@ -358,9 +365,9 @@ const MainScreen = () => {
         <View style={styles.finnOverlayContainer}>
           <FinnVoiceIntro
           gameId="Tap-Type"
-          buttonText={welcomeMessage}  
-          IntroText={welcomeMessage}  
-          displayText={welcomeMessage}
+          buttonText=""  
+          IntroText={gameIntroText}  
+          displayText={gameIntroText}
           language="en-US"
           speed="normal"
           voiceType="child"
