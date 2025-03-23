@@ -16,5 +16,18 @@ import com.skillbridge.app.circlobrustGame.circlobrustGameActivities.Level5Activ
 class CirclobrustGameModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) , ActivityEventListener {
 
 
+    companion object {
+        private var instance: MyNativeModules? = null
+
+        fun getInstance(): MyNativeModules? {
+            return instance
+        }
+    }
+
+    override fun getName(): String {
+        return "LoginModule"
+    }
+
+
 class CirclobrustGameModule {
 }
