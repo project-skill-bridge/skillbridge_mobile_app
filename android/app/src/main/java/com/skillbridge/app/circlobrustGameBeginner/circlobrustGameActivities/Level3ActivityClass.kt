@@ -164,3 +164,14 @@ class Level3ActivityClass : AppCompatActivity() {
         }
     }
 
+    /* ================ Game Logic Section ================ 
+     * Core game mechanics including score tracking and level completion
+     */
+    private fun checkScore() {
+        if (score >= 10 && !gameEnded) { // Check if target score reached
+            gameEnded = true
+            countdownJob?.cancel() // Stop countdown when level completed
+            goToLevel3CompleteActivity() // Navigate to success screen
+        }
+    }
+
