@@ -40,4 +40,26 @@ abstract class BaseLogicClass @JvmOverloads constructor(
         style = Paint.Style.FILL // Filled drawing style
     }
 
+    /* ================ Threading Section ================ 
+     * Handler for managing UI updates on the main thread
+     * Ensures smooth animation and proper thread synchronization
+     */
+    protected val customHandler = Handler(Looper.getMainLooper()) // Creates handler on main UI thread
+
+    /* ================ View Management Section ================ 
+     * Methods for resetting and initializing the view state
+     * Handles clearing previous results and preparing for new data
+     */
+    fun clear() {
+        results = null // Clear detection results
+        linePaint.reset() // Reset paint configurations
+        pointPaint.reset() 
+        invalidate() // Request redraw of view
+        initPaints() // Reinitialize paint objects
+    }
+
+    protected open fun initPaints() {
+        // Initialize paints if needed - can be overridden by subclasses
+    }
+
 }
