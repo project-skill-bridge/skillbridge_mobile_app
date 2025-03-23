@@ -16,7 +16,7 @@ import androidx.appcompat.app.AlertDialog
 import android.media.MediaPlayer
 import com.skillbridge.app.circlobrustGameBeginner.circlobrustLevelSuccessActivities.Level2CompletionClass
 import com.skillbridge.app.circlobrustGameBeginner.circlobrustLostActivities.Level2LostActivityClass
-import  com.skillbridge.app.circlobrustGameBeginner.MyNativeModules
+import  com.skillbridge.app.circlobrustGameBeginner.circlobrustModule.CirclobrustBeginnerGameModule
 import com.skillbridge.app.R
 
 
@@ -230,7 +230,7 @@ class Level2ActivityClass : AppCompatActivity() {
                 putExtra("AUDIO_POSITION", audioPosition) // Save audio position for potential resume
             }
             setResult(RESULT_OK, intent)
-            MyNativeModules.getInstance()?.emitActivity2Result(score, LEVEL, formattedTime, audioPosition)
+            CirclobrustBeginnerGameModule.getInstance()?.emitActivity2Result(score, LEVEL, formattedTime, audioPosition)
             finish()
             dialog.dismiss()
         }
