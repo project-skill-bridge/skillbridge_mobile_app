@@ -100,4 +100,11 @@ abstract class BaseLogicClass @JvmOverloads constructor(
         invalidate() // Request redraw with new results
     }
 
+    /* ================ Constants Section ================ 
+     * Shared values used across all logic classes
+     * Defines standard dimensions and visual parameters
+     */
+    companion object {
+        protected const val LANDMARK_STROKE_WIDTH = 4F // Standard width for all hand landmark lines
+    }
 }
