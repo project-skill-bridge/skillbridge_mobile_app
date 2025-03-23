@@ -71,3 +71,19 @@ class PermissionsPanel : Fragment() {
         }
     }
 
+    /* ================ Navigation Section ================ 
+     * Methods for navigating between screens
+     * Handles transition to camera screen after permissions are granted
+     */
+    private fun navigateToCamera() {
+        lifecycleScope.launchWhenStarted {
+            Navigation.findNavController(
+                requireActivity(),
+                R.id.fragment_container
+            ).navigate(
+                R.id.action_permissions_to_camera
+            )
+        }
+    }
+
+    /* ================ Utility Section ================ 
