@@ -25,9 +25,9 @@ export const useForumStore = create<ForumState & {
   fetchPosts: async () => {
     set({ loading: true, error: null });
     try {
-      // Correct syntax for accessing Firestore collection
+      // Using collectionGroup to query across all post collections
       const postsSnapshot = await firestore()
-        .collection('forum_posts')
+        .collectionGroup('posts')
         .orderBy('createdAt', 'desc')
         .get();
       
@@ -53,9 +53,9 @@ export const useForumStore = create<ForumState & {
   fetchComments: async (postId: string) => {
     set({ loading: true, error: null });
     try {
-      // Correct syntax for accessing Firestore collection with where clause
+      // Using collectionGroup with a where clause to filter by postId
       const commentsSnapshot = await firestore()
-        .collection('forum_comments')
+        .collectionGroup('comments')
         .where('postId', '==', postId)
         .orderBy('createdAt', 'asc')
         .get();
@@ -90,6 +90,9 @@ export const useForumStore = create<ForumState & {
       const user = auth().currentUser;
       if (!user) throw new Error('User not authenticated');
       
+      // Generate a unique ID for the post
+      const postId = firestore().collection('_').doc().id;
+      
       const postData = {
         authorId: user.uid,
         authorName: user.displayName || 'Anonymous',
@@ -97,15 +100,19 @@ export const useForumStore = create<ForumState & {
         content,
         createdAt: firestore.FieldValue.serverTimestamp(),
         commentCount: 0,
+        postId, // Include postId in the document for queries
       };
       
-      // Correct syntax for adding to Firestore collection
-      const postRef = await firestore()
-        .collection('forum_posts')
-        .add(postData);
+      // Add to the nested collection structure matching your security rules
+      await firestore()
+        .collection('forum')
+        .doc('posts')
+        .collection(postId)
+        .doc(postId) // Use the same ID for the document
+        .set(postData);
         
       const newPost = {
-        id: postRef.id,
+        id: postId,
         ...postData,
         createdAt: Date.now(),
       } as ForumPost;
@@ -116,7 +123,7 @@ export const useForumStore = create<ForumState & {
         loading: false
       }));
       
-      return postRef.id;
+      return postId;
     } catch (error) {
       console.error('Error creating post:', error);
       set({ error: 'Failed to create post', loading: false });
@@ -130,6 +137,9 @@ export const useForumStore = create<ForumState & {
       const user = auth().currentUser;
       if (!user) throw new Error('User not authenticated');
       
+      // Generate a unique ID for the comment
+      const commentId = firestore().collection('_').doc().id;
+      
       const commentData = {
         postId,
         authorId: user.uid,
@@ -138,21 +148,37 @@ export const useForumStore = create<ForumState & {
         createdAt: firestore.FieldValue.serverTimestamp(),
       };
       
-      // Correct syntax for adding to Firestore collection
-      const commentRef = await firestore()
-        .collection('forum_comments')
-        .add(commentData);
+      // Add to the nested collection structure matching your security rules
+      await firestore()
+        .collection('forum')
+        .doc('comments')
+        .collection(commentId)
+        .doc(commentId) // Use the same ID for the document
+        .set(commentData);
         
       // Update the post's comment count
-      await firestore()
-        .collection('forum_posts')
-        .doc(postId)
-        .update({
-          commentCount: firestore.FieldValue.increment(1)
-        });
+      // Note: This is tricky with the nested structure - you may need a different approach
+      try {
+        // Try to find the post document to update its comment count
+        const postDocs = await firestore()
+          .collectionGroup('posts')
+          .where('postId', '==', postId)
+          .limit(1)
+          .get();
+          
+        if (!postDocs.empty) {
+          const postDoc = postDocs.docs[0];
+          const postRef = postDoc.ref;
+          await postRef.update({
+            commentCount: firestore.FieldValue.increment(1)
+          });
+        }
+      } catch (updateError) {
+        console.log('Could not update comment count:', updateError);
+      }
       
       const newComment = {
-        id: commentRef.id,
+        id: commentId,
         ...commentData,
         createdAt: Date.now(),
       } as ForumComment;
