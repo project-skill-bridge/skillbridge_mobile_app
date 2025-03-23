@@ -82,4 +82,36 @@ class Level1LogicClass @JvmOverloads constructor(
         super.onSizeChanged(w, h, oldw, oldh) // Handle parent class behavior
         initializeCircle() // Reset circle collection on size change
     }
+
+    private fun initializeCircle() {
+        circles.clear() // Remove all existing circles
+        lastCircleTime = System.currentTimeMillis() // Reset spawn timer
+        addNewCircleIfNeeded() // Add initial circle
+    }
+
+    private fun addNewCircleIfNeeded() {
+        // Only add if we have less than maximum circles
+        if (circles.count { !it.isPopped } < MAX_CIRCLES) {
+            val colors = listOf(Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, Color.CYAN, Color.MAGENTA) // Available colors
+            val radius = (30f..80f).randomFloat() // Random size
+            val velocity = (2f..5f).randomFloat() // Random speed
+            val x = (radius..(width - radius)).randomFloat() // Random horizontal position
+            
+            // Randomly choose whether balloon comes from top or bottom (50% chance each)
+            val isMovingUp = Math.random() < 0.5 // Determine movement direction
+            
+            // Set Y position based on direction
+            val y = if (isMovingUp) {
+                // For upward-moving balloons, start below the screen
+                (height + radius..(height * 2).toFloat()).randomFloat() // Start below screen
+            } else {
+                // For downward-moving balloons, start above the screen
+                (-radius * 2..0f).randomFloat() // Start above screen
+            }
+            
+            val color = colors.random() // Pick random color
+            circles.add(Circle(x, y, color, radius, velocity, isMovingUp)) // Create new circle
+            invalidate() // Request redraw
+        }
+    }
 }
