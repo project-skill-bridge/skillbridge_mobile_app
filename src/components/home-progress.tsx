@@ -70,13 +70,13 @@ const HomeProgress = () => {
         } catch (error) {
           console.error("Error getting games: ", error);
         } finally {
-          // If using React state, update loading status
+          
           // setLoading(false);
         }
       };
 
-    //fetchGameProgress();
-  //}, []);
+    fetchGameProgress();
+    }, []);
 
 
   // // Total number of levels in your game
