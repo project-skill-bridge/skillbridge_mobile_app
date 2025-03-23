@@ -725,6 +725,32 @@ export default function GameScreen() {
     }
   };
 
+  /**
+   * Handles hardware back button press
+   * Routes to custom back handler
+   */
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      handleBack
+    );
+    return () => backHandler.remove();
+  }, [handleBack]);
+
+  /* ================ ANIMATIONS ================ */
+  // Animation value references for various visual effects
+  const pulseAnim = useRef(new Animated.Value(1)).current; // Controls pulsing effect
+  const handAnim = useRef(new Animated.Value(0)).current; // Controls hand movement
+  const waveAnim = useRef(new Animated.Value(0)).current; // Controls wave animation
+  const bannerShineAnim = useRef(new Animated.Value(-width)).current; // Controls shine effect
+  const handRotateAnim = useRef(new Animated.Value(0)).current; // Controls hand rotation
+
+  // Generate random positions for background bubbles
+  const bubblePositions = Array.from(
+    { length: 15 },
+    () => Math.random() * width
+  );
+
 
 export default function GameScreen(): JSX.Element {
   const router = useRouter();
