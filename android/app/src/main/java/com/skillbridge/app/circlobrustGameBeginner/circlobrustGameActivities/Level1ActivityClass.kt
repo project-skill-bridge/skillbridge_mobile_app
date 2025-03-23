@@ -154,4 +154,28 @@ class Level1ActivityClass : AppCompatActivity() {
         }
     }
 
+    private fun startCountdownTimer() {
+        countdownJob?.cancel()
+        val audioDurationMs = mediaPlayer?.duration?.toLong() ?: DEFAULT_AUDIO_DURATION_MS
+        countdownJob = lifecycleScope.launch {
+
+            delay(10_000)
+
+
+            val startTime = System.currentTimeMillis()
+            while (System.currentTimeMillis() - startTime < audioDurationMs) {
+                delay(10)
+            }
+
+            if (!gameEnded) {
+                gameEnded = true
+                if (score < 15) {
+                    goToLevel1LossActivity()
+                } else {
+                    goToLevel1CompleteActivity()
+                }
+            }
+        }
+    }
+
 
