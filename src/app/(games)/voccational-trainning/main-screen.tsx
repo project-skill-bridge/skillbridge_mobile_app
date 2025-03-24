@@ -70,3 +70,10 @@ export default function MainScreen() {
         Vocational {"\n"}Training{"\n"}Guide{" "}
       </Text>
 
+      <Animated.View style={{ transform: [{ scale: scaleValue }] }}>
+        <TouchableOpacity
+          onPressIn={handlePressIn}
+          onPressOut={handlePressOut}
+          activeOpacity={0.8}
+          onPress={() => router.push("/(games)/voccational-trainning/stiching")}
+        >
