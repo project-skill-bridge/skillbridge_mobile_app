@@ -20,11 +20,16 @@ const Stitching = () => {
     {
       text: "Gather your materials",
       description: "Collect fabric, thread, a needle, and scissors.",
+      image: Images.Stichingguide1,
       bannarText: "Gather your materials",
+    },
+    {
       text: "Thread the needle",
       description: "Pass the thread through and knot the end.",
       image: Images.Stichingguide2,
       bannarText: "Thread the needle",
+    },
+    {
       text: "Draw a stitching line",
       description: "Use a pencil or chalk to draw a line as a guide.",
       image: Images.Stichingguide3,
@@ -33,22 +38,27 @@ const Stitching = () => {
     {
       text: "Start stitching on drawn line",
       description: "Push the needle through fabric and follow the line.",
+      image: Images.Stichingguide4,
       bannarText: "Start stitching on drawn line",
     },
     {
       text: "Once done, tie off the thread.",
       description: "Make a small knot at the end to secure stitches.",
+      image: Images.Stichingguide5,
       bannarText: "Once done, tie off the thread.",
     },
     {
       text: "Cut the thread",
       description: "Use scissors to trim any extra thread carefully.",
+      image: Images.Stichingguide6,
       bannarText: "Cut the thread ",
     },
     {
       text: "Done! Great job!",
       description: "You did it ! Keep practicing to improve your skills!",
+      image: Images.Stichingguide7,
       voiceNote: "Done! Great job!.Keep practicing to improve your skills!",
       bannarText: "Done! Great job!",
     },
   ];
+
