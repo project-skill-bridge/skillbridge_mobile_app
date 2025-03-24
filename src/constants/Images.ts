@@ -18,8 +18,6 @@ export const Images = {
   normalFinn: require("@/assets/gif/Normal-Finn.gif"),
   mindMatchMainScreen: require("@/assets/images/games/mind-match/main-background.jpg"),
   circlobrustMainScreen: require("@/assets/images/games/Circlo-brust/Background-Circlobrust1.png"),
-  vocationalBackground : require("@/assets/images/games/vocational-training/background.jpg"),
-  stichingBackground : require("@/assets/images/games/vocational-training/stiching.png"),
   Stichingguide1 : require("@/assets/images/games/vocational-training/st1.gif"),
   Stichingguide2 : require("@/assets/images/games/vocational-training/st2.gif"),
   Stichingguide3 : require("@/assets/images/games/vocational-training/st3.gif"),
