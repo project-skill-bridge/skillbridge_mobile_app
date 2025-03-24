@@ -73,3 +73,8 @@ const Stitching = () => {
     },
   ];
 
+  /**
+   * Renders the AnimatedContent component with stitching steps data
+   */
+  return (
+export default Stitching;
