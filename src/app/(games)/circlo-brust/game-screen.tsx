@@ -508,7 +508,6 @@ export default function GameScreen() {
   const navigation = useNavigation(); // Navigation controller for cleanup events
   const [isMuted, setIsMuted] = useState(false); // Tracks audio mute state
   const isMutedRef = useRef(isMuted); // Ref for access in async contexts
-  const [sound, setSound] = useState<Audio.Sound>(); // State for sound object
   const soundRef = useRef<Audio.Sound>(); // Ref for access in async contexts
 
   // Load custom fonts for text elements
@@ -656,7 +655,7 @@ export default function GameScreen() {
 
   /**
    * Toggles audio mute state
-   * Pauses/resumes background music and speech
+   * Pauses/resumes background music only, without affecting speech
    */
   const toggleMute = async () => {
     // Prevent multiple clicks while operation is in progress
@@ -666,12 +665,12 @@ export default function GameScreen() {
       setIsToggling(true);
 
       if (isMuted) {
-        // Unmuting - resume audio and speech
+        // Unmuting - resume background music only
         await soundRef.current.playAsync();
       } else {
-        // Muting - pause audio and speech
+        // Muting - pause background music only
         await soundRef.current.pauseAsync();
-        Speech.stop();
+        // Don't stop speech: Speech.stop();
       }
 
       // Update state after operation completes
@@ -891,19 +890,19 @@ export default function GameScreen() {
             <FinnVoiceTntro
               displayText={
                 level === 1
-                  ? "Welcome to Level 1! Pop the blue bubbles to score points and advance."
+                  ? "Hi ! Pop 10 ballons within 20 secounds"
                   : level === 2
-                  ? "Level 2 unlocked! Now you'll face faster bubbles and more challenges."
+                  ? "Level 2 unlocked! Target is 10 ballons within 20 secounds"
                   : level === 3
-                  ? "Level 3 unlocked! Can you keep up with the speedy dots?"
+                  ? "Hi ! pop 10 baloons within 20 secounds"
                   : level === 4
-                  ? "Level 4 unlocked! Magic Circles are here to challenge you."
-                  : "Level 5 unlocked! Super Pop Rush is the final challenge."
+                  ? "Level 4 unlocked! Target is 10 ballons within 20 secounds"
+                  : "Hi ! Target is 10 ballons within 20 secounds"
               }
               IntroText=""
               buttonText={
                 level === 1
-                  ? "Welcome to Level 1! Pop the blue bubbles to score points and advance."
+                  ? "Welcome to Level 1! Pop the blue bubbles to score points and advance. Move your finger to pop baloons"
                   : level === 2
                   ? "Level 2 unlocked! Now you'll face faster bubbles and more challenges."
                   : level === 3
@@ -920,7 +919,7 @@ export default function GameScreen() {
                 {Speech.speak(
                   `<speak><break time="1500ms"/>${
                     level === 1
-                      ? "Welcome to Level 1! Pop the blue bubbles to score points and advance."
+                      ? "Welcome to Level 1! Pop the blue bubbles to score points and advance. Move your finger to pop the balloons while following voice instructions. The game will announce which bubbles to pop, guide you through the rules, and provide feedback on your progress. Only pop the blue bubbles to earn points, and avoid other colors as they may reduce your score. Be quick, as some bubbles disappear fast! Reach the target score to move to the next level. Stay focused, listen carefully, and enjoy the interactive voice-assisted experience"
                       : level === 2
                       ? "Level 2 unlocked! Now you'll face faster bubbles and more challenges."
                       : level === 3
