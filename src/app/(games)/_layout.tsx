@@ -10,7 +10,7 @@ const GamesLayout = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="circle-burst/game-screen"
+        name="circlo-brust/game-screen"
         options={{ headerShown: false }}
       />
       <Stack.Screen

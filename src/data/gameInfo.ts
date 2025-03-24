@@ -8,7 +8,7 @@ export const gameInfo = [
   },
   {
     id: 2,
-    path: "/circle-burst/game-screen",
+    path: "/circlo-brust/game-screen",
     image: Images.game2,
   },
   {
