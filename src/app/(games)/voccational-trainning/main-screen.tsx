@@ -4,6 +4,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Animated,
+  Dimensions,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import {
@@ -11,6 +12,15 @@ import {
   BungeeInline_400Regular,
 } from "@expo-google-fonts/bungee-inline";
 import { useRouter } from "expo-router";
+const { width, height } = Dimensions.get("window");
+const scaleWidth = width / 375;
+const scaleHeight = height / 812;
+import { BlurView } from "expo-blur";
+
+const scaledSize = (baseSize: number) => {
+  const ratio = Math.min(scaleWidth, scaleHeight);
+  return Math.round(baseSize * ratio * 0.95 + baseSize * 0.2);
+};
 
 /**
  * MainScreen Component for Vocational Training Guide
@@ -66,11 +76,26 @@ export default function MainScreen() {
    */
   return (
     <LinearGradient colors={["#6366f1", "#4338ca"]} style={styles.container}>
+      {/* New Header Section */}
+      <LinearGradient
+        colors={["rgba(255,255,255,0.15)", "transparent"]}
+        style={styles.header}
+      >
+        <Text style={styles.windowTitle}>Stitching Training</Text>
+        <View style={styles.headerDecorations}>
+          <View style={styles.headerDot} />
+          <View style={styles.headerDot} />
+          <View style={styles.headerDot} />
+        </View>
+      </LinearGradient>
+
       <Text style={styles.title}>
         Vocational {"\n"}Training{"\n"}Guide{" "}
       </Text>
 
-      <Animated.View style={{ transform: [{ scale: scaleValue }] }}>
+      <Animated.View
+        style={[styles.cardContainer, { transform: [{ scale: scaleValue }] }]}
+      >
         <TouchableOpacity
           onPressIn={handlePressIn}
           onPressOut={handlePressOut}
@@ -81,14 +106,36 @@ export default function MainScreen() {
             colors={["#f472b6", "#db2777"]}
             style={styles.gameCard}
           >
-            <Text style={styles.cardIcon}>🧵</Text>
-            <Text style={styles.cardText}>Stitching Master</Text>
-            <Text style={styles.cardSubText}>Start Training →</Text>
+            {/* Gradient Border Container */}
+            <LinearGradient
+              colors={["rgba(255,255,255,0.3)", "transparent"]}
+              style={styles.cardBorder}
+            >
+              <Text style={styles.cardIcon}>🧵</Text>
+              <Text style={styles.cardText}>Stitching Master</Text>
+              <BlurView intensity={20} style={styles.button}>
+                <Text style={styles.cardSubText}>Start Training →</Text>
+              </BlurView>
+              <View style={styles.stitchDecorations}>
+                <View style={[styles.stitchLine, { top: 15, left: 20 }]} />
+                <View style={[styles.stitchLine, { bottom: 15, right: 20 }]} />
+              </View>
+            </LinearGradient>
             <View style={styles.cardDecoration1} />
             <View style={styles.cardDecoration2} />
           </LinearGradient>
         </TouchableOpacity>
       </Animated.View>
+
+      {/* Step Progress Indicator */}
+      <View style={styles.stepContainer}>
+        {[1, 2, 3].map((_, index) => (
+          <View
+            key={index}
+            style={[styles.stepDot, index === 0 && styles.activeStepDot]}
+          />
+        ))}
+      </View>
     </LinearGradient>
   );
 }
@@ -97,97 +144,150 @@ export default function MainScreen() {
  * Component styles
  */
 const styles = StyleSheet.create({
-  /**
-   * Main container with gradient background
-   */
   container: {
     flex: 1,
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 50,
+    paddingVertical: height * 0.05,
   },
-
-  /**
-   * Main title with custom font and text shadow
-   */
+  header: {
+    position: "absolute",
+    top: 0,
+    width: "100%",
+    paddingTop: height * 0.06,
+    paddingHorizontal: 20,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+  },
+  windowTitle: {
+    fontFamily: "BungeeInline_400Regular",
+    fontSize: scaledSize(20),
+    color: "rgba(255,255,255,0.9)",
+    textAlign: "center",
+    letterSpacing: 1,
+  },
+  headerDecorations: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 10,
+    marginTop: 10,
+  },
+  headerDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "rgba(255,255,255,0.3)",
+  },
   title: {
     fontFamily: "BungeeInline_400Regular",
-    fontSize: 32,
+    fontSize: scaledSize(32),
     color: "#fff",
     textShadowColor: "rgba(0, 0, 0, 0.3)",
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 5,
-    marginTop: 40,
+    marginTop: height * 0.15,
     textAlign: "center",
+    lineHeight: scaledSize(40),
+    maxWidth: width * 0.9,
+    letterSpacing: 1.5,
   },
-
-  /**
-   * Game card with gradient background and elevation
-   */
+  cardContainer: {
+    width: width * 0.9,
+    maxWidth: 400,
+    aspectRatio: 1.5,
+    marginBottom: height * 0.05,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 20 },
+    shadowOpacity: 0.3,
+    shadowRadius: 30,
+    elevation: 15,
+  },
   gameCard: {
-    width: 300,
-    height: 200,
-    borderRadius: 25,
-    padding: 20,
+    width: "100%",
+    height: "100%",
+    borderRadius: scaledSize(25),
+    overflow: "hidden",
+  },
+  cardBorder: {
+    width: "100%",
+    height: "100%",
     justifyContent: "center",
     alignItems: "center",
-    elevation: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.3,
-    shadowRadius: 20,
+    padding: scaledSize(20),
   },
-
-  /**
-   * Card title text with custom font
-   */
   cardText: {
     fontFamily: "BungeeInline_400Regular",
-    fontSize: 24,
+    fontSize: scaledSize(24),
     color: "white",
-    marginVertical: 10,
+    marginVertical: height * 0.01,
+    textAlign: "center",
+    textShadowColor: "rgba(0,0,0,0.2)",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
-
-  /**
-   * Secondary card text with call to action
-   */
   cardSubText: {
     color: "white",
-    fontSize: 16,
+    fontSize: scaledSize(16),
     fontWeight: "bold",
+    letterSpacing: 0.5,
   },
-
-  /**
-   * Emoji icon displayed on card
-   */
+  button: {
+    paddingHorizontal: 25,
+    paddingVertical: 10,
+    borderRadius: 20,
+    overflow: "hidden",
+    marginTop: 15,
+  },
   cardIcon: {
-    fontSize: 40,
-    marginBottom: 10,
+    fontSize: scaledSize(50),
+    marginBottom: height * 0.01,
+    textShadowColor: "rgba(0,0,0,0.2)",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
-
-  /**
-   * Decorative circular element (top-left)
-   */
   cardDecoration1: {
     position: "absolute",
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: width * 0.25,
+    height: width * 0.25,
+    borderRadius: width * 0.125,
     backgroundColor: "rgba(255, 255, 255, 0.1)",
-    top: -20,
-    left: -20,
+    top: -width * 0.08,
+    left: -width * 0.08,
   },
-
-  /**
-   * Decorative circular element (bottom-right)
-   */
   cardDecoration2: {
     position: "absolute",
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: width * 0.2,
+    height: width * 0.2,
+    borderRadius: width * 0.1,
     backgroundColor: "rgba(255, 255, 255, 0.1)",
-    bottom: -20,
-    right: -20,
+    bottom: -width * 0.06,
+    right: -width * 0.06,
+  },
+  stitchDecorations: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+  },
+  stitchLine: {
+    position: "absolute",
+    width: 40,
+    height: 2,
+    backgroundColor: "rgba(255,255,255,0.3)",
+    transform: [{ rotate: "-45deg" }],
+  },
+  stepContainer: {
+    flexDirection: "row",
+    gap: 10,
+    marginBottom: 20,
+  },
+  stepDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: "rgba(255,255,255,0.3)",
+  },
+  activeStepDot: {
+    backgroundColor: "#fff",
+    transform: [{ scale: 1.2 }],
   },
 });
