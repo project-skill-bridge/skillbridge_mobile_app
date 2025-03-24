@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -16,11 +16,12 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { useRouter } from "expo-router";
-
-import VoiceIntro from "./VoiceIntro";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Speech from "expo-speech";
-// Responsive scaling functions
+
+/**
+ * Responsive scaling functions for consistent sizing across devices
+ */
 const scaleWidth = width / 375;
 const scaleHeight = height / 812;
 const scaledSize = (size: number) =>
@@ -37,14 +38,15 @@ export interface StepsProps {
  * AnimatedContent component
  * Displays a step-by-step vocational training guide with animations and voice narration
  *
- * @param {StepsProps} props - Contains the steps array with text, images, and descriptions
+ * @param {StepsProps} props - Contains the steps array with text, images, descriptions
  * @returns {JSX.Element} Rendered component
  */
 const AnimatedContent = ({ steps }: StepsProps) => {
   const router = useRouter();
   const [stepNo, setStepNo] = useState(0);
-  const [speaking, setSpeaking] = useState(false); // Track speaking state
+  const [speaking, setSpeaking] = useState(false);
   const scale = useSharedValue(1);
+  const navigationInProgress = useRef(false);
 
   /**
    * Creates animated style for the image scaling effect
@@ -55,9 +57,10 @@ const AnimatedContent = ({ steps }: StepsProps) => {
 
   /**
    * Handle text-to-speech when step changes
+   * Starts speech for current step and stops previous speech
    */
   useEffect(() => {
-    // Stop any current speech
+    // Stop any current speech before starting new one
     Speech.stop();
     setSpeaking(false);
 
@@ -73,29 +76,51 @@ const AnimatedContent = ({ steps }: StepsProps) => {
       });
     }
 
-    // Clean up on unmount
+    // Clean up on unmount or when step changes
     return () => {
       Speech.stop();
     };
   }, [stepNo]);
 
   /**
+   * Ensure speech is stopped when component unmounts
+   */
+  useEffect(() => {
+    return () => {
+      Speech.stop();
+    };
+  }, []);
+
+  /**
    * Handles progression to next step or completion of the guide
    * Applies a spring animation to the image when moving to next step
+   * Ensures speech is stopped before navigating away
    */
-  const nextStep = () => {
+  const nextStep = async () => {
+    // Prevent multiple rapid clicks
+    if (navigationInProgress.current) return;
+
     if (stepNo < steps.length - 1) {
       setStepNo(stepNo + 1);
       scale.value = withSpring(1.1, { damping: 5, stiffness: 100 }, () => {
         scale.value = withSpring(1);
       });
     } else {
+      // Set navigation flag to prevent multiple clicks
+      navigationInProgress.current = true;
+
+      // Stop speech before navigating
+      await Speech.stop();
+      setSpeaking(false);
+
+      // Navigate after ensuring speech is stopped
       router.push("/(tabs)/home");
     }
   };
 
   /**
    * Toggle speech playback
+   * Starts or stops voice narration
    */
   const toggleSpeech = async () => {
     const isSpeaking = await Speech.isSpeakingAsync();
@@ -114,7 +139,9 @@ const AnimatedContent = ({ steps }: StepsProps) => {
     }
   };
 
-  // Calculate the max description length for proper layout
+  /**
+   * Calculate the max description length for proper layout
+   */
   const maxDescriptionLength = Math.max(
     ...steps.map((step) => (step.description ? step.description.length : 0))
   );
@@ -141,63 +168,59 @@ const AnimatedContent = ({ steps }: StepsProps) => {
 
       {/* Main Content - Fixed Layout */}
       <View style={styles.mainContent}>
-      <Animated.View style={[styles.imageContainer, animatedStyle]}>
-        <Image
-          source={steps[stepNo]?.image}
-          style={styles.image}
-          contentFit="contain"
-        />
-      </Animated.View>
+        <Animated.View style={[styles.imageContainer, animatedStyle]}>
+          <Image
+            source={steps[stepNo]?.image}
+            style={styles.image}
+            contentFit="contain"
+          />
+        </Animated.View>
 
         {/* Fixed height text container */}
         <View style={styles.textContainer}>
-        <ScrollView 
-          contentContainerStyle={styles.textWrapper}
-          showsVerticalScrollIndicator={false}
-        >
-          <TypeWriter
-            style={styles.stepText}
-            typing={1}
-            minDelay={20}
-            maxDelay={30}
-            fixed={true}
+          <ScrollView
+            contentContainerStyle={styles.textWrapper}
+            showsVerticalScrollIndicator={false}
           >
-            {steps[stepNo]?.description || ""}
-          </TypeWriter>
-        </ScrollView>
-      </View>
+            <TypeWriter
+              style={styles.stepText}
+              typing={1}
+              minDelay={20}
+              maxDelay={30}
+              fixed={true}
+            >
+              {steps[stepNo]?.description || ""}
+            </TypeWriter>
+          </ScrollView>
+        </View>
 
         {/* Button Group */}
-      <View style={styles.buttonGroup}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={nextStep}
-          activeOpacity={0.9}
-        >
-          <LinearGradient
-            colors={["#6366f1", "#4338ca"]}
-            style={styles.buttonGradient}
+        <View style={styles.buttonGroup}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={nextStep}
+            activeOpacity={0.9}
           >
-            <Text style={styles.buttonText}>
-              {stepNo < steps.length - 1 ? "Next Step →" : "Finish Training"}
+            <LinearGradient
+              colors={["#6366f1", "#4338ca"]}
+              style={styles.buttonGradient}
+            >
+              <Text style={styles.buttonText}>
+                {stepNo < steps.length - 1 ? "Next Step →" : "Finish Training"}
+              </Text>
+            </LinearGradient>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.voiceButton} onPress={toggleSpeech}>
+            <Text style={styles.voiceButtonText}>
+              {speaking ? "Stop Voice" : "Play Voice"}
             </Text>
-          </LinearGradient>
-        </TouchableOpacity>
-
-        <TouchableOpacity 
-          style={styles.voiceButton} 
-          onPress={toggleSpeech}
-        >
-          <Text style={styles.voiceButtonText}>
-            {speaking ? "Stop Voice" : "Play Voice"}
-          </Text>
-        </TouchableOpacity>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
-  </LinearGradient>
-);
-}
-
+    </LinearGradient>
+  );
+};
 
 /**
  * Component styles
@@ -208,7 +231,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   header: {
-    height: height * 0.22, 
+    height: height * 0.22,
     paddingTop: height * 0.06,
     paddingBottom: height * 0.02,
     paddingHorizontal: 20,
@@ -261,7 +284,6 @@ const styles = StyleSheet.create({
     paddingTop: height * 0.03,
     paddingBottom: height * 0.02,
   },
-
   imageContainer: {
     width: width * 0.8,
     height: height * 0.3,
@@ -281,8 +303,8 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   textContainer: {
-    height: height * 0.22, 
-    minHeight: 150, 
+    height: height * 0.22,
+    minHeight: 150,
     padding: 15,
     backgroundColor: "white",
     borderRadius: 15,
@@ -297,16 +319,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    
     maxWidth: width * 0.9,
   },
   stepText: {
     fontSize: scaledSize(16),
-    lineHeight: scaledSize(24), 
+    lineHeight: scaledSize(24),
     color: "#495057",
     textAlign: "center",
     fontWeight: "500",
-    
     width: "100%",
   },
   button: {
@@ -321,12 +341,11 @@ const styles = StyleSheet.create({
   },
   buttonGroup: {
     width: width * 0.7,
-    alignSelf: 'center',
+    alignSelf: "center",
     marginTop: height * 0.02,
   },
-
   buttonGradient: {
-    height: "100%", 
+    height: "100%",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -337,7 +356,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   voiceContainer: {
-    height: height * 0.12, 
+    height: height * 0.12,
     width: "100%",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
@@ -354,15 +373,14 @@ const styles = StyleSheet.create({
     height: height * 0.06,
     backgroundColor: "#6366f1",
     borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     elevation: 3,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
   },
-
   voiceButtonText: {
     color: "white",
     fontSize: scaledSize(14),
