@@ -44,7 +44,8 @@ import {
   MessageCircle,
   ArrowLeft,
   Plus,
-  Send
+  Send,
+  Trash2,
 } from "lucide-react-native";
 
 export const Icons = {
@@ -93,7 +94,8 @@ export const Icons = {
   Send,
   MessageCircle,
   ArrowLeft,
-  Plus
+  Plus,
+  Trash2,
 };
 
 export type Icon = keyof typeof Icons;

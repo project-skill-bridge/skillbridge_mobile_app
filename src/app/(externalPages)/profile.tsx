@@ -64,8 +64,26 @@ const ProfileScreen = () => {
     mode: "all",
   });
 
-  const logOutHandler = async () => {
-    await auth().signOut();
+  const deleteAccount = async () => {
+    try {
+      const user = auth().currentUser;
+      if (user) {
+        await firestore().collection("users").doc(user.uid).delete();
+        await user.delete();
+      } else {
+        setIsVisible({
+          visible: true,
+          message: "Please sign in again..",
+          type: "error",
+        });
+      }
+    } catch {
+      setIsVisible({
+        visible: true,
+        message: "Error deleting account.",
+        type: "error",
+      });
+    }
   };
 
   const updateProfileHandler = async ({
@@ -125,8 +143,8 @@ const ProfileScreen = () => {
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerText}>Your Profile</Text>
-        <Button onPress={logOutHandler} style={styles.logout} variant="icon">
-          <Icons.LogOut size={20} color="red" />
+        <Button onPress={deleteAccount} style={styles.logout} variant="icon">
+          <Icons.Trash2 size={20} color="red" />
         </Button>
       </View>
 
@@ -249,7 +267,7 @@ const styles = StyleSheet.create({
     color: theme.colors.primary,
   },
   logout: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: "50%",
   },
   imageContainer: {
