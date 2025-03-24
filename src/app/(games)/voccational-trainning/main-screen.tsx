@@ -93,3 +93,47 @@ export default function MainScreen() {
   );
 }
 
+/**
+ * Component styles
+ */
+const styles = StyleSheet.create({
+  /**
+   * Main container with gradient background
+   */
+  container: {
+    flex: 1,
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 50,
+  },
+
+  /**
+   * Main title with custom font and text shadow
+   */
+  title: {
+    fontFamily: "BungeeInline_400Regular",
+    fontSize: 32,
+    color: "#fff",
+    textShadowColor: "rgba(0, 0, 0, 0.3)",
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 5,
+    marginTop: 40,
+    textAlign: "center",
+  },
+
+  /**
+   * Game card with gradient background and elevation
+   */
+  gameCard: {
+    width: 300,
+    height: 200,
+    borderRadius: 25,
+    padding: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+  },
