@@ -77,4 +77,6 @@ const Stitching = () => {
    * Renders the AnimatedContent component with stitching steps data
    */
   return (
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    </View>
 export default Stitching;
