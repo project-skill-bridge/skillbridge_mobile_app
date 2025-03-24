@@ -137,3 +137,57 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 20,
   },
+
+  /**
+   * Card title text with custom font
+   */
+  cardText: {
+    fontFamily: "BungeeInline_400Regular",
+    fontSize: 24,
+    color: "white",
+    marginVertical: 10,
+  },
+
+  /**
+   * Secondary card text with call to action
+   */
+  cardSubText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+
+  /**
+   * Emoji icon displayed on card
+   */
+  cardIcon: {
+    fontSize: 40,
+    marginBottom: 10,
+  },
+
+  /**
+   * Decorative circular element (top-left)
+   */
+  cardDecoration1: {
+    position: "absolute",
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    top: -20,
+    left: -20,
+  },
+
+  /**
+   * Decorative circular element (bottom-right)
+   */
+  cardDecoration2: {
+    position: "absolute",
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    bottom: -20,
+    right: -20,
+  },
+});
