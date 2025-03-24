@@ -41,3 +41,32 @@ export default function MainScreen() {
     }).start();
   };
 
+  /**
+   * Animates card scale back to normal when press released
+   * Uses spring physics for natural motion feel
+   */
+  const handlePressOut = () => {
+    Animated.spring(scaleValue, {
+      toValue: 1,
+      friction: 3,
+      tension: 40,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  /**
+   * Display nothing while fonts are loading
+   */
+  if (!fontsLoaded) {
+    return null;
+  }
+
+  /**
+   * Main component render function
+   */
+  return (
+    <LinearGradient colors={["#6366f1", "#4338ca"]} style={styles.container}>
+      <Text style={styles.title}>
+        Vocational {"\n"}Training{"\n"}Guide{" "}
+      </Text>
+
