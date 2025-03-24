@@ -77,3 +77,19 @@ export default function MainScreen() {
           activeOpacity={0.8}
           onPress={() => router.push("/(games)/voccational-trainning/stiching")}
         >
+          <LinearGradient
+            colors={["#f472b6", "#db2777"]}
+            style={styles.gameCard}
+          >
+            <Text style={styles.cardIcon}>🧵</Text>
+            <Text style={styles.cardText}>Stitching Master</Text>
+            <Text style={styles.cardSubText}>Start Training →</Text>
+            <View style={styles.cardDecoration1} />
+            <View style={styles.cardDecoration2} />
+          </LinearGradient>
+        </TouchableOpacity>
+      </Animated.View>
+    </LinearGradient>
+  );
+}
+
