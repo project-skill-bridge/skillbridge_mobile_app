@@ -17,7 +17,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { useRouter } from "expo-router";
 
-import VoiceIntro from "./VoiceIntro";
+
 import { LinearGradient } from "expo-linear-gradient";
 import * as Speech from "expo-speech";
 // Responsive scaling functions
