@@ -80,4 +80,7 @@ const Stitching = () => {
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <AnimatedContent steps={steps} />
     </View>
+  );
+};
+
 export default Stitching;
