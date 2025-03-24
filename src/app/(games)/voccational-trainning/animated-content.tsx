@@ -1,6 +1,14 @@
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Dimensions,
+  ScrollView,
+} from "react-native";
 import { Image } from "expo-image";
+const { width, height } = Dimensions.get("window");
 import TypeWriter from "react-native-typewriter";
 import Animated, {
   useSharedValue,
@@ -10,6 +18,13 @@ import Animated, {
 import { useRouter } from "expo-router";
 
 import VoiceIntro from "./VoiceIntro";
+import { LinearGradient } from "expo-linear-gradient";
+import * as Speech from "expo-speech";
+// Responsive scaling functions
+const scaleWidth = width / 375;
+const scaleHeight = height / 812;
+const scaledSize = (size: number) =>
+  Math.ceil(size * Math.min(scaleWidth, scaleHeight));
 
 /**
  * Props interface for the step data structure
@@ -28,6 +43,7 @@ export interface StepsProps {
 const AnimatedContent = ({ steps }: StepsProps) => {
   const router = useRouter();
   const [stepNo, setStepNo] = useState(0);
+  const [speaking, setSpeaking] = useState(false); // Track speaking state
   const scale = useSharedValue(1);
 
   /**
@@ -38,55 +54,150 @@ const AnimatedContent = ({ steps }: StepsProps) => {
   }));
 
   /**
+   * Handle text-to-speech when step changes
+   */
+  useEffect(() => {
+    // Stop any current speech
+    Speech.stop();
+    setSpeaking(false);
+
+    // Start new speech with current step's voiceNote
+    if (steps[stepNo]?.voiceNote) {
+      Speech.speak(steps[stepNo].voiceNote, {
+        language: "en",
+        pitch: 1.0,
+        rate: 0.9,
+        onStart: () => setSpeaking(true),
+        onDone: () => setSpeaking(false),
+        onStopped: () => setSpeaking(false),
+      });
+    }
+
+    // Clean up on unmount
+    return () => {
+      Speech.stop();
+    };
+  }, [stepNo]);
+
+  /**
    * Handles progression to next step or completion of the guide
    * Applies a spring animation to the image when moving to next step
    */
   const nextStep = () => {
     if (stepNo < steps.length - 1) {
       setStepNo(stepNo + 1);
-      scale.value = withSpring(1.1, { damping: 5, stiffness: 100 });
+      scale.value = withSpring(1.1, { damping: 5, stiffness: 100 }, () => {
+        scale.value = withSpring(1);
+      });
     } else {
       router.push("/(tabs)/home");
     }
   };
 
+  /**
+   * Toggle speech playback
+   */
+  const toggleSpeech = async () => {
+    const isSpeaking = await Speech.isSpeakingAsync();
+    if (isSpeaking) {
+      Speech.stop();
+      setSpeaking(false);
+    } else {
+      Speech.speak(steps[stepNo]?.voiceNote || "", {
+        language: "en",
+        pitch: 1.0,
+        rate: 0.9,
+        onStart: () => setSpeaking(true),
+        onDone: () => setSpeaking(false),
+        onStopped: () => setSpeaking(false),
+      });
+    }
+  };
+
+  // Calculate the max description length for proper layout
+  const maxDescriptionLength = Math.max(
+    ...steps.map((step) => (step.description ? step.description.length : 0))
+  );
+
   return (
-    <View style={styles.container}>
+    <LinearGradient colors={["#f8f9fa", "#e9ecef"]} style={styles.container}>
+      {/* Header Section - Fixed Height */}
+      <LinearGradient colors={["#6366f1", "#4338ca"]} style={styles.header}>
+        <Text style={styles.headerTitle}>Stitching Master Class</Text>
+        <View style={styles.stepIndicator}>
+          <Text style={styles.stepCount}>
+            STEP {stepNo + 1}/{steps.length}
+          </Text>
+          <View style={styles.progressBar}>
+            <View
+              style={[
+                styles.progressFill,
+                { width: `${((stepNo + 1) / steps.length) * 100}%` },
+              ]}
+            />
+          </View>
+        </View>
+      </LinearGradient>
+
+      {/* Main Content - Fixed Layout */}
       <View style={styles.mainContent}>
-        <Text> Stitching Training </Text>
-        <Text style={styles.stepText}>
-          Step {stepNo + 1} : {steps[stepNo].text}{" "}
-        </Text>
+      <Animated.View style={[styles.imageContainer, animatedStyle]}>
+        <Image
+          source={steps[stepNo]?.image}
+          style={styles.image}
+          contentFit="contain"
+        />
+      </Animated.View>
 
-        <Animated.View style={[styles.imageContainer, animatedStyle]}>
-          <Image
-            source={steps[stepNo].image}
-            style={styles.image}
-            contentFit="contain"
-          />
-        </Animated.View>
+        {/* Fixed height text container */}
+        <View style={styles.textContainer}>
+        <ScrollView 
+          contentContainerStyle={styles.textWrapper}
+          showsVerticalScrollIndicator={false}
+        >
+          <TypeWriter
+            style={styles.stepText}
+            typing={1}
+            minDelay={20}
+            maxDelay={30}
+            fixed={true}
+          >
+            {steps[stepNo]?.description || ""}
+          </TypeWriter>
+        </ScrollView>
+      </View>
 
-        <TypeWriter style={styles.stepDes} typing={1}>
-          {steps[stepNo].description}
-        </TypeWriter>
+        {/* Button Group */}
+      <View style={styles.buttonGroup}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={nextStep}
+          activeOpacity={0.9}
+        >
+          <LinearGradient
+            colors={["#6366f1", "#4338ca"]}
+            style={styles.buttonGradient}
+          >
+            <Text style={styles.buttonText}>
+              {stepNo < steps.length - 1 ? "Next Step →" : "Finish Training"}
+            </Text>
+          </LinearGradient>
+        </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button} onPress={nextStep}>
-          <Text style={styles.buttonText}>
-            {stepNo < steps.length - 1 ? "Next Step" : "Done"}
+        <TouchableOpacity 
+          style={styles.voiceButton} 
+          onPress={toggleSpeech}
+        >
+          <Text style={styles.voiceButtonText}>
+            {speaking ? "Stop Voice" : "Play Voice"}
           </Text>
         </TouchableOpacity>
       </View>
-
-      <View style={styles.voiceContainer}>
-        <VoiceIntro
-          introText={steps[stepNo].voiceNote}
-          bannarText={steps[stepNo].text}
-          autoPlay={true}
-        />
-      </View>
     </View>
-  );
-};
+  </LinearGradient>
+);
+}
+
 
 /**
  * Component styles
@@ -94,50 +205,168 @@ const AnimatedContent = ({ steps }: StepsProps) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "space-between",
-    alignItems: "center",
+    backgroundColor: "#fff",
   },
-  stepText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 20,
+  header: {
+    height: height * 0.22, 
+    paddingTop: height * 0.06,
+    paddingBottom: height * 0.02,
+    paddingHorizontal: 20,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 5,
+  },
+  headerTitle: {
+    fontSize: scaledSize(24),
+    fontWeight: "800",
+    color: "white",
     textAlign: "center",
+    marginBottom: 15,
+    textShadowColor: "rgba(0,0,0,0.1)",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+  },
+  stepIndicator: {
+    backgroundColor: "rgba(255,255,255,0.2)",
+    borderRadius: 20,
+    padding: 15,
+    marginHorizontal: width * 0.1,
+  },
+  stepCount: {
+    color: "white",
+    fontSize: scaledSize(14),
+    fontWeight: "600",
+    marginBottom: 8,
+    textAlign: "center",
+  },
+  progressBar: {
+    height: 6,
+    backgroundColor: "rgba(255,255,255,0.3)",
+    borderRadius: 3,
+    overflow: "hidden",
+  },
+  progressFill: {
+    height: "100%",
+    backgroundColor: "#fff",
+    borderRadius: 3,
   },
   mainContent: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 16,
+    justifyContent: "space-between",
+    paddingHorizontal: width * 0.05,
+    paddingTop: height * 0.03,
+    paddingBottom: height * 0.02,
   },
-  voiceContainer: {
-    width: "100%",
-    padding: 16,
-  },
+
   imageContainer: {
-    width: 250,
-    height: 250,
-    marginBottom: 20,
+    width: width * 0.8,
+    height: height * 0.3,
+    alignSelf: "center",
+    borderRadius: 20,
+    backgroundColor: "white",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.1,
+    shadowRadius: 15,
+    elevation: 5,
+    overflow: "hidden",
+    marginBottom: height * 0.02,
   },
   image: {
     width: "100%",
     height: "100%",
-    resizeMode: "contain",
+  },
+  textContainer: {
+    height: height * 0.22, 
+    minHeight: 150, 
+    padding: 15,
+    backgroundColor: "white",
+    borderRadius: 15,
+    marginBottom: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 5,
+    justifyContent: "center",
+  },
+  textWrapper: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    
+    maxWidth: width * 0.9,
+  },
+  stepText: {
+    fontSize: scaledSize(16),
+    lineHeight: scaledSize(24), 
+    color: "#495057",
+    textAlign: "center",
+    fontWeight: "500",
+    
+    width: "100%",
   },
   button: {
-    marginTop: 40,
-    backgroundColor: "#6200EA",
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
+    height: height * 0.07,
+    borderRadius: 12,
+    overflow: "hidden",
+    shadowColor: "#6366f1",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    marginBottom: height * 0.015,
+  },
+  buttonGroup: {
+    width: width * 0.7,
+    alignSelf: 'center',
+    marginTop: height * 0.02,
+  },
+
+  buttonGradient: {
+    height: "100%", 
+    alignItems: "center",
+    justifyContent: "center",
   },
   buttonText: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#FFF",
+    color: "white",
+    fontSize: scaledSize(16),
+    fontWeight: "700",
+    letterSpacing: 0.5,
   },
-  stepDes: {
-    fontSize: 14,
-    textAlign: "center",
+  voiceContainer: {
+    height: height * 0.12, 
+    width: "100%",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    backgroundColor: "white",
+    padding: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -5 },
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  voiceButton: {
+    height: height * 0.06,
+    backgroundColor: "#6366f1",
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+  },
+
+  voiceButtonText: {
+    color: "white",
+    fontSize: scaledSize(14),
+    fontWeight: "600",
   },
 });
 
