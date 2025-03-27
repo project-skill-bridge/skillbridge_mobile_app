@@ -63,7 +63,7 @@ import firestore from "@react-native-firebase/firestore"; // Firebase database
 // App-specific UI components, animations, and static assets
 import { Images } from "@/src/constants/Images"; // Image assets
 import { Fonts } from "@/src/constants/Fonts"; // Font assets
-import FinnVoiceTntro from "@/src/components/Circlobrust Voice/FinnGame"; // Character voice guide
+import FinnVoiceIntro from "@/src/components/FinnCharacter/FinnGame"; // Character voice guide
 import BufferingProgress from "@/src/components/ui/buffering-progress"; // Loading indicator
 import AnimatedBubbles from "@/src/app/(games)/circlo-brust/UI/animated-bubbles/animated-bubbles"; // Background bubble animations
 import LogoAnimation from "@/src/app/(games)/circlo-brust/UI/animated-logo/animated-logo"; // Game logo animation
@@ -92,6 +92,16 @@ const levelNames: { [key: number]: string } = {
   4: "Level 4 : Magic Circles", // Expert level with special effects
   5: "Level 5 : Super Pop Rush", // Final challenge level
 };
+
+
+const gameIntroText = [
+  "Welcome to Tap & Type, the ultimate test of speed and accuracy!",
+  "In this game, you'll need to tap the correct letters as fast as possible.",
+  "Each level challenges your typing skills with increasing difficulty.",
+  "The faster and more accurately you type, the higher your score!",
+  "Tap & Type helps improve your typing speed, reflexes, and focus.",
+  "Are you ready to put your fingers to the test? Let’s get started!"
+];
 
 /**
  * Main GameScreen Component
@@ -887,53 +897,15 @@ export default function GameScreen() {
 
           {/* Finn Character Voice Guide Overlay */}
           <View style={styles.finnOverlay}>
-            <FinnVoiceTntro
-              displayText={
-                level === 1
-                  ? "Hi ! Pop 10 ballons within 20 secounds"
-                  : level === 2
-                  ? "Level 2 unlocked! Target is 10 ballons within 20 secounds"
-                  : level === 3
-                  ? "Hi ! pop 10 baloons within 20 secounds"
-                  : level === 4
-                  ? "Level 4 unlocked! Target is 10 ballons within 20 secounds"
-                  : "Hi ! Target is 10 ballons within 20 secounds"
-              }
-              IntroText=""
-              buttonText={
-                level === 1
-                  ? "Welcome to Level 1! Pop the blue bubbles to score points and advance. Move your finger to pop baloons"
-                  : level === 2
-                  ? "Level 2 unlocked! Now you'll face faster bubbles and more challenges."
-                  : level === 3
-                  ? "Level 3 unlocked! Can you keep up with the speedy dots?"
-                  : level === 4
-                  ? "Level 4 unlocked! Magic Circles are here to challenge you."
-                  : "Level 5 unlocked! Super Pop Rush is the final challenge."
-              }
-            />
-
-            {/* Text-to-Speech for level announcements (only played once per level) */}
-            {level >= 1 && level <= 5 && !spokenLevels.includes(level) && (
-              <>
-                {Speech.speak(
-                  `<speak><break time="1500ms"/>${
-                    level === 1
-                      ? "Welcome to Level 1! Pop the blue bubbles to score points and advance. Move your finger to pop the balloons while following voice instructions. The game will announce which bubbles to pop, guide you through the rules, and provide feedback on your progress. Only pop the blue bubbles to earn points, and avoid other colors as they may reduce your score. Be quick, as some bubbles disappear fast! Reach the target score to move to the next level. Stay focused, listen carefully, and enjoy the interactive voice-assisted experience"
-                      : level === 2
-                      ? "Level 2 unlocked! Now you'll face faster bubbles and more challenges."
-                      : level === 3
-                      ? "Level 3 unlocked! Can you keep up with the speedy dots?"
-                      : level === 4
-                      ? "Level 4 unlocked! Magic Circles are here to challenge you."
-                      : "Level 5 unlocked! Super Pop Rush is the final challenge."
-                  }</speak>`,
-                  { rate: 0.9, language: "en-US", pitch: 1.0, volume: 1.0 }
-                )}
-                {/* Mark this level as announced */}
-                {setSpokenLevels([...spokenLevels, level])}
-              </>
-            )}
+          <FinnVoiceIntro
+            gameId="Tap-Type"
+            buttonText=""  
+            IntroText={gameIntroText}  
+            displayText={gameIntroText}
+            language="en-US"
+            speed="normal"
+            voiceType="child"
+          />
           </View>
 
           {/* Bottom Section with Level Info and Play Button */}
