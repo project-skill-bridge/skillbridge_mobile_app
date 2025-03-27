@@ -17,18 +17,19 @@ const StreakMessage = ({ currentStreak }: StreakMessageProps) => {
   )
 }
 export default StreakMessage
-  
-  const styles = StyleSheet.create({
-    messageContainer: {
-      backgroundColor: theme.colors.primary,
-      borderRadius: 16,
-      padding: wp(4),
-      marginBottom: hp(3),
-    },
-    messageText: {
-      fontSize: hp(2),
-      fontFamily: "Coiny",
-      color: "white",
-      textAlign: "center",
-    },
-  })
+
+const styles = StyleSheet.create({
+  messageContainer: {
+    backgroundColor: theme.colors.primary,
+    borderRadius: 16,
+    padding: wp(4),
+    marginBottom: hp(3),
+  },
+  messageText: {
+    fontSize: hp(2),
+    fontFamily: "Coiny",
+    color: "white",
+    textAlign: "center",
+  },
+})
+
