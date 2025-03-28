@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { ScrollView, StyleSheet, View, Text, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
 
 import ProfileSection from "../../components/settings/profile-section";
 import SettingsSection from "../../components/settings/settings-section";
@@ -11,11 +10,8 @@ import SettingsItem from "../../components/settings/settings-item";
 import { hp, wp } from "@/src/utils/common";
 import { theme } from "@/src/constants/Theme";
 import { Icons } from "@/src/constants/Icons";
-import auth from "@react-native-firebase/auth";
 
 export default function SettingsScreen() {
-  const router = useRouter();
-
   // App settings state
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [soundEnabled, setSoundEnabled] = useState(true);
@@ -48,28 +44,6 @@ export default function SettingsScreen() {
       "Terms of Service",
       "By using Skill-Bridge, you agree to our terms of service which can be found on our website."
     );
-  };
-
-  const handleLogout = async () => {
-    Alert.alert("Logout", "Are you sure you want to logout?", [
-      {
-        text: "Cancel",
-        style: "cancel",
-      },
-      {
-        text: "Logout",
-        style: "destructive",
-        onPress: async () => {
-          try {
-            await auth().signOut();
-            router.replace("/sign-in");
-          } catch (error) {
-            console.error("Logout error:", error);
-            Alert.alert("Error", "Failed to logout. Please try again.");
-          }
-        },
-      },
-    ]);
   };
 
   return (
@@ -140,18 +114,6 @@ export default function SettingsScreen() {
             isLast={true}
           />
         </SettingsSection>
-
-        <SettingsSection title="Log Out">
-          <SettingsItem
-            title="Logout"
-            type="action"
-            onPress={handleLogout}
-            isDestructive={true}
-            IconComponent={<Icons.LogOut size={22} color="#e85454" />}
-            isLast={true}
-          />
-        </SettingsSection>
-
         <View style={styles.bottomPadding} />
       </ScrollView>
     </SafeAreaView>

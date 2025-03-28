@@ -27,9 +27,12 @@ import { useUserStore } from "@/src/store/user-store";
 import { Icons } from "@/src/constants/Icons";
 import { ModalState, User } from "@/src/types/type";
 import Modal from "@/src/components/ui/modal";
+import { useRouter } from "expo-router";
 
 const ProfileScreen = () => {
   const { user, setUser } = useUserStore();
+
+  const router = useRouter();
 
   const [isVerified, setIsVerified] = React.useState(false);
   const [isVisible, setIsVisible] = React.useState<ModalState>({
@@ -163,14 +166,41 @@ const ProfileScreen = () => {
     }
   };
 
+  const handleLogout = async () => {
+    Alert.alert("Logout", "Are you sure you want to logout?", [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      {
+        text: "Logout",
+        style: "destructive",
+        onPress: async () => {
+          try {
+            await auth().signOut();
+            router.replace("/sign-in");
+          } catch (error) {
+            console.error("Logout error:", error);
+            Alert.alert("Error", "Failed to logout. Please try again.");
+          }
+        },
+      },
+    ]);
+  };
+
   return (
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerText}>Your Profile</Text>
-        <Button onPress={deleteAccount} style={styles.logout} variant="icon">
-          <Icons.Trash2 size={20} color="red" />
-        </Button>
+        <View style={{ flexDirection: "row", gap: 10 }}>
+          <Button onPress={deleteAccount} style={styles.logout} variant="icon">
+            <Icons.Trash2 size={20} color="red" />
+          </Button>
+          <Button onPress={handleLogout} style={styles.logout} variant="icon">
+            <Icons.LogOut size={20} color="red" />
+          </Button>
+        </View>
       </View>
 
       {/* Profile Image */}
