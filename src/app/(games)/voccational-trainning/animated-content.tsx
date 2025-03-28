@@ -69,8 +69,8 @@ const AnimatedContent = ({ steps }: StepsProps) => {
     if (steps[stepNo]?.voiceNote) {
       Speech.speak(steps[stepNo].voiceNote, {
         language: "en",
-        pitch: 1.0,
-        rate: 0.9,
+        pitch: 1.1,
+        rate: 0.85,
         onStart: () => setSpeaking(true),
         onDone: () => setSpeaking(false),
         onStopped: () => setSpeaking(false),
