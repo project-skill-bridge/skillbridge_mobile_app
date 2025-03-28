@@ -1,13 +1,15 @@
 import * as React from "react";
-
-import { FlatList, StyleSheet, Text, View, ViewToken } from "react-native";
-import { hp, wp } from "../../utils/common";
-import { gameInfo } from "@/src/data/gameInfo";
+import { FlatList, StyleSheet, View, ViewToken } from "react-native";
+import { hp } from "../../utils/common";
 import GameCard from "./game-card";
 import SliderActiveDot from "./slider-active-dot";
-import { theme } from "@/src/constants/Theme";
+import { GameItem } from "@/src/data/gameInfo";
 
-const GameSliderContainer = () => {
+interface GameSliderContainerProps {
+  games: GameItem[];
+}
+
+const GameSliderContainer: React.FC<GameSliderContainerProps> = ({ games }) => {
   const [currentIndex, setCurrentIndex] = React.useState(0);
 
   const viewableItemsChanged = React.useRef(
@@ -29,15 +31,15 @@ const GameSliderContainer = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>Games to Play</Text>
       <View style={styles.slider}>
         <FlatList
-          data={gameInfo}
+          data={games}
           renderItem={({ item }) => (
-            <GameCard
-              id={item.id}
-              path={item.path}
+            <GameCard 
+              id={item.id} 
+              path={item.path} 
               image={item.image}
+              title={item.title}
               isGif={item.isGif || false}
             />
           )}
@@ -49,10 +51,9 @@ const GameSliderContainer = () => {
           onViewableItemsChanged={viewableItemsChanged}
           viewabilityConfig={viewConfig}
           ref={sliderRef}
-          contentContainerStyle={styles.flatListContent}
         />
       </View>
-      <SliderActiveDot length={gameInfo.length} currentIndex={currentIndex} />
+      <SliderActiveDot length={games.length} currentIndex={currentIndex} />
     </View>
   );
 };
@@ -61,19 +62,9 @@ export default GameSliderContainer;
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: hp(9),
     justifyContent: "center",
   },
   slider: {
     marginTop: hp(2),
-  },
-  headerText: {
-    fontSize: hp(2.5),
-    fontWeight: "bold",
-    color: theme.colors.primaryText,
-  },
-  flatListContent: {
-    paddingHorizontal: wp(2),
-    alignItems: "center",
   },
 });
