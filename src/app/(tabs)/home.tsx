@@ -3,7 +3,6 @@ import { BackHandler, ScrollView, StyleSheet, Text, View } from "react-native";
 import { hp, wp } from "@/src/utils/common";
 import auth from "@react-native-firebase/auth";
 import { useIsFocused } from "@react-navigation/native";
-
 import { useUserStore } from "@/src/store/user-store";
 import HomeProgress from "@/src/components/home-progress";
 import Modal from "@/src/components/ui/modal";
@@ -11,6 +10,7 @@ import { ModalState } from "@/src/types/type";
 import FinnCharacter from "@/src/components/FinnCharacter/FinnCharacter";
 import GameCategorySection from "../../components/game/game-category-section";
 import { getCategorizedGames } from "@/src/data/gameInfo";
+import { audioEvents, AUDIO_EVENTS } from "@/src/utils/audio_controller";
 
 const HomeScreen = () => {
   const { user } = useUserStore();
@@ -37,17 +37,22 @@ const HomeScreen = () => {
     })();
   }, []);
 
-  
+  React.useEffect(() => {
+    if (isFocused) {
+      // Stop all game audio when returning to home screen
+      audioEvents.emit(AUDIO_EVENTS.STOP_ALL_AUDIO);
+    }
+  }, [isFocused]);
+
   React.useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       "hardwareBackPress",
       () => {
-       
         if (isFocused) {
           BackHandler.exitApp();
-          return true; 
+          return true;
         }
-        return false; 
+        return false;
       }
     );
 
