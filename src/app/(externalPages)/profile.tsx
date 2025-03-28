@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import {
+  Alert,
   Image,
   KeyboardAvoidingView,
   Platform,
@@ -66,21 +67,45 @@ const ProfileScreen = () => {
 
   const deleteAccount = async () => {
     try {
-      const user = auth().currentUser;
-      if (user) {
-        await firestore().collection("users").doc(user.uid).delete();
-        await user.delete();
-      } else {
-        setIsVisible({
-          visible: true,
-          message: "Please sign in again..",
-          type: "error",
-        });
-      }
+      Alert.alert(
+        "Confirm Deletion",
+        "Are you sure you want to delete your account? This action cannot be undone.",
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
+          },
+          {
+            text: "Delete",
+            style: "destructive",
+            onPress: async () => {
+              try {
+                const user = auth().currentUser;
+                if (user) {
+                  await firestore().collection("users").doc(user.uid).delete();
+                  await user.delete();
+                } else {
+                  setIsVisible({
+                    visible: true,
+                    message: "Please sign in again.",
+                    type: "error",
+                  });
+                }
+              } catch {
+                setIsVisible({
+                  visible: true,
+                  message: "Error deleting account.",
+                  type: "error",
+                });
+              }
+            },
+          },
+        ]
+      );
     } catch {
       setIsVisible({
         visible: true,
-        message: "Error deleting account.",
+        message: "Error displaying confirmation alert.",
         type: "error",
       });
     }

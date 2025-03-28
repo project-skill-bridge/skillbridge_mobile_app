@@ -141,7 +141,7 @@ export default function SettingsScreen() {
           />
         </SettingsSection>
 
-        <SettingsSection title="">
+        <SettingsSection title="Log Out">
           <SettingsItem
             title="Logout"
             type="action"
