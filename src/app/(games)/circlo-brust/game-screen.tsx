@@ -15,7 +15,7 @@
  * native activity screens for each game level, and manages the state
  * between sessions using AsyncStorage and Firebase.
  *
- * @lastUpdated March 21, 2025
+ * @lastUpdated March 28, 2025
  * =========================================================================
  */
 
@@ -40,7 +40,8 @@ import {
   NativeEventEmitter, // Event system for native code
   Alert, // Native alert dialog
   AppState, // App lifecycle monitoring
-  BackHandler, // Hardware back button handler
+  BackHandler,
+  ViewStyle, // Hardware back button handler
 } from "react-native";
 import * as Speech from "expo-speech"; // Text-to-speech functionality
 import { LinearGradient } from "expo-linear-gradient"; // Gradient backgrounds
@@ -72,6 +73,61 @@ import LogoAnimation from "@/src/app/(games)/circlo-brust/UI/animated-logo/anima
 // Get device screen dimensions for responsive layouts
 const { width, height } = Dimensions.get("window");
 
+/* ================ RESPONSIVE SIZING UTILITIES ================ */
+/**
+ * Calculates the overall game progress percentage based on current level
+ * Used for displaying progress indicators and achievements
+ *
+ * @param {number} currentLevel - The player's current level (1-5)
+ * @returns {number} The overall game completion percentage (0-100)
+ */
+const getProgressPercentage = (currentLevel: number) => {
+  switch (currentLevel) {
+    case 1:
+      return 0;
+    case 2:
+      return 20;
+    case 3:
+      return 40;
+    case 4:
+      return 60;
+    case 5:
+      return 80;
+    default:
+      return 0;
+  }
+};
+
+// Add these utility functions at the top of your component, before the return statement
+const isSmallDevice = width < 375;
+const isTablet = width >= 768;
+
+// Responsive sizes based on screen dimensions
+const getResponsiveSize = (size: number, factor = 0.5): number => {
+  if (isTablet) return size * 1.3; // Larger for tablets
+  if (isSmallDevice) return size * 0.8; // Smaller for small phones
+  return size; // Default size for standard phones
+};
+
+// Responsive position calculation for the finnScoreWrapper
+const getFinScorePosition = (): string => {
+  if (isTablet) return "40%"; // Higher on tablets
+  if (isSmallDevice) return "45%"; // Slightly higher on small devices
+  return "50%"; // Default position
+};
+
+// Define orientation and update when dimensions change
+const isLandscape = width > height;
+
+// Adjust finnScoreWrapper for landscape mode - with ViewStyle typing
+const finnScoreWrapperStyle: ViewStyle = {
+  top: isLandscape
+    ? height * 0.3
+    : height * (parseFloat(getFinScorePosition()) / 100),
+  flexDirection: "row", // Always use row to keep items side by side
+  paddingHorizontal: isLandscape ? width * 0.15 : width * 0.08,
+};
+
 /* ================ NATIVE MODULE SETUP ================ */
 /**
  * Access to native code functionality through the bridge
@@ -93,13 +149,17 @@ const levelNames: { [key: number]: string } = {
   5: "Level 5 : Super Pop Rush", // Final challenge level
 };
 
+/**
+ * Game introduction text for the voice assistant
+ * Provides a brief overview of the game mechanics and objectives
+ */
 const gameIntroText = [
-  "Welcome to Tap & Type, the ultimate test of speed and accuracy!",
-  "In this game, you'll need to tap the correct letters as fast as possible.",
-  "Each level challenges your typing skills with increasing difficulty.",
-  "The faster and more accurately you type, the higher your score!",
-  "Tap & Type helps improve your typing speed, reflexes, and focus.",
-  "Are you ready to put your fingers to the test? Let’s get started!",
+  "Welcome to CircloBurst, the ultimate test of speed and precision!",
+  "In this game, your goal is to pop circles as quickly as possible.",
+  "As you progress, the challenge increases with faster floating speeds and dynamic patterns.",
+  "The quicker and more accurately you tap, the higher your score!",
+  "CircloBurst enhances your reflexes, hand-eye coordination, and focus.",
+  "Are you ready to take on the challenge? Let’s burst some circles!",
 ];
 
 /**
@@ -122,9 +182,8 @@ export default function GameScreen() {
   const [formattedTime, setFormattedTime] = useState(""); // Game timer in formatted display
   const [audioPosition, setAudioPosition] = useState(0); // Position in background audio for resuming
   const [hasFetchedData, setHasFetchedData] = useState(false); // Flag for initial data load
-  const [navigationKey, setNavigationKey] = useState(0); // Counter for navigation actions
+  const [navigationKey] = useState(0); // Counter for navigation actions
   const [isFirstRun, setIsFirstRun] = useState(true); // Flag for first-time players
-  const [spokenLevels, setSpokenLevels] = useState<number[]>([]); // Tracks which levels have been announced
   const [isToggling, setIsToggling] = useState(false); // Track when toggle is in progress
 
   /* ================ ACTIVITY RESULT HANDLER ================ */
@@ -282,24 +341,21 @@ export default function GameScreen() {
       AsyncStorage.setItem("formattedTime", newFormattedTime);
       AsyncStorage.setItem("audioPosition", newAudioPosition.toString());
 
-      // If level changed, launch the appropriate level activity
-      if (newLevel !== level) {
-        // Clean up audio before launching
-        stopBackgroundMusic();
-        Speech.stop();
+      // Clean up audio before launching
+      stopBackgroundMusic();
+      Speech.stop();
 
-        // Launch the appropriate level based on newLevel
-        if (newLevel == 1) {
-          openLoginScreen();
-        } else if (newLevel == 2) {
-          openActivity2Screen();
-        } else if (newLevel == 3) {
-          openActivity3Screen();
-        } else if (newLevel == 4) {
-          openActivity4Screen();
-        } else if (newLevel == 5) {
-          openActivity5Screen();
-        }
+      // Launch the appropriate level based on newLevel
+      if (newLevel == 1) {
+        openLoginScreen();
+      } else if (newLevel == 2) {
+        openActivity2Screen();
+      } else if (newLevel == 3) {
+        openActivity3Screen();
+      } else if (newLevel == 4) {
+        openActivity4Screen();
+      } else if (newLevel == 5) {
+        openActivity5Screen();
       }
     };
 
@@ -314,30 +370,6 @@ export default function GameScreen() {
   }, []);
 
   /* ================ FIREBASE DATA MANAGEMENT ================ */
-  /**
-   * Calculates the overall game progress percentage based on current level
-   * Used for displaying progress indicators and achievements
-   *
-   * @param {number} currentLevel - The player's current level (1-5)
-   * @returns {number} The overall game completion percentage (0-100)
-   */
-  const getProgressPercentage = (currentLevel: number) => {
-    switch (currentLevel) {
-      case 1:
-        return 0; // Just starting
-      case 2:
-        return 20; // 20% complete
-      case 3:
-        return 40; // 40% complete
-      case 4:
-        return 60; // 60% complete
-      case 5:
-        return 80; // 80% complete (100% when completed)
-      default:
-        return 0; // Default to 0 for safety
-    }
-  };
-
   /**
    * Displays error alerts for Firebase operations
    * Centralizes error handling for consistency
@@ -590,27 +622,6 @@ export default function GameScreen() {
     };
 
     /**
-     * Handles app state changes (foreground/background)
-     * Pauses audio when app is backgrounded, resumes when foregrounded
-     *
-     * @param {string} nextAppState - The new app state
-     */
-    const handleAppStateChange = (nextAppState: string) => {
-      if (nextAppState === "background" && soundRef.current) {
-        // App going to background - pause audio and speech
-        soundRef.current.pauseAsync();
-        Speech.stop();
-      } else if (
-        nextAppState === "active" &&
-        soundRef.current &&
-        !isMutedRef.current
-      ) {
-        // App coming to foreground - resume audio if not muted
-        soundRef.current.playAsync();
-      }
-    };
-
-    /**
      * Handles screen losing focus
      * Pauses audio and speech
      */
@@ -745,6 +756,35 @@ export default function GameScreen() {
     return () => backHandler.remove();
   }, [handleBack]);
 
+  /* Add this effect to handle app state changes */
+  useEffect(() => {
+    const appStateListener = AppState.addEventListener(
+      "change",
+      (nextAppState) => {
+        // When app moves from active to background/inactive state
+        if (nextAppState === "background" || nextAppState === "inactive") {
+          // Stop music and speech when app goes to background
+          if (soundRef.current) {
+            soundRef.current.pauseAsync();
+          }
+          Speech.stop();
+          console.log("App went to background - audio paused");
+        } else if (nextAppState === "active") {
+          // Optionally resume music when app comes back to foreground if not muted
+          if (soundRef.current && !isMutedRef.current) {
+            soundRef.current.playAsync();
+            console.log("App came to foreground - audio resumed");
+          }
+        }
+      }
+    );
+
+    // Clean up the event listener on component unmount
+    return () => {
+      appStateListener.remove();
+    };
+  }, []);
+
   /* ================ ANIMATIONS ================ */
   // Animation value references for various visual effects
   const pulseAnim = useRef(new Animated.Value(1)).current; // Controls pulsing effect
@@ -768,13 +808,13 @@ export default function GameScreen() {
     Animated.loop(
       Animated.sequence([
         Animated.timing(pulseAnim, {
-          toValue: 1.2, // Expand to 120%
+          toValue: 1.2,
           duration: 1000,
           easing: Easing.inOut(Easing.ease),
           useNativeDriver: true,
         }),
         Animated.timing(pulseAnim, {
-          toValue: 1, // Return to normal size
+          toValue: 1,
           duration: 1000,
           easing: Easing.inOut(Easing.ease),
           useNativeDriver: true,
@@ -827,7 +867,7 @@ export default function GameScreen() {
         duration: 3000,
         easing: Easing.ease,
         useNativeDriver: true,
-        delay: 2000, // Wait between shine effects
+        delay: 2000,
       })
     ).start();
   }, []);
@@ -835,12 +875,12 @@ export default function GameScreen() {
   // Animation interpolations for derived values
   const handScale = handAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [0.9, 1.1], // Scale between 90% and 110%
+    outputRange: [0.9, 1.1],
   });
 
   const handRotate = handRotateAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ["0deg", "360deg"], // Rotate from 0 to 360 degrees
+    outputRange: ["0deg", "360deg"],
   });
 
   // Wave animation for bottom section
@@ -894,17 +934,38 @@ export default function GameScreen() {
             <LogoAnimation />
           </View>
 
-          {/* Finn Character Voice Guide Overlay */}
-          <View style={styles.finnOverlay}>
-            <FinnVoiceIntro
-              gameId="Tap-Type"
-              buttonText=""
-              IntroText={gameIntroText}
-              displayText={gameIntroText}
-              language="en-US"
-              speed="normal"
-              voiceType="child"
-            />
+          {/* Finn Character and Score Card in a wrapper */}
+          <View style={[styles.finnScoreWrapper, finnScoreWrapperStyle]}>
+            {/* Score Card Component on the left - moved up with marginTop */}
+            <View
+              style={[
+                styles.scoreCardContainer,
+                { marginTop: -2, marginRight: -30 },
+              ]}
+            >
+              <Text style={styles.scoreCardHeader}>TARGET SCORE</Text>
+              <Text style={styles.scoreCardValue}>10 Points</Text>
+            </View>
+
+            {/* Finn Character on the right */}
+            <View
+              style={{
+                maxWidth: isTablet ? "65%" : "60%",
+                marginLeft: getResponsiveSize(10),
+                marginTop: isLandscape ? 50 : 150,
+                transform: [{ scale: isSmallDevice ? 0.9 : 1 }],
+              }}
+            >
+              <FinnVoiceIntro
+                gameId="Tap-Type"
+                buttonText=""
+                IntroText={gameIntroText}
+                displayText={gameIntroText}
+                language="en-US"
+                speed="normal"
+                voiceType="child"
+              />
+            </View>
           </View>
 
           {/* Bottom Section with Level Info and Play Button */}
@@ -919,8 +980,8 @@ export default function GameScreen() {
               <LinearGradient
                 colors={["#ffffff", "#ffffff"]}
                 style={styles.gradientFill}
-                start={{ x: 0.5, y: -1 }} // Start from bottom
-                end={{ x: 0.5, y: 0 }} // End at top
+                start={{ x: 0.5, y: -1 }}
+                end={{ x: 0.5, y: 0 }}
               />
             </Animated.View>
 
@@ -980,12 +1041,12 @@ const styles = StyleSheet.create({
   /* Main Container Styles */
   container: {
     flex: 1,
-    backgroundColor: "#fff", // Consistent white background
+    backgroundColor: "#fff", //  white background
   },
 
   /* Bubble Animation Styles */
   bubblesContainer: {
-    ...StyleSheet.absoluteFillObject, // Cover entire screen
+    ...StyleSheet.absoluteFillObject,
     overflow: "hidden", // Prevent bubbles from causing scrolling
   },
   bubble: {
@@ -1006,7 +1067,7 @@ const styles = StyleSheet.create({
   backButton: {
     width: 40,
     height: 40,
-    borderRadius: 20, // Circular button
+    borderRadius: 20,
     backgroundColor: "#8de4a2", // Light green
     justifyContent: "center",
     alignItems: "center",
@@ -1020,31 +1081,30 @@ const styles = StyleSheet.create({
 
   /* Logo Container Styles */
   logoContainer: {
-    flex: 1,
+    flex: isTablet ? 1.5 : 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: 20,
-    zIndex: 5,
-    marginTop: 20, // Space from header
+    paddingHorizontal: width * 0.02,
+    marginTop: height * 0.025,
   },
 
   /* Logo Box Styles */
   logoBox: {
     width: "100%",
-    aspectRatio: 1.6, // Maintains consistent proportions
+    aspectRatio: 1.6,
     backgroundColor: "#e63946", // Vibrant red
-    borderRadius: 10, // Rounded corners
+    borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 5,
-    elevation: 8, // Android shadow
-    overflow: "hidden", // For shine effect
+    elevation: 8,
+    overflow: "hidden",
     borderWidth: 2,
     borderColor: "#c1121f", // Darker red border
-    position: "relative", // For absolute child positioning
+    position: "relative",
   },
 
   /* Shine Effect Styles */
@@ -1055,9 +1115,9 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     width: 60,
-    height: "300%", // Extra height for rotating
+    height: "300%",
     backgroundColor: "rgba(255, 255, 255, 0.3)", // White semi-transparent
-    transform: [{ rotate: "45deg" }], // Diagonal shine
+    transform: [{ rotate: "45deg" }],
   },
 
   /* Banner Content Styles */
@@ -1083,19 +1143,19 @@ const styles = StyleSheet.create({
     height: 80,
     justifyContent: "center",
     alignItems: "center",
-    zIndex: 1, // Below circle
+    zIndex: 1,
   },
   blueCircle: {
     position: "absolute",
     width: 40,
     height: 40,
-    borderRadius: 20, // Perfect circle
+    borderRadius: 20,
     backgroundColor: "#1d3557", // Dark blue
-    zIndex: 2, // Above hand
+    zIndex: 2,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
-    shadowRadius: 3, // Subtle shadow
+    shadowRadius: 3,
   },
 
   /* Logo Text Styles */
@@ -1105,17 +1165,17 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   logoText: {
-    color: "#f1faee", // Off-white
+    color: "#f1faee", // white
     fontSize: 28,
     fontFamily: "Montserrat-SemiBold",
     textAlign: "center",
     textShadowColor: "rgba(0, 0, 0, 0.3)",
     textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 3, // Text shadow for depth
+    textShadowRadius: 3,
   },
   logoTextBold: {
     fontFamily: "Montserrat-Bold",
-    color: "#ffd700", // Gold color for emphasis
+    color: "#ffd700", // Gold color
   },
 
   /* Banner Corner Decorations */
@@ -1126,7 +1186,7 @@ const styles = StyleSheet.create({
     width: 15,
     height: 15,
     backgroundColor: "#c1121f", // Dark red
-    borderBottomRightRadius: 15, // Quarter circle
+    borderBottomRightRadius: 15,
   },
   bannerCorner2: {
     position: "absolute",
@@ -1158,7 +1218,7 @@ const styles = StyleSheet.create({
 
   /* Bottom Section Styles */
   bottomContainer: {
-    height: 340, // Fixed height
+    height: height * 0.35,
     position: "relative",
     zIndex: 5,
     overflow: "hidden", // For wave animation
@@ -1174,23 +1234,23 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-end",
     alignItems: "center",
-    paddingBottom: 40, // Space at bottom
-    paddingTop: 40, // Space at top
+    paddingBottom: 40,
+    paddingTop: 40,
   },
   levelText: {
-    color: "#EBEF00", // Bright yellow
+    color: "#EBEF00",
     fontSize: 22,
     fontFamily: "Montserrat-SemiBold",
-    marginBottom: 10, // Space before button
+    marginBottom: 10,
   },
 
   /* Play Button Styles */
   resumeButton: {
-    backgroundColor: "#2ecc71", // Bright green
-    paddingVertical: 15,
-    paddingHorizontal: 60,
-    borderRadius: 30, // Pill shape
-    elevation: 5, // Android shadow
+    backgroundColor: "#2ecc71",
+    paddingVertical: getResponsiveSize(15, 0.7),
+    paddingHorizontal: getResponsiveSize(60, 0.7),
+    borderRadius: 30,
+    elevation: 5,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
@@ -1210,7 +1270,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    zIndex: 1, // Below content
+    zIndex: 1,
   },
   gradientFill: {
     flex: 1,
@@ -1219,10 +1279,12 @@ const styles = StyleSheet.create({
   /* Background Image Styles */
   imageBackground: {
     flex: 1,
-    zIndex: 2, // Above gradient
+    zIndex: 2,
     position: "relative",
-    marginRight: -20, // Full width plus margins
+    marginRight: -20,
     marginLeft: -20,
+    marginTop: -70,
+    marginBottom: 0,
   },
 
   /* Mute Button Styles */
@@ -1231,20 +1293,59 @@ const styles = StyleSheet.create({
     right: 20,
     width: 40,
     height: 40,
-    borderRadius: 20, // Circular
-    backgroundColor: "#8de4a2", // Match back button
+    borderRadius: 20,
+    backgroundColor: "#8de4a2",
     justifyContent: "center",
     alignItems: "center",
   },
 
   /* Finn Character Overlay Styles */
   finnOverlay: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "flex-start",
+    paddingHorizontal: width * 0.08,
+  },
+
+  /* Score Card Component Styles - with responsive sizing */
+  scoreCardContainer: {
+    backgroundColor: "rgba(255, 255, 255, 0.85)",
+    borderRadius: 15,
+    padding: 15,
+    width: 130,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.27,
+    shadowRadius: 4.65,
+    elevation: 6,
+    borderWidth: 2,
+    borderColor: "#2ecc71", // Green border to match theme
+  },
+  scoreCardHeader: {
+    fontSize: 14,
+    fontFamily: "Montserrat-Bold",
+    color: "#333",
+    textAlign: "center",
+    marginBottom: 8,
+  },
+  scoreCardValue: {
+    fontSize: 20,
+    fontFamily: "Montserrat-Bold",
+    color: "#e63946", // Red to match logo
+    textAlign: "center",
+  },
+
+  // Responsive Finn and score card wrapper
+  finnScoreWrapper: {
     position: "absolute",
-    top: "79%", // Move from 50% to 70% down the screen
+    // top is set dynamically in the component
     left: 0,
     right: 0,
-    zIndex: 20, // Above all other elements
-    paddingHorizontal: 20,
-    transform: [{ translateY: -50 }], // Still center the element itself
+    zIndex: 20,
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "flex-start",
+    paddingHorizontal: width * 0.08,
+    overflow: "visible",
   },
 });
