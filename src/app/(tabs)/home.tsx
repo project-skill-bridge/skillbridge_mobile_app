@@ -2,6 +2,7 @@ import * as React from "react";
 import { BackHandler, ScrollView, StyleSheet, Text, View } from "react-native";
 import { hp, wp } from "@/src/utils/common";
 import auth from "@react-native-firebase/auth";
+import { useIsFocused } from "@react-navigation/native";
 
 import { useUserStore } from "@/src/store/user-store";
 import HomeProgress from "@/src/components/home-progress";
@@ -15,6 +16,7 @@ const HomeScreen = () => {
   const { user } = useUserStore();
   const { executiveGames, vocationalGames, realLifeGames } =
     getCategorizedGames();
+  const isFocused = useIsFocused();
 
   const [isVisible, setIsVisible] = React.useState<ModalState>({
     visible: false,
@@ -35,19 +37,22 @@ const HomeScreen = () => {
     })();
   }, []);
 
-  // Add back handler to exit app when on home screen
+  
   React.useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       "hardwareBackPress",
       () => {
-        // Exit the app when back button is pressed on home screen
-        BackHandler.exitApp();
-        return true; // Prevent default behavior
+       
+        if (isFocused) {
+          BackHandler.exitApp();
+          return true; 
+        }
+        return false; 
       }
     );
 
     return () => backHandler.remove();
-  }, []);
+  }, [isFocused]);
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
