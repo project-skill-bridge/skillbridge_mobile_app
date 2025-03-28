@@ -959,7 +959,7 @@ export default function GameScreen() {
               }}
             >
               <FinnVoiceIntro
-                gameId="Tap-Type"
+                gameId="circloburst"
                 buttonText=""
                 IntroText={gameIntroText}
                 displayText={gameIntroText}
