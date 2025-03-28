@@ -8,7 +8,6 @@
   <uses-permission android:name="android.permission.VIBRATE"/>
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
   <uses-feature android:name="android.hardware.camera"/>
-  <uses-feature android:name="android.hardware.camera"/>
   <queries>
     <intent>
       <action android:name="android.intent.action.VIEW"/>
@@ -16,7 +15,6 @@
       <data android:scheme="https"/>
     </intent>
   </queries>
-  <dist:module dist:instant="true"/>
   <dist:module dist:instant="true"/>
   <application android:name=".MainApplication" android:label="@string/app_name" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher_round" android:allowBackup="true" android:theme="@style/AppTheme" android:supportsRtl="true">
     <meta-data android:name="expo.modules.updates.ENABLED" android:value="false"/>
