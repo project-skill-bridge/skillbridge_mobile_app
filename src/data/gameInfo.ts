@@ -23,7 +23,7 @@ export const gameInfo: GameItem[] = [
   },
   {
     id: 2,
-    path: "/circle-burst/game-screen",
+    path: "/circlo-burst/game-screen",
     image: Images.game2,
     title: "Circle Burst",
     description: "Enhance hand-eye coordination",
@@ -39,7 +39,7 @@ export const gameInfo: GameItem[] = [
   },
   {
     id: 4,
-    path: "/vocational-training/main-screen",
+    path: "/voccational-trainning/main-screen",
     image: Images.game3,
     title: "Vocational Training",
     description: "Learn essential work skills",
