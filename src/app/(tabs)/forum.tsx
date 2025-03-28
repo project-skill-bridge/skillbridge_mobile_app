@@ -1,4 +1,3 @@
-// src/app/(tabs)/forum.tsx
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -6,9 +5,11 @@ import { useForumStore } from '../../store/forum-store';
 import PostCard from '../../components/forum/post-card';
 import { Icons } from '../../constants/Icons';
 import { useRouter } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function ForumScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { posts, fetchPosts, loading, error } = useForumStore();
   const [refreshing, setRefreshing] = useState(false);
   
@@ -36,7 +37,10 @@ export default function ForumScreen() {
         data={posts}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => <PostCard post={item} />}
-        contentContainerStyle={styles.listContent}
+        contentContainerStyle={[
+          styles.listContent,
+          { paddingBottom: 100 } 
+        ]}
         refreshControl={
           <RefreshControl 
             refreshing={refreshing || loading} 
@@ -55,7 +59,10 @@ export default function ForumScreen() {
       />
       
       <TouchableOpacity 
-        style={styles.fabButton}
+        style={[
+          styles.fabButton,
+          { bottom: 80 + insets.bottom }
+        ]}
         onPress={navigateToCreatePost}
       >
         <Icons.Plus size={24} color="#ffffff" />
@@ -95,7 +102,6 @@ const styles = StyleSheet.create({
   },
   fabButton: {
     position: 'absolute',
-    bottom: 24,
     right: 24,
     width: 56,
     height: 56,
@@ -107,6 +113,6 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
-    shadowRadius: 4,
-  },
+    shadowRadius: 4,
+  },
 });
