@@ -1,11 +1,11 @@
 import { Images } from "../constants/Images";
 
-export type GameCategory = 'executive' | 'vocational' | 'realLife';
+export type GameCategory = "executive" | "vocational" | "realLife";
 
 export interface GameItem {
   id: number;
   path: string;
-  image: any;
+  image: unknown;
   title: string;
   description?: string;
   category: GameCategory;
@@ -19,7 +19,7 @@ export const gameInfo: GameItem[] = [
     image: Images.game3,
     title: "Tap & Type",
     description: "Improve typing and literacy skills",
-    category: 'vocational', 
+    category: "vocational",
   },
   {
     id: 2,
@@ -27,7 +27,7 @@ export const gameInfo: GameItem[] = [
     image: Images.game2,
     title: "Circle Burst",
     description: "Enhance hand-eye coordination",
-    category: 'executive',
+    category: "executive",
   },
   {
     id: 3,
@@ -35,7 +35,7 @@ export const gameInfo: GameItem[] = [
     image: Images.game4,
     title: "Mind Match",
     description: "Test and improve memory and attention",
-    category: 'executive', 
+    category: "executive",
   },
   {
     id: 4,
@@ -43,18 +43,22 @@ export const gameInfo: GameItem[] = [
     image: Images.game1,
     title: "Vocational Training",
     description: "Learn essential work skills",
-    category: 'vocational',
-  }
+    category: "vocational",
+  },
 ];
 
 export const getCategorizedGames = () => {
-  const executiveGames = gameInfo.filter(game => game.category === 'executive');
-  const vocationalGames = gameInfo.filter(game => game.category === 'vocational');
-  const realLifeGames = gameInfo.filter(game => game.category === 'realLife');
-  
+  const executiveGames = gameInfo.filter(
+    (game) => game.category === "executive"
+  );
+  const vocationalGames = gameInfo.filter(
+    (game) => game.category === "vocational"
+  );
+  const realLifeGames = gameInfo.filter((game) => game.category === "realLife");
+
   return {
     executiveGames,
     vocationalGames,
-    realLifeGames
+    realLifeGames,
   };
 };

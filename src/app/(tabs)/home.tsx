@@ -101,7 +101,6 @@ const HomeScreen = () => {
 export default HomeScreen;
 
 const styles = StyleSheet.create({
-  // Existing styles remain unchanged
   container: {
     flex: 1,
     paddingHorizontal: wp(6),
@@ -116,6 +115,6 @@ const styles = StyleSheet.create({
   },
   gamesContainer: {
     marginTop: hp(2),
-    paddingBottom: hp(10), // Extra padding at the bottom for scrolling
+    paddingBottom: hp(10),
   },
 });

@@ -51,14 +51,14 @@ const ProgressScreen = () => {
 
   return (
     //first game progress circle
-    <View style={styles.container}>
-      <Text style={styles.title}>Your progress so far</Text>
-      {/* Image added after "Your progress" text */}
-      <Image
-        source={Images.normalFinn} // Replace with your image path
-        style={styles.image}
-      />
-      <ScrollView>
+    <ScrollView>
+      <View style={styles.container}>
+        <Text style={styles.title}>Your progress so far</Text>
+        {/* Image added after "Your progress" text */}
+        <Image
+          source={Images.normalFinn} // Replace with your image path
+          style={styles.image}
+        />
         <View style={{ gap: 20 }}>
           {games.map((game, index) => (
             <View key={index + game.name} style={styles.gameProgressContainer}>
@@ -76,10 +76,10 @@ const ProgressScreen = () => {
             </View>
           ))}
         </View>
-      </ScrollView>
-      <Text style={styles.txt}>Take your time</Text>
-      <Text style={styles.txt}>You&apos;re doing great </Text>
-    </View>
+        <Text style={styles.txt}>Take your time</Text>
+        <Text style={styles.txt}>You&apos;re doing great </Text>
+      </View>
+    </ScrollView>
   );
 };
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * =========================================================================
  * CircloBrust Game Screen Component
@@ -68,6 +69,7 @@ import FinnVoiceIntro from "@/src/components/FinnCharacter/FinnGame"; // Charact
 import BufferingProgress from "@/src/components/ui/buffering-progress"; // Loading indicator
 import AnimatedBubbles from "@/src/app/(games)/circlo-brust/UI/animated-bubbles/animated-bubbles"; // Background bubble animations
 import LogoAnimation from "@/src/app/(games)/circlo-brust/UI/animated-logo/animated-logo"; // Game logo animation
+import { Sounds } from "@/src/constants/Sounds";
 
 /* ================ CONSTANTS ================ */
 // Get device screen dimensions for responsive layouts
@@ -103,7 +105,7 @@ const isSmallDevice = width < 375;
 const isTablet = width >= 768;
 
 // Responsive sizes based on screen dimensions
-const getResponsiveSize = (size: number, factor = 0.5): number => {
+const getResponsiveSize = (size: number): number => {
   if (isTablet) return size * 1.3; // Larger for tablets
   if (isSmallDevice) return size * 0.8; // Smaller for small phones
   return size; // Default size for standard phones
@@ -247,7 +249,7 @@ export default function GameScreen() {
 
       // Update first run flag if needed
       if (isFirstRun) setIsFirstRun(false);
-    } catch (error) {
+    } catch {
       // Ensure audio cleanup even on failure
       Speech.stop();
       stopBackgroundMusic();
@@ -601,7 +603,7 @@ export default function GameScreen() {
       try {
         // Create and configure sound object
         const { sound } = await Audio.Sound.createAsync(
-          require("@/assets/sounds/background-music-circlobrust.mp3"),
+          Sounds.backgroundMusicCirclobrust,
           {
             isLooping: true, // Loop continuously
             volume: 0.5, // 50% volume
@@ -625,22 +627,22 @@ export default function GameScreen() {
      * Handles screen losing focus
      * Pauses audio and speech
      */
-    const onBlur = () => {
-      if (soundRef.current) {
-        soundRef.current.pauseAsync();
-        Speech.stop();
-      }
-    };
+    // const onBlur = () => {
+    //   if (soundRef.current) {
+    //     soundRef.current.pauseAsync();
+    //     Speech.stop();
+    //   }
+    // };
 
     /**
      * Handles screen gaining focus
      * Resumes audio if not muted
      */
-    const onFocus = () => {
-      if (soundRef.current && !isMutedRef.current) {
-        soundRef.current.playAsync();
-      }
-    };
+    // const onFocus = () => {
+    //   if (soundRef.current && !isMutedRef.current) {
+    //     soundRef.current.playAsync();
+    //   }
+    // };
 
     // Configure global audio mode for the app
     Audio.setAudioModeAsync({
@@ -794,10 +796,10 @@ export default function GameScreen() {
   const handRotateAnim = useRef(new Animated.Value(0)).current; // Controls hand rotation
 
   // Generate random positions for background bubbles
-  const bubblePositions = Array.from(
-    { length: 15 },
-    () => Math.random() * width
-  );
+  // const bubblePositions = Array.from(
+  //   { length: 15 },
+  //   () => Math.random() * width
+  // );
 
   /**
    * Sets up and starts all animations
@@ -873,15 +875,15 @@ export default function GameScreen() {
   }, []);
 
   // Animation interpolations for derived values
-  const handScale = handAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0.9, 1.1],
-  });
+  // const handScale = handAnim.interpolate({
+  //   inputRange: [0, 1],
+  //   outputRange: [0.9, 1.1],
+  // });
 
-  const handRotate = handRotateAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["0deg", "360deg"],
-  });
+  // const handRotate = handRotateAnim.interpolate({
+  //   inputRange: [0, 1],
+  //   outputRange: ["0deg", "360deg"],
+  // });
 
   // Wave animation for bottom section
   const waveTransform = waveAnim.interpolate({
@@ -957,7 +959,7 @@ export default function GameScreen() {
               }}
             >
               <FinnVoiceIntro
-                gameId="Tap-Type"
+                gameId="circloburst"
                 buttonText=""
                 IntroText={gameIntroText}
                 displayText={gameIntroText}
@@ -1247,8 +1249,8 @@ const styles = StyleSheet.create({
   /* Play Button Styles */
   resumeButton: {
     backgroundColor: "#2ecc71",
-    paddingVertical: getResponsiveSize(15, 0.7),
-    paddingHorizontal: getResponsiveSize(60, 0.7),
+    paddingVertical: getResponsiveSize(15),
+    paddingHorizontal: getResponsiveSize(60),
     borderRadius: 30,
     elevation: 5,
     shadowColor: "#000",

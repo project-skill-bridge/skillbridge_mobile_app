@@ -1,3 +1,5 @@
+import React from "react";
+
 import {
   View,
   Text,
@@ -29,7 +31,7 @@ const scaledSize = (baseSize: number) => {
  *
  * @returns {JSX.Element} The rendered UI component
  */
-export default function MainScreen() {
+export default function MainScreen(): JSX.Element {
   const router = useRouter();
   const scaleValue = new Animated.Value(1);
 
@@ -68,7 +70,7 @@ export default function MainScreen() {
    * Display nothing while fonts are loading
    */
   if (!fontsLoaded) {
-    return null;
+    return <View />;
   }
 
   /**

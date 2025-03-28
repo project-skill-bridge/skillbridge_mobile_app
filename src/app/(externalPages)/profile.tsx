@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import {
+  Alert,
   Image,
   KeyboardAvoidingView,
   Platform,
@@ -26,9 +27,12 @@ import { useUserStore } from "@/src/store/user-store";
 import { Icons } from "@/src/constants/Icons";
 import { ModalState, User } from "@/src/types/type";
 import Modal from "@/src/components/ui/modal";
+import { useRouter } from "expo-router";
 
 const ProfileScreen = () => {
   const { user, setUser } = useUserStore();
+
+  const router = useRouter();
 
   const [isVerified, setIsVerified] = React.useState(false);
   const [isVisible, setIsVisible] = React.useState<ModalState>({
@@ -66,21 +70,45 @@ const ProfileScreen = () => {
 
   const deleteAccount = async () => {
     try {
-      const user = auth().currentUser;
-      if (user) {
-        await firestore().collection("users").doc(user.uid).delete();
-        await user.delete();
-      } else {
-        setIsVisible({
-          visible: true,
-          message: "Please sign in again..",
-          type: "error",
-        });
-      }
+      Alert.alert(
+        "Confirm Deletion",
+        "Are you sure you want to delete your account? This action cannot be undone.",
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
+          },
+          {
+            text: "Delete",
+            style: "destructive",
+            onPress: async () => {
+              try {
+                const user = auth().currentUser;
+                if (user) {
+                  await firestore().collection("users").doc(user.uid).delete();
+                  await user.delete();
+                } else {
+                  setIsVisible({
+                    visible: true,
+                    message: "Please sign in again.",
+                    type: "error",
+                  });
+                }
+              } catch {
+                setIsVisible({
+                  visible: true,
+                  message: "Error deleting account.",
+                  type: "error",
+                });
+              }
+            },
+          },
+        ]
+      );
     } catch {
       setIsVisible({
         visible: true,
-        message: "Error deleting account.",
+        message: "Error displaying confirmation alert.",
         type: "error",
       });
     }
@@ -138,14 +166,41 @@ const ProfileScreen = () => {
     }
   };
 
+  const handleLogout = async () => {
+    Alert.alert("Logout", "Are you sure you want to logout?", [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      {
+        text: "Logout",
+        style: "destructive",
+        onPress: async () => {
+          try {
+            await auth().signOut();
+            router.replace("/sign-in");
+          } catch (error) {
+            console.error("Logout error:", error);
+            Alert.alert("Error", "Failed to logout. Please try again.");
+          }
+        },
+      },
+    ]);
+  };
+
   return (
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerText}>Your Profile</Text>
-        <Button onPress={deleteAccount} style={styles.logout} variant="icon">
-          <Icons.Trash2 size={20} color="red" />
-        </Button>
+        <View style={{ flexDirection: "row", gap: 10 }}>
+          <Button onPress={deleteAccount} style={styles.logout} variant="icon">
+            <Icons.Trash2 size={20} color="red" />
+          </Button>
+          <Button onPress={handleLogout} style={styles.logout} variant="icon">
+            <Icons.LogOut size={20} color="red" />
+          </Button>
+        </View>
       </View>
 
       {/* Profile Image */}
