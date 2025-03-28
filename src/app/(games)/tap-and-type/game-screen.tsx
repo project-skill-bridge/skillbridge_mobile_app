@@ -837,7 +837,8 @@ const styles = StyleSheet.create({
   },
   keyText: {
     fontSize: hp(2.5),
-    fontFamily: "Coiny",
+    // fontFamily: "Coiny",
+    fontWeight: "900",
   },
   displayText: {
     color: "#fff",

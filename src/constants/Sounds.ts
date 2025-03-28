@@ -5,6 +5,7 @@ export const Sounds = {
   failureSound: require("@/assets/sounds/game-failure.mp3"),
   backgroundMusic: require("@/assets/sounds/background.mp3"),
   backgroundMusic2: require("@/assets/sounds/background2.mp3"),
+  backgroundMusicCirclobrust: require("@/assets/sounds/background-music-circlobrust.mp3"),
   buttonClick: require("@/assets/sounds/button-click.mp3"),
   cardFlip: require("@/assets/sounds/card-flip.mp3"),
 } as const;

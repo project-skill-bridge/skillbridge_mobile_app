@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect, useRef } from "react";
 import {
   View,
@@ -142,9 +143,9 @@ const AnimatedContent = ({ steps }: StepsProps) => {
   /**
    * Calculate the max description length for proper layout
    */
-  const maxDescriptionLength = Math.max(
-    ...steps.map((step) => (step.description ? step.description.length : 0))
-  );
+  // const maxDescriptionLength = Math.max(
+  //   ...steps.map((step) => (step.description ? step.description.length : 0))
+  // );
 
   return (
     <LinearGradient colors={["#f8f9fa", "#e9ecef"]} style={styles.container}>
