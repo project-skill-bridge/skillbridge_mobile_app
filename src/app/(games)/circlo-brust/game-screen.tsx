@@ -93,14 +93,13 @@ const levelNames: { [key: number]: string } = {
   5: "Level 5 : Super Pop Rush", // Final challenge level
 };
 
-
 const gameIntroText = [
   "Welcome to Tap & Type, the ultimate test of speed and accuracy!",
   "In this game, you'll need to tap the correct letters as fast as possible.",
   "Each level challenges your typing skills with increasing difficulty.",
   "The faster and more accurately you type, the higher your score!",
   "Tap & Type helps improve your typing speed, reflexes, and focus.",
-  "Are you ready to put your fingers to the test? Let’s get started!"
+  "Are you ready to put your fingers to the test? Let’s get started!",
 ];
 
 /**
@@ -897,15 +896,15 @@ export default function GameScreen() {
 
           {/* Finn Character Voice Guide Overlay */}
           <View style={styles.finnOverlay}>
-          <FinnVoiceIntro
-            gameId="Tap-Type"
-            buttonText=""  
-            IntroText={gameIntroText}  
-            displayText={gameIntroText}
-            language="en-US"
-            speed="normal"
-            voiceType="child"
-          />
+            <FinnVoiceIntro
+              gameId="Tap-Type"
+              buttonText=""
+              IntroText={gameIntroText}
+              displayText={gameIntroText}
+              language="en-US"
+              speed="normal"
+              voiceType="child"
+            />
           </View>
 
           {/* Bottom Section with Level Info and Play Button */}
@@ -1241,11 +1240,11 @@ const styles = StyleSheet.create({
   /* Finn Character Overlay Styles */
   finnOverlay: {
     position: "absolute",
-    top: "50%", // Center vertically
+    top: "79%", // Move from 50% to 70% down the screen
     left: 0,
     right: 0,
     zIndex: 20, // Above all other elements
     paddingHorizontal: 20,
-    transform: [{ translateY: -50 }], // True centering
+    transform: [{ translateY: -50 }], // Still center the element itself
   },
 });
