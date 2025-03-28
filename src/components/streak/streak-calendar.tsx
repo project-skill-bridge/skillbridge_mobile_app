@@ -150,7 +150,7 @@ const StreakCalendar = forwardRef<StreakCalendarRef, StreakCalendarProps>(
       return () => clearInterval(intervalId)
     }, [appUsageTime])
 
-    // Improve the autoCompleteToday function to be more reliable
+    // Improve the autoCompleteToday function to be more reliable and ensure streak updates are propagated
     const autoCompleteToday = () => {
       const today = new Date()
       const dayOfWeek = today.getDay() // 0 is Sunday, 6 is Saturday
@@ -188,6 +188,9 @@ const StreakCalendar = forwardRef<StreakCalendarRef, StreakCalendarProps>(
 
         setCurrentStreak(newCurrentStreak)
         setLongestStreak(newLongestStreak)
+
+        // Make sure to call onStreakUpdate to notify the parent component
+        onStreakUpdate(newCurrentStreak, newLongestStreak)
 
         saveStreakData(newDays, newCurrentStreak, newLongestStreak)
 
