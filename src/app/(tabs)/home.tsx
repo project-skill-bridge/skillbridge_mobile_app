@@ -1,9 +1,9 @@
 import * as React from "react";
+import { BackHandler, ScrollView, StyleSheet, Text, View } from "react-native";
+import { hp, wp } from "@/src/utils/common";
+import auth from "@react-native-firebase/auth";
 
 import { useUserStore } from "@/src/store/user-store";
-import auth from "@react-native-firebase/auth";
-import { hp, wp } from "@/src/utils/common";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
 import HomeProgress from "@/src/components/home-progress";
 import Modal from "@/src/components/ui/modal";
 import { ModalState } from "@/src/types/type";
@@ -13,7 +13,8 @@ import { getCategorizedGames } from "@/src/data/gameInfo";
 
 const HomeScreen = () => {
   const { user } = useUserStore();
-  const { executiveGames, vocationalGames, realLifeGames } = getCategorizedGames();
+  const { executiveGames, vocationalGames, realLifeGames } =
+    getCategorizedGames();
 
   const [isVisible, setIsVisible] = React.useState<ModalState>({
     visible: false,
@@ -34,25 +35,39 @@ const HomeScreen = () => {
     })();
   }, []);
 
+  // Add back handler to exit app when on home screen
+  React.useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      () => {
+        // Exit the app when back button is pressed on home screen
+        BackHandler.exitApp();
+        return true; // Prevent default behavior
+      }
+    );
+
+    return () => backHandler.remove();
+  }, []);
+
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <Text style={styles.welcomeText}>Hi {user?.name} 👋</Text>
       <HomeProgress />
       <FinnCharacter />
-      
+
       <View style={styles.gamesContainer}>
         <GameCategorySection
           title="Executive Function Games"
           description="Games to improve attention, memory, and cognitive control"
           games={executiveGames}
         />
-        
+
         <GameCategorySection
           title="Vocational Skills Games"
           description="Develop practical skills for future independence"
           games={vocationalGames}
         />
-        
+
         <GameCategorySection
           title="Real Life Skills"
           description="Learn everyday life skills in a fun interactive way"
@@ -60,7 +75,7 @@ const HomeScreen = () => {
           games={realLifeGames}
         />
       </View>
-      
+
       <Modal
         type={isVisible.type}
         isVisible={isVisible.visible}
@@ -76,6 +91,7 @@ const HomeScreen = () => {
 export default HomeScreen;
 
 const styles = StyleSheet.create({
+  // Existing styles remain unchanged
   container: {
     flex: 1,
     paddingHorizontal: wp(6),
