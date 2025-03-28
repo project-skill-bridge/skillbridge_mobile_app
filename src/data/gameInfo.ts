@@ -25,7 +25,7 @@ export const gameInfo: GameItem[] = [
     id: 2,
     path: "/circlo-brust/game-screen",
     image: Images.game2,
-    title: "Circle Burst",
+    title: "Circlo Burst",
     description: "Enhance hand-eye coordination",
     category: "executive",
   },
