@@ -16,14 +16,14 @@ export const gameInfo: GameItem[] = [
   {
     id: 1,
     path: "/tap-and-type/main-screen",
-    image: Images.game1,
+    image: Images.game3,
     title: "Tap & Type",
     description: "Improve typing and literacy skills",
     category: 'vocational', 
   },
   {
     id: 2,
-    path: "/circlo-burst/game-screen",
+    path: "/circlo-brust/game-screen",
     image: Images.game2,
     title: "Circle Burst",
     description: "Enhance hand-eye coordination",
@@ -40,7 +40,7 @@ export const gameInfo: GameItem[] = [
   {
     id: 4,
     path: "/voccational-trainning/main-screen",
-    image: Images.game3,
+    image: Images.game1,
     title: "Vocational Training",
     description: "Learn essential work skills",
     category: 'vocational',
