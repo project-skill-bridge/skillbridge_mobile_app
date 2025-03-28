@@ -61,21 +61,18 @@ const ProgressScreen = () => {
       <ScrollView>
         <View style={{ gap: 20 }}>
           {games.map((game, index) => (
-            <View
-              key={index + game.name}
-              // style={{ flexDirection: "row", gap: 20, alignItems: "center" }}
-            >
+            <View key={index + game.name} style={styles.gameProgressContainer}>
               <Text style={styles.streakCount}>
                 {formatGameName(game.name)}
               </Text>
-              {/* <View style={styles.achievement}> */}
+              <View style={styles.circularProgressContainer}>
                 <CircularProgress
                   perecentage={game.progress}
                   radius={55}
                   duration={1000}
                   color="#6277bf"
                 />
-              {/* </View> */}
+              </View>
             </View>
           ))}
         </View>
@@ -145,5 +142,16 @@ const styles = StyleSheet.create({
     elevation: 15, // Elevation for Android
     width: "60%",
     alignItems: "center", // Centers all child elements inside this box
+  },
+  gameProgressContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 10,
+  },
+  circularProgressContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    width: 120,
+    height: 120,
   },
 });
