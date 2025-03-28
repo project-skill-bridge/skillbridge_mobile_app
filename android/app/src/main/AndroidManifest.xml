@@ -34,20 +34,20 @@
         <data android:scheme="exp+skillbridge"/>
       </intent-filter>
     </activity>
-    <activity android:name=".circlobrustGameBeginner.circlobrustGameActivities.Level1ActivityClass" android:screenOrientation="fullUser" android:exported="false"/>
-    <activity android:name=".circlobrustGameBeginner.circlobrustGameActivities.Level2ActivityClass" android:screenOrientation="fullUser" android:exported="false"/>
-    <activity android:name=".circlobrustGameBeginner.circlobrustGameActivities.Level3ActivityClass" android:screenOrientation="fullUser" android:exported="false"/>
-    <activity android:name=".circlobrustGameBeginner.circlobrustGameActivities.Level4ActivityClass" android:screenOrientation="fullUser" android:exported="false"/>
-    <activity android:name=".circlobrustGameBeginner.circlobrustGameActivities.Level5ActivityClass" android:screenOrientation="fullUser" android:exported="false"/>
-    <activity android:name=".circlobrustGameBeginner.circlobrustLevelSuccessActivities.Level1CompletionClass" android:screenOrientation="fullUser" android:exported="false"/>
-    <activity android:name=".circlobrustGameBeginner.circlobrustLevelSuccessActivities.Level2CompletionClass" android:screenOrientation="fullUser" android:exported="false"/>
-    <activity android:name=".circlobrustGameBeginner.circlobrustLevelSuccessActivities.Level3CompletionClass" android:screenOrientation="fullUser" android:exported="false"/>
-    <activity android:name=".circlobrustGameBeginner.circlobrustLevelSuccessActivities.Level4CompletionClass" android:screenOrientation="fullUser" android:exported="false"/>
-    <activity android:name=".circlobrustGameBeginner.circlobrustLevelSuccessActivities.Level5CompletionClass" android:screenOrientation="fullUser" android:exported="false"/>
-    <activity android:name=".circlobrustGameBeginner.circlobrustLostActivities.Level1LostActivityClass" android:screenOrientation="fullUser" android:exported="false"/>
-    <activity android:name=".circlobrustGameBeginner.circlobrustLostActivities.Level5LostActivityClass" android:screenOrientation="fullUser" android:exported="false"/>
-    <activity android:name=".circlobrustGameBeginner.circlobrustLostActivities.Level2LostActivityClass" android:screenOrientation="fullUser" android:exported="false"/>
-    <activity android:name=".circlobrustGameBeginner.circlobrustLostActivities.Level3LostActivityClass" android:screenOrientation="fullUser" android:exported="false"/>
-    <activity android:name=".circlobrustGameBeginner.circlobrustLostActivities.Level4LostActivityClass" android:screenOrientation="fullUser" android:exported="false"/>
+    <activity android:name=".circlobrustGameBeginner.circlobrustGameActivities.Level1ActivityClass" android:screenOrientation="portrait" android:exported="false"/>
+    <activity android:name=".circlobrustGameBeginner.circlobrustGameActivities.Level2ActivityClass" android:screenOrientation="portrait" android:exported="false"/>
+    <activity android:name=".circlobrustGameBeginner.circlobrustGameActivities.Level3ActivityClass" android:screenOrientation="portrait" android:exported="false"/>
+    <activity android:name=".circlobrustGameBeginner.circlobrustGameActivities.Level4ActivityClass" android:screenOrientation="portrait" android:exported="false"/>
+    <activity android:name=".circlobrustGameBeginner.circlobrustGameActivities.Level5ActivityClass" android:screenOrientation="portrait" android:exported="false"/>
+    <activity android:name=".circlobrustGameBeginner.circlobrustLevelSuccessActivities.Level1CompletionClass" android:screenOrientation="portrait" android:exported="false"/>
+    <activity android:name=".circlobrustGameBeginner.circlobrustLevelSuccessActivities.Level2CompletionClass" android:screenOrientation="portrait" android:exported="false"/>
+    <activity android:name=".circlobrustGameBeginner.circlobrustLevelSuccessActivities.Level3CompletionClass" android:screenOrientation="portrait" android:exported="false"/>
+    <activity android:name=".circlobrustGameBeginner.circlobrustLevelSuccessActivities.Level4CompletionClass" android:screenOrientation="portrait" android:exported="false"/>
+    <activity android:name=".circlobrustGameBeginner.circlobrustLevelSuccessActivities.Level5CompletionClass" android:screenOrientation="portrait" android:exported="false"/>
+    <activity android:name=".circlobrustGameBeginner.circlobrustLostActivities.Level1LostActivityClass" android:screenOrientation="portrait" android:exported="false"/>
+    <activity android:name=".circlobrustGameBeginner.circlobrustLostActivities.Level5LostActivityClass" android:screenOrientation="portrait" android:exported="false"/>
+    <activity android:name=".circlobrustGameBeginner.circlobrustLostActivities.Level2LostActivityClass" android:screenOrientation="portrait" android:exported="false"/>
+    <activity android:name=".circlobrustGameBeginner.circlobrustLostActivities.Level3LostActivityClass" android:screenOrientation="portrait" android:exported="false"/>
+    <activity android:name=".circlobrustGameBeginner.circlobrustLostActivities.Level4LostActivityClass" android:screenOrientation="portrait" android:exported="false"/>
   </application>
 </manifest>
