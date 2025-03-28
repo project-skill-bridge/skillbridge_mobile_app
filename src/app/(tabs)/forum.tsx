@@ -6,9 +6,11 @@ import { useForumStore } from '../../store/forum-store';
 import PostCard from '../../components/forum/post-card';
 import { Icons } from '../../constants/Icons';
 import { useRouter } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function ForumScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { posts, fetchPosts, loading, error } = useForumStore();
   const [refreshing, setRefreshing] = useState(false);
   
@@ -36,7 +38,11 @@ export default function ForumScreen() {
         data={posts}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => <PostCard post={item} />}
-        contentContainerStyle={styles.listContent}
+        contentContainerStyle={[
+          styles.listContent,
+          // Add bottom padding to ensure content is visible above the tab bar
+          { paddingBottom: 100 } // This provides space for the tab bar
+        ]}
         refreshControl={
           <RefreshControl 
             refreshing={refreshing || loading} 
@@ -55,7 +61,11 @@ export default function ForumScreen() {
       />
       
       <TouchableOpacity 
-        style={styles.fabButton}
+        style={[
+          styles.fabButton,
+          // Position the FAB button above the tab bar
+          { bottom: 80 + insets.bottom } // Adjust this value based on your tab bar height
+        ]}
         onPress={navigateToCreatePost}
       >
         <Icons.Plus size={24} color="#ffffff" />
@@ -95,7 +105,6 @@ const styles = StyleSheet.create({
   },
   fabButton: {
     position: 'absolute',
-    bottom: 24,
     right: 24,
     width: 56,
     height: 56,
