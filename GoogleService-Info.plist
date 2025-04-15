@@ -3,21 +3,23 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>751692701677-tc9ni096dtkbgcbddqjsjoi4ufhjd75q.apps.googleusercontent.com</string>
+	<string>76284826638-4rncdal08kviklhm87kg8iq5qu5qdbq5.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.751692701677-tc9ni096dtkbgcbddqjsjoi4ufhjd75q</string>
+	<string>com.googleusercontent.apps.76284826638-4rncdal08kviklhm87kg8iq5qu5qdbq5</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>76284826638-21npiqra3jinb5bkobjkqg380jem3qq8.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
-	<string>AIzaSyDi2m5jV1FXYcLvCeTl5MPB7B40UYLLN5M</string>
+	<string>AIzaSyDDSgWw4w2TO3v3tIGT24RK9Sq2BneJlYE</string>
 	<key>GCM_SENDER_ID</key>
-	<string>751692701677</string>
+	<string>76284826638</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.skillbridge.app</string>
+	<string>com.skillbridge.application</string>
 	<key>PROJECT_ID</key>
-	<string>skill-bridge-37dd8</string>
+	<string>skill-bridge-updated</string>
 	<key>STORAGE_BUCKET</key>
-	<string>skill-bridge-37dd8.firebasestorage.app</string>
+	<string>skill-bridge-updated.firebasestorage.app</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:751692701677:ios:23570de0b08fa6c38d11e4</string>
+	<string>1:76284826638:ios:2fc72a5fcc483b605c985f</string>
 </dict>
 </plist>

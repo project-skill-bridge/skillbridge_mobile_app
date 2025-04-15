@@ -10,7 +10,7 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.skillbridge.app",
+      "bundleIdentifier": "com.skillbridge.application",
       "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
@@ -18,7 +18,7 @@
         "foregroundImage": "./assets/images/splash-icon.png",
         "backgroundColor": "#6277BF"
       },
-      "package": "com.skillbridge.app",
+      "package": "com.skillbridge.application",
       "googleServicesFile": "./google-services.json"
     },
     "web": {

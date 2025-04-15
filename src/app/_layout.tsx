@@ -13,7 +13,7 @@ import { AppState } from "react-native";
 const RootLayout = () => {
   GoogleSignin.configure({
     webClientId:
-      "751692701677-82jgdl3r1bnhorb20462k0vi7ocud45g.apps.googleusercontent.com",
+      "76284826638-atgq2ula6cq8kkppvqjhr50pquk7rma5.apps.googleusercontent.com",
     scopes: ["email", "profile"],
   });
 

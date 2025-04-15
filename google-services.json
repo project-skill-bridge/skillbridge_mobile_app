@@ -1,48 +1,48 @@
 {
   "project_info": {
-    "project_number": "751692701677",
-    "project_id": "skill-bridge-37dd8",
-    "storage_bucket": "skill-bridge-37dd8.firebasestorage.app"
+    "project_number": "76284826638",
+    "project_id": "skill-bridge-updated",
+    "storage_bucket": "skill-bridge-updated.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:751692701677:android:19248b941f66d2458d11e4",
+        "mobilesdk_app_id": "1:76284826638:android:2d5fd30f4b20ec035c985f",
         "android_client_info": {
-          "package_name": "com.skillbridge.app"
+          "package_name": "com.skillbridge.application"
         }
       },
       "oauth_client": [
         {
-          "client_id": "751692701677-7h9gt85tmjrga0utdnnfimppml2q2lrf.apps.googleusercontent.com",
+          "client_id": "76284826638-h3l8jmhjuil39iffdgncfthp3jc6r29a.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.skillbridge.app",
-            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+            "package_name": "com.skillbridge.application",
+            "certificate_hash": "acbeb966111c5bf9efef9229e6ed727d82738939"
           }
         },
         {
-          "client_id": "751692701677-82jgdl3r1bnhorb20462k0vi7ocud45g.apps.googleusercontent.com",
+          "client_id": "76284826638-atgq2ula6cq8kkppvqjhr50pquk7rma5.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCtOLPI5IX7GmxazVgnn1haBUvZl2sxgN4"
+          "current_key": "AIzaSyDZPXlCjwpWIUsnb_4YUtsHYiJrw9GxZMw"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "751692701677-82jgdl3r1bnhorb20462k0vi7ocud45g.apps.googleusercontent.com",
+              "client_id": "76284826638-atgq2ula6cq8kkppvqjhr50pquk7rma5.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "751692701677-tc9ni096dtkbgcbddqjsjoi4ufhjd75q.apps.googleusercontent.com",
+              "client_id": "76284826638-4rncdal08kviklhm87kg8iq5qu5qdbq5.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.skillbridge.app"
+                "bundle_id": "com.skillbridge.application"
               }
             }
           ]

@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/permissions_fragment"
-        android:name="com.skillbridge.app.circlobrustGameBeginner.circlobrustPanelScreens.PermissionsPanel"
+        android:name="com.skillbridge.application.circlobrustGameBeginner.circlobrustPanelScreens.PermissionsPanel"
         android:label="PermissionsFragment">
 
         <action
@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/camera_fragment"
-        android:name="com.skillbridge.app.circlobrustGameBeginner.circlobrustPanelScreens.CameraPanel"
+        android:name="com.skillbridge.application.circlobrustGameBeginner.circlobrustPanelScreens.CameraPanel"
         android:label="CameraFragment">
 
         <action
